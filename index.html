@@ -1,252 +1,299 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>今天吃什么 🍜</title>
+<title>鼓楼今天吃什么 🍜</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Nunito:wght@400;700;900&display=swap');
 
-  :root {
-    --bg: #FFF8F0;
-    --card: #FFFFFF;
-    --accent1: #FF6B6B;
-    --accent2: #FFD93D;
-    --accent3: #6BCB77;
-    --accent4: #4D96FF;
-    --text: #2D2D2D;
-    --muted: #999;
-    --shadow: 0 8px 32px rgba(0,0,0,0.10);
-    --radius: 20px;
-  }
+:root {
+–bg: #FFF8F0;
+–card: #FFFFFF;
+–accent1: #FF6B6B;
+–accent2: #FFD93D;
+–accent3: #6BCB77;
+–accent4: #4D96FF;
+–text: #2D2D2D;
+–muted: #999;
+–shadow: 0 8px 32px rgba(0,0,0,0.10);
+–radius: 20px;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  body {
-    font-family: 'Nunito', 'PingFang SC', sans-serif;
-    background: var(--bg);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 16px 40px;
-    background-image: radial-gradient(circle at 20% 10%, #FFE0E0 0%, transparent 40%),
-                      radial-gradient(circle at 80% 80%, #E0F0FF 0%, transparent 40%);
-  }
+body {
+font-family: ‘Nunito’, ‘PingFang SC’, sans-serif;
+background: var(–bg);
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 24px 16px 40px;
+background-image: radial-gradient(circle at 20% 10%, #FFE0E0 0%, transparent 40%),
+radial-gradient(circle at 80% 80%, #E0F0FF 0%, transparent 40%);
+}
 
-  h1 {
-    font-family: 'Ma Shan Zheng', cursive;
-    font-size: 2.4rem;
-    color: var(--text);
-    margin-bottom: 6px;
-    letter-spacing: 4px;
-    text-shadow: 3px 3px 0 var(--accent2);
-  }
+h1 {
+font-family: ‘Ma Shan Zheng’, cursive;
+font-size: 2.1rem;
+color: var(–text);
+margin-bottom: 6px;
+letter-spacing: 4px;
+text-shadow: 3px 3px 0 var(–accent2);
+text-align: center;
+}
 
-  .subtitle {
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-bottom: 28px;
-    letter-spacing: 1px;
-  }
+.subtitle {
+font-size: 0.85rem;
+color: var(–muted);
+margin-bottom: 20px;
+letter-spacing: 1px;
+}
 
-  /* ── 结果展示卡片 ── */
-  .result-card {
-    width: 100%;
-    max-width: 360px;
-    background: var(--card);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 36px 24px 28px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    border: 3px solid transparent;
-    transition: border-color 0.3s;
-  }
-  .result-card.spinning { border-color: var(--accent1); }
+.filter-row {
+width: 100%;
+max-width: 360px;
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-bottom: 20px;
+}
 
-  .result-emoji {
-    font-size: 3.5rem;
-    display: block;
-    margin-bottom: 10px;
-    transition: transform 0.15s;
-  }
+.filter-btn {
+padding: 7px 16px;
+border-radius: 50px;
+border: 2px solid #EEE;
+background: var(–card);
+font-family: ‘Nunito’, ‘PingFang SC’, sans-serif;
+font-size: 0.9rem;
+font-weight: 700;
+color: var(–muted);
+cursor: pointer;
+transition: all 0.18s;
+-webkit-appearance: none;
+}
+.filter-btn.active { border-color: var(–accent4); background: var(–accent4); color: white; box-shadow: 0 3px 10px rgba(77,150,255,0.30); }
+.filter-btn.tag-HKL.active { background: var(–accent1); border-color: var(–accent1); box-shadow: 0 3px 10px rgba(255,107,107,0.30); }
+.filter-btn.tag-GZL.active { background: var(–accent3); border-color: var(–accent3); box-shadow: 0 3px 10px rgba(107,203,119,0.30); }
 
-  .result-name {
-    font-family: 'Ma Shan Zheng', cursive;
-    font-size: 2rem;
-    color: var(--text);
-    min-height: 2.5rem;
-    letter-spacing: 2px;
-    transition: opacity 0.1s;
-  }
+.result-card {
+width: 100%;
+max-width: 360px;
+background: var(–card);
+border-radius: var(–radius);
+box-shadow: var(–shadow);
+padding: 32px 24px 24px;
+text-align: center;
+margin-bottom: 20px;
+position: relative;
+overflow: hidden;
+border: 3px solid transparent;
+transition: border-color 0.3s;
+}
+.result-card.spinning { border-color: var(–accent1); }
 
-  .result-name.flash { opacity: 0.3; }
+.result-tag-badge {
+display: inline-block;
+font-size: 0.72rem;
+font-weight: 700;
+padding: 3px 10px;
+border-radius: 50px;
+margin-bottom: 10px;
+letter-spacing: 1px;
+opacity: 0;
+transition: opacity 0.3s;
+min-height: 22px;
+}
+.result-card.done .result-tag-badge { opacity: 1; }
+.result-tag-badge.tag-HKL { background: #FFE8E8; color: var(–accent1); }
+.result-tag-badge.tag-GZL { background: #E8F8EB; color: #3aaa50; }
 
-  .confetti-bar {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3), var(--accent4));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.5s ease;
-    border-radius: 0 0 var(--radius) var(--radius);
-  }
-  .result-card.done .confetti-bar { transform: scaleX(1); }
+.result-emoji { font-size: 3.5rem; display: block; margin-bottom: 10px; }
 
-  /* ── 随机按钮 ── */
-  .spin-btn {
-    width: 100%;
-    max-width: 360px;
-    padding: 18px;
-    border: none;
-    border-radius: var(--radius);
-    background: linear-gradient(135deg, var(--accent1), #FF8E53);
-    color: white;
-    font-family: 'Ma Shan Zheng', cursive;
-    font-size: 1.5rem;
-    letter-spacing: 3px;
-    cursor: pointer;
-    box-shadow: 0 6px 20px rgba(255,107,107,0.35);
-    transition: transform 0.15s, box-shadow 0.15s;
-    margin-bottom: 28px;
-    -webkit-appearance: none;
-  }
-  .spin-btn:active {
-    transform: scale(0.96);
-    box-shadow: 0 2px 8px rgba(255,107,107,0.25);
-  }
-  .spin-btn:disabled { opacity: 0.6; }
+.result-name {
+font-family: ‘Ma Shan Zheng’, cursive;
+font-size: 2rem;
+color: var(–text);
+min-height: 2.5rem;
+letter-spacing: 2px;
+transition: opacity 0.1s;
+}
+.result-name.flash { opacity: 0.3; }
 
-  /* ── 菜单管理区 ── */
-  .section-title {
-    width: 100%;
-    max-width: 360px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #EEE;
-  }
+.confetti-bar {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 6px;
+background: linear-gradient(90deg, var(–accent1), var(–accent2), var(–accent3), var(–accent4));
+transform: scaleX(0);
+transform-origin: left;
+transition: transform 0.5s ease;
+border-radius: 0 0 var(–radius) var(–radius);
+}
+.result-card.done .confetti-bar { transform: scaleX(1); }
 
-  .menu-list {
-    width: 100%;
-    max-width: 360px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
+.spin-btn {
+width: 100%;
+max-width: 360px;
+padding: 18px;
+border: none;
+border-radius: var(–radius);
+background: linear-gradient(135deg, var(–accent1), #FF8E53);
+color: white;
+font-family: ‘Ma Shan Zheng’, cursive;
+font-size: 1.5rem;
+letter-spacing: 3px;
+cursor: pointer;
+box-shadow: 0 6px 20px rgba(255,107,107,0.35);
+transition: transform 0.15s, box-shadow 0.15s;
+margin-bottom: 28px;
+-webkit-appearance: none;
+}
+.spin-btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(255,107,107,0.25); }
+.spin-btn:disabled { opacity: 0.6; }
 
-  .menu-tag {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--card);
-    border: 2px solid #F0F0F0;
-    border-radius: 50px;
-    padding: 8px 14px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text);
-    transition: border-color 0.2s, background 0.2s;
-    cursor: default;
-    user-select: none;
-  }
-  .menu-tag .del {
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: #FFE0E0;
-    color: var(--accent1);
-    border: none;
-    font-size: 0.8rem;
-    line-height: 18px;
-    text-align: center;
-    cursor: pointer;
-    padding: 0;
-    font-weight: 900;
-    transition: background 0.2s;
-    flex-shrink: 0;
-  }
-  .menu-tag .del:active { background: var(--accent1); color: white; }
+.section-title {
+width: 100%;
+max-width: 360px;
+font-size: 0.8rem;
+font-weight: 700;
+color: var(–muted);
+letter-spacing: 2px;
+margin-bottom: 12px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.section-title::after { content: ‘’; flex: 1; height: 1px; background: #EEE; }
 
-  /* ── 添加输入框 ── */
-  .add-row {
-    width: 100%;
-    max-width: 360px;
-    display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .add-input {
-    flex: 1;
-    padding: 12px 16px;
-    border: 2px solid #EEE;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-family: inherit;
-    color: var(--text);
-    background: var(--card);
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-  .add-input:focus { border-color: var(--accent4); }
-  .add-btn {
-    width: 46px; height: 46px;
-    border-radius: 50%;
-    border: none;
-    background: var(--accent3);
-    color: white;
-    font-size: 1.5rem;
-    line-height: 46px;
-    text-align: center;
-    cursor: pointer;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(107,203,119,0.35);
-    transition: transform 0.15s;
-    -webkit-appearance: none;
-  }
-  .add-btn:active { transform: scale(0.92); }
+.menu-list {
+width: 100%;
+max-width: 360px;
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-bottom: 16px;
+}
 
-  .empty-hint {
-    color: var(--muted);
-    font-size: 0.85rem;
-    text-align: center;
-    padding: 12px;
-    width: 100%;
-    max-width: 360px;
-  }
+.menu-tag {
+display: flex;
+align-items: center;
+gap: 6px;
+background: var(–card);
+border: 2px solid #F0F0F0;
+border-radius: 50px;
+padding: 7px 12px;
+font-size: 0.9rem;
+font-weight: 700;
+color: var(–text);
+user-select: none;
+}
+.tag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.tag-dot.tag-HKL { background: var(–accent1); }
+.tag-dot.tag-GZL { background: var(–accent3); }
 
-  /* ── 高亮动画 ── */
-  @keyframes pop {
-    0% { transform: scale(1); }
-    40% { transform: scale(1.18); }
-    70% { transform: scale(0.95); }
-    100% { transform: scale(1); }
-  }
-  .result-emoji.pop { animation: pop 0.4s ease; }
+.menu-tag .del {
+width: 18px; height: 18px;
+border-radius: 50%;
+background: #FFE0E0;
+color: var(–accent1);
+border: none;
+font-size: 0.8rem;
+line-height: 18px;
+text-align: center;
+cursor: pointer;
+padding: 0;
+font-weight: 900;
+transition: background 0.2s;
+flex-shrink: 0;
+}
+.menu-tag .del:active { background: var(–accent1); color: white; }
+
+.add-area {
+width: 100%;
+max-width: 360px;
+background: var(–card);
+border-radius: var(–radius);
+padding: 16px;
+box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.add-tag-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.add-tag-btn {
+flex: 1;
+padding: 7px 0;
+border-radius: 50px;
+border: 2px solid #EEE;
+background: white;
+font-family: inherit;
+font-size: 0.85rem;
+font-weight: 700;
+color: var(–muted);
+cursor: pointer;
+transition: all 0.18s;
+-webkit-appearance: none;
+}
+.add-tag-btn.sel-HKL { border-color: var(–accent1); background: #FFF0F0; color: var(–accent1); }
+.add-tag-btn.sel-GZL { border-color: var(–accent3); background: #F0FFF2; color: #3aaa50; }
+
+.add-row { display: flex; gap: 10px; }
+.add-input {
+flex: 1;
+padding: 11px 16px;
+border: 2px solid #EEE;
+border-radius: 50px;
+font-size: 1rem;
+font-family: inherit;
+color: var(–text);
+background: var(–bg);
+outline: none;
+transition: border-color 0.2s;
+-webkit-appearance: none;
+}
+.add-input:focus { border-color: var(–accent4); }
+.add-btn {
+width: 44px; height: 44px;
+border-radius: 50%;
+border: none;
+background: var(–accent3);
+color: white;
+font-size: 1.4rem;
+line-height: 44px;
+text-align: center;
+cursor: pointer;
+flex-shrink: 0;
+box-shadow: 0 4px 12px rgba(107,203,119,0.35);
+transition: transform 0.15s;
+-webkit-appearance: none;
+}
+.add-btn:active { transform: scale(0.92); }
+
+.empty-hint { color: var(–muted); font-size: 0.85rem; text-align: center; padding: 12px; width: 100%; }
+
+@keyframes pop {
+0% { transform: scale(1); }
+40% { transform: scale(1.18); }
+70% { transform: scale(0.95); }
+100% { transform: scale(1); }
+}
+.result-emoji.pop { animation: pop 0.4s ease; }
 </style>
+
 </head>
 <body>
 
-<h1>今天吃什么</h1>
+<h1>鼓楼今天吃什么</h1>
 <p class="subtitle">选不好就交给命运吧 🎲</p>
 
+<div class="filter-row">
+  <button class="filter-btn active"  data-tag="ALL" onclick="setFilter('ALL')">🍽️ 全部</button>
+  <button class="filter-btn tag-HKL" data-tag="HKL" onclick="setFilter('HKL')">📍 汉口路</button>
+  <button class="filter-btn tag-GZL" data-tag="GZL" onclick="setFilter('GZL')">📍 广州路</button>
+</div>
+
 <div class="result-card" id="resultCard">
+  <div class="result-tag-badge" id="resultBadge"></div>
   <span class="result-emoji" id="resultEmoji">🍽️</span>
   <div class="result-name" id="resultName">点击按钮开始抽签</div>
   <div class="confetti-bar"></div>
@@ -254,62 +301,73 @@
 
 <button class="spin-btn" id="spinBtn" onclick="spin()">🎰 帮我决定！</button>
 
-<div class="section-title">我的菜单</div>
-
+<div class="section-title">菜单列表</div>
 <div class="menu-list" id="menuList"></div>
 
-<div class="add-row">
-  <input class="add-input" id="addInput" type="text" placeholder="添加新选项，如：黄焖鸡" maxlength="20"
-         onkeydown="if(event.key==='Enter') addItem()">
-  <button class="add-btn" onclick="addItem()">＋</button>
+<div class="add-area">
+  <div class="add-tag-row">
+    <button class="add-tag-btn" data-tag="HKL" onclick="selectAddTag('HKL')">📍 汉口路</button>
+    <button class="add-tag-btn" data-tag="GZL" onclick="selectAddTag('GZL')">📍 广州路</button>
+  </div>
+  <div class="add-row">
+    <input class="add-input" id="addInput" type="text" placeholder="添加新选项…" maxlength="20"
+           onkeydown="if(event.key==='Enter') addItem()">
+    <button class="add-btn" onclick="addItem()">＋</button>
+  </div>
 </div>
 
 <script>
-  // ── 初始菜单 ──
+  const TAG_LABEL = { HKL: '汉口路', GZL: '广州路' };
   const DEFAULT_ITEMS = [
-    { name: '黄焖鸡米饭', emoji: '🍗' },
-    { name: '麻辣烫', emoji: '🌶️' },
-    { name: '沙县小吃', emoji: '🥟' },
-    { name: '兰州拉面', emoji: '🍜' },
-    { name: '炒饭', emoji: '🍳' },
-    { name: '螺蛳粉', emoji: '🦺' },
-    { name: '烧烤', emoji: '🍖' },
-    { name: '寿司', emoji: '🍣' },
-    { name: '汉堡', emoji: '🍔' },
-    { name: '火锅', emoji: '🫕' },
-    { name: '米线', emoji: '🍝' },
-    { name: '便利店随便买', emoji: '🏪' },
+    { name: '黄焖鸡米饭',   emoji: '🍗', tag: 'HKL' },
+    { name: '同广鸣烧腊',   emoji: '🍖', tag: 'HKL' },
+    { name: '西安特色面馆', emoji: '🍜', tag: 'HKL' },
+    { name: 'hzy炒饭',      emoji: '🍳', tag: 'HKL' },
+    { name: '沙县小吃',     emoji: '🥟', tag: 'HKL' },
+    { name: '青当劳',       emoji: '🥗', tag: 'HKL' },
+    { name: '马马艾',       emoji: '🌯', tag: 'HKL' },
+    { name: '猪脚饭',       emoji: '🍚', tag: 'GZL' },
+    { name: '永和大王',     emoji: '🧆', tag: 'GZL' },
+    { name: '肉夹馍',       emoji: '🫓', tag: 'GZL' },
   ];
-
-  const STORAGE_KEY = 'eat_today_menu_v1';
   const EMOJIS = ['🍜','🍛','🍝','🥗','🍱','🥘','🍲','🥙','🌮','🍔','🍕','🥪','🍤','🥩','🍗','🥚','🥟','🍣','🫕','🍖'];
+  const STORAGE_KEY = 'gulou_eat_v2';
 
-  // ── 数据管理（localStorage 在 Safari 本地文件下可用）──
-  function loadItems() {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : DEFAULT_ITEMS.slice();
-    } catch(e) { return DEFAULT_ITEMS.slice(); }
+  let items = (() => {
+    try { const s = localStorage.getItem(STORAGE_KEY); return s ? JSON.parse(s) : DEFAULT_ITEMS.slice(); }
+    catch(e) { return DEFAULT_ITEMS.slice(); }
+  })();
+
+  function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch(e) {} }
+
+  let activeFilter = 'ALL';
+  let addTag = 'HKL';
+
+  function setFilter(tag) {
+    activeFilter = tag;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.tag === tag));
+    renderMenu();
   }
 
-  function saveItems(items) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch(e) {}
+  function selectAddTag(tag) {
+    addTag = tag;
+    document.querySelectorAll('.add-tag-btn').forEach(b => {
+      b.className = 'add-tag-btn';
+      if (b.dataset.tag === tag) b.classList.add('sel-' + tag);
+    });
   }
-
-  let items = loadItems();
 
   function renderMenu() {
     const list = document.getElementById('menuList');
     list.innerHTML = '';
-    if (items.length === 0) {
-      list.innerHTML = '<p class="empty-hint">菜单是空的，快去添加吧！</p>';
-      return;
-    }
-    items.forEach((item, idx) => {
-      const tag = document.createElement('div');
-      tag.className = 'menu-tag';
-      tag.innerHTML = `<span>${item.emoji} ${item.name}</span><button class="del" onclick="removeItem(${idx})">×</button>`;
-      list.appendChild(tag);
+    const show = activeFilter === 'ALL' ? items : items.filter(i => i.tag === activeFilter);
+    if (!show.length) { list.innerHTML = '<p class="empty-hint">这个分类还没有选项～</p>'; return; }
+    show.forEach(item => {
+      const idx = items.indexOf(item);
+      const el = document.createElement('div');
+      el.className = 'menu-tag';
+      el.innerHTML = `<span class="tag-dot tag-${item.tag}"></span><span>${item.emoji} ${item.name}</span><button class="del" onclick="removeItem(${idx})">×</button>`;
+      list.appendChild(el);
     });
   }
 
@@ -317,76 +375,49 @@
     const input = document.getElementById('addInput');
     const name = input.value.trim();
     if (!name) return;
-    const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-    items.push({ name, emoji });
-    saveItems(items);
-    renderMenu();
-    input.value = '';
-    input.focus();
+    items.push({ name, emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)], tag: addTag });
+    save(); renderMenu(); input.value = ''; input.focus();
   }
 
-  function removeItem(idx) {
-    items.splice(idx, 1);
-    saveItems(items);
-    renderMenu();
-  }
+  function removeItem(idx) { items.splice(idx, 1); save(); renderMenu(); }
 
-  // ── 老虎机效果 ──
   let spinning = false;
-
   function spin() {
-    if (spinning || items.length === 0) {
-      if (items.length === 0) {
-        document.getElementById('resultName').textContent = '菜单是空的啦～';
-        document.getElementById('resultEmoji').textContent = '😅';
-      }
-      return;
+    const pool = activeFilter === 'ALL' ? items : items.filter(i => i.tag === activeFilter);
+    if (spinning) return;
+    if (!pool.length) {
+      document.getElementById('resultName').textContent = '没有可选项～'; 
+      document.getElementById('resultEmoji').textContent = '😅'; return;
     }
     spinning = true;
-
     const card = document.getElementById('resultCard');
     const nameEl = document.getElementById('resultName');
     const emojiEl = document.getElementById('resultEmoji');
+    const badgeEl = document.getElementById('resultBadge');
     const btn = document.getElementById('spinBtn');
-
-    card.classList.remove('done');
-    card.classList.add('spinning');
-    btn.disabled = true;
-
-    const totalFrames = 22;
-    const intervalMs = 80;
+    card.classList.remove('done'); card.classList.add('spinning');
+    badgeEl.className = 'result-tag-badge'; btn.disabled = true;
     let frame = 0;
-
-    const interval = setInterval(() => {
-      const rand = items[Math.floor(Math.random() * items.length)];
-      nameEl.textContent = rand.name;
-      emojiEl.textContent = rand.emoji;
-      nameEl.classList.toggle('flash');
-      frame++;
-
-      if (frame >= totalFrames) {
-        clearInterval(interval);
-        nameEl.classList.remove('flash');
-
-        // 最终结果
-        const winner = items[Math.floor(Math.random() * items.length)];
-        nameEl.textContent = winner.name;
-        emojiEl.textContent = winner.emoji;
-
-        // 弹跳 + 彩条
-        emojiEl.classList.remove('pop');
-        void emojiEl.offsetWidth;
-        emojiEl.classList.add('pop');
-
-        card.classList.remove('spinning');
-        card.classList.add('done');
-        btn.disabled = false;
-        spinning = false;
+    const iv = setInterval(() => {
+      const r = pool[Math.floor(Math.random() * pool.length)];
+      nameEl.textContent = r.name; emojiEl.textContent = r.emoji;
+      nameEl.classList.toggle('flash'); frame++;
+      if (frame >= 22) {
+        clearInterval(iv); nameEl.classList.remove('flash');
+        const w = pool[Math.floor(Math.random() * pool.length)];
+        nameEl.textContent = w.name; emojiEl.textContent = w.emoji;
+        badgeEl.className = `result-tag-badge tag-${w.tag}`;
+        badgeEl.textContent = TAG_LABEL[w.tag];
+        emojiEl.classList.remove('pop'); void emojiEl.offsetWidth; emojiEl.classList.add('pop');
+        card.classList.remove('spinning'); card.classList.add('done');
+        btn.disabled = false; spinning = false;
       }
-    }, intervalMs);
+    }, 80);
   }
 
+  selectAddTag('HKL');
   renderMenu();
 </script>
+
 </body>
 </html>
