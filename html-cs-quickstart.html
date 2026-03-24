@@ -20,6 +20,7 @@
     --text: #c0caf5;
     --muted: #565f89;
     --bright: #ffffff;
+    --monitor-w: 340px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,12 +34,12 @@
     min-height: 100vh;
   }
 
-  /* ── Layout ── */
   .layout { display: flex; min-height: 100vh; }
 
+  /* ── Left nav ── */
   nav {
-    width: 220px;
-    min-width: 220px;
+    width: 200px;
+    min-width: 200px;
     background: var(--surface);
     border-right: 1px solid var(--border);
     padding: 28px 0;
@@ -46,90 +47,198 @@
     top: 0;
     height: 100vh;
     overflow-y: auto;
+    flex-shrink: 0;
   }
-
   nav .logo {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--accent);
-    padding: 0 20px 20px;
+    padding: 0 16px 18px;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     letter-spacing: .05em;
   }
-
   nav .logo span { color: var(--accent4); }
-
   nav a {
     display: block;
-    padding: 7px 20px;
+    padding: 6px 16px;
     color: var(--muted);
     text-decoration: none;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 11px;
     transition: all .15s;
     border-left: 2px solid transparent;
   }
-
   nav a:hover, nav a.active {
     color: var(--accent);
     border-left-color: var(--accent);
     background: rgba(122,162,247,.07);
   }
 
+  /* ── Main content ── */
   main {
     flex: 1;
-    padding: 48px 56px;
-    max-width: 860px;
+    padding: 44px 48px;
+    max-width: 800px;
+    min-width: 0;
   }
+
+  /* ── Right monitor ── */
+  .monitor-panel {
+    width: var(--monitor-w);
+    min-width: var(--monitor-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .monitor-titlebar {
+    padding: 10px 14px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .monitor-dots { display: flex; gap: 5px; flex-shrink: 0; }
+  .mdot { width: 9px; height: 9px; border-radius: 50%; }
+  .mdot.r { background: #f7768e; }
+  .mdot.y { background: #e0af68; }
+  .mdot.g { background: #9ece6a; }
+
+  .monitor-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .monitor-title span { color: var(--accent3); }
+
+  .monitor-clear {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all .15s;
+    flex-shrink: 0;
+  }
+  .monitor-clear:hover { color: var(--accent4); border-color: var(--accent4); }
+
+  .monitor-screen {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #111;
+  }
+
+  /* CRT scanlines */
+  .monitor-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,.06) 3px,
+      rgba(0,0,0,.06) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .monitor-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-align: center;
+    padding: 24px;
+    line-height: 1.7;
+  }
+  .monitor-placeholder .ph-icon { opacity: .25; }
+  .monitor-placeholder .ph-hint { color: var(--border); font-size: 11px; }
+
+  .monitor-iframe {
+    width: 100%;
+    flex: 1;
+    border: none;
+    background: #fff;
+    display: none;
+  }
+
+  .monitor-footer {
+    padding: 6px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+  }
+
+  /* Active state */
+  .monitor-panel.has-content .monitor-placeholder { display: none; }
+  .monitor-panel.has-content .monitor-iframe { display: block; }
+
+  @keyframes flash-in {
+    from { opacity: .4; }
+    to   { opacity: 1; }
+  }
+  .monitor-iframe.flash { animation: flash-in .2s ease-out; }
 
   /* ── Hero ── */
-  .hero {
-    margin-bottom: 56px;
-  }
-
+  .hero { margin-bottom: 48px; }
   .hero .tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     color: var(--accent3);
     letter-spacing: .1em;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
-
   .hero h1 {
     font-family: 'Fraunces', serif;
-    font-size: 2.6rem;
+    font-size: 2.4rem;
     font-weight: 700;
     color: var(--bright);
     line-height: 1.2;
   }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
+  .hero h1 em { font-style: italic; color: var(--accent); }
   .hero p {
-    margin-top: 16px;
+    margin-top: 14px;
     color: var(--muted);
-    font-size: 15px;
+    font-size: 13.5px;
     font-family: 'JetBrains Mono', monospace;
   }
 
   /* ── Sections ── */
-  section {
-    margin-bottom: 64px;
-    scroll-margin-top: 24px;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
+  section { margin-bottom: 58px; scroll-margin-top: 24px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
   .section-num {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -139,24 +248,24 @@
     border-radius: 4px;
     padding: 2px 8px;
   }
-
-  h2 {
-    font-family: 'Fraunces', serif;
-    font-size: 1.55rem;
-    color: var(--bright);
-    font-weight: 700;
-  }
-
+  h2 { font-family: 'Fraunces', serif; font-size: 1.45rem; color: var(--bright); font-weight: 700; }
   h3 {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--accent2);
     text-transform: uppercase;
     letter-spacing: .08em;
-    margin: 24px 0 10px;
+    margin: 22px 0 10px;
   }
-
   p { margin-bottom: 12px; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .82em;
+    color: var(--accent2);
+    background: rgba(187,154,247,.1);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
 
   /* ── Code blocks ── */
   .code-block {
@@ -164,241 +273,131 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
-    margin: 16px 0;
-    font-size: 13.5px;
+    margin: 14px 0;
+    font-size: 12.5px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .code-block.active-source {
+    border-color: var(--accent3);
+    box-shadow: 0 0 0 1px var(--accent3);
   }
 
-  .code-block .cb-header {
+  .cb-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 16px;
+    padding: 7px 14px;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--muted);
+    gap: 8px;
   }
+  .cb-filename { flex: 1; }
+  .cb-buttons { display: flex; gap: 6px; align-items: center; }
 
-  .copy-btn {
+  .copy-btn, .render-btn {
     background: none;
     border: 1px solid var(--border);
-    color: var(--muted);
     border-radius: 4px;
     padding: 2px 10px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 10px;
     cursor: pointer;
     transition: all .15s;
+    white-space: nowrap;
   }
-
+  .copy-btn { color: var(--muted); }
   .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
   .copy-btn.copied { color: var(--accent3); border-color: var(--accent3); }
 
+  .render-btn {
+    color: var(--accent5);
+    border-color: rgba(224,175,104,.35);
+    background: rgba(224,175,104,.06);
+  }
+  .render-btn:hover {
+    color: #fff;
+    background: rgba(224,175,104,.2);
+    border-color: var(--accent5);
+  }
+  .render-btn.active {
+    color: var(--accent3);
+    border-color: var(--accent3);
+    background: rgba(158,206,106,.1);
+  }
+
   pre {
-    padding: 18px 20px;
+    padding: 16px 18px;
     overflow-x: auto;
     color: var(--text);
     font-family: 'JetBrains Mono', monospace;
     line-height: 1.7;
     white-space: pre;
   }
+  .t { color: var(--accent4); }
+  .a { color: var(--accent5); }
+  .v { color: var(--accent3); }
+  .c { color: var(--muted); font-style: italic; }
+  .k { color: var(--accent2); }
 
-  /* syntax colors */
-  .t { color: var(--accent4); }    /* tag */
-  .a { color: var(--accent5); }    /* attr */
-  .v { color: var(--accent3); }    /* value */
-  .c { color: var(--muted); font-style: italic; }  /* comment */
-  .k { color: var(--accent2); }    /* keyword/special */
-
-  /* ── Info cards ── */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 14px;
-    margin: 16px 0;
-  }
-
-  .card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-  }
-
-  .card .card-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .card .card-desc {
-    font-size: 13.5px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
+  /* ── Cards ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap: 10px; margin: 12px 0; }
+  .card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .card .card-tag { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+  .card .card-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
 
   /* ── Callout ── */
   .callout {
     border-left: 3px solid var(--accent5);
     background: rgba(224,175,104,.06);
     border-radius: 0 6px 6px 0;
-    padding: 14px 18px;
-    margin: 16px 0;
-    font-size: 14px;
+    padding: 11px 16px;
+    margin: 14px 0;
+    font-size: 13px;
   }
-
-  .callout.info { border-color: var(--accent); background: rgba(122,162,247,.06); }
+  .callout.info  { border-color: var(--accent);  background: rgba(122,162,247,.06); }
   .callout.success { border-color: var(--accent3); background: rgba(158,206,106,.06); }
-  .callout.warn { border-color: var(--accent5); }
-
   .callout strong {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: .08em;
     display: block;
     margin-bottom: 4px;
     color: var(--accent5);
   }
-
   .callout.info strong { color: var(--accent); }
   .callout.success strong { color: var(--accent3); }
 
   /* ── Table ── */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    margin: 16px 0;
-  }
-
-  th {
-    text-align: left;
-    padding: 8px 14px;
-    background: var(--surface);
-    color: var(--accent2);
-    border: 1px solid var(--border);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-  }
-
-  td {
-    padding: 9px 14px;
-    border: 1px solid var(--border);
-    color: var(--text);
-    vertical-align: top;
-  }
-
+  table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 12px; margin: 12px 0; }
+  th { text-align: left; padding: 6px 12px; background: var(--surface); color: var(--accent2); border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+  td { padding: 7px 12px; border: 1px solid var(--border); color: var(--text); vertical-align: top; }
   tr:nth-child(even) td { background: rgba(255,255,255,.02); }
-
   td:first-child { color: var(--accent); }
 
-  /* ── Live preview ── */
-  .preview-wrap {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 16px 0;
-  }
-
-  .preview-wrap .pw-header {
-    padding: 8px 16px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .dot { width: 10px; height: 10px; border-radius: 50%; }
-  .dot.r { background: #f7768e; }
-  .dot.y { background: #e0af68; }
-  .dot.g { background: #9ece6a; }
-
-  iframe {
-    width: 100%;
-    border: none;
-    background: #fff;
-    display: block;
-  }
+  /* ── Progress ── */
+  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 28px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width .4s ease; }
 
   /* ── Quiz ── */
-  .quiz-q {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px 20px;
-    margin: 12px 0;
-    cursor: pointer;
-    transition: border-color .2s;
-  }
-
+  .quiz-q { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 15px 16px; margin: 12px 0; transition: border-color .2s; }
   .quiz-q:hover { border-color: var(--accent); }
-
-  .quiz-q .q-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--bright);
-    margin-bottom: 12px;
-  }
-
-  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
-
-  .quiz-opt {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all .15s;
-    text-align: left;
-  }
-
+  .quiz-q .q-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--bright); margin-bottom: 10px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 6px; }
+  .quiz-opt { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 7px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); cursor: pointer; transition: all .15s; text-align: left; }
   .quiz-opt:hover { color: var(--text); border-color: var(--muted); }
   .quiz-opt.correct { border-color: var(--accent3); color: var(--accent3); background: rgba(158,206,106,.08); }
   .quiz-opt.wrong { border-color: var(--accent4); color: var(--accent4); background: rgba(247,118,142,.08); }
-
-  .quiz-explain {
-    margin-top: 10px;
-    font-size: 13px;
-    color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
-    display: none;
-  }
-
-  /* ── Progress ── */
-  .progress-bar {
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-bottom: 32px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 2px;
-    transition: width .4s ease;
-  }
+  .quiz-explain { margin-top: 8px; font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; display: none; }
 </style>
 </head>
 <body>
-
 <div class="layout">
 
-  <!-- Sidebar -->
+  <!-- ── Nav ── -->
   <nav id="sidebar">
     <div class="logo">&lt;<span>html</span>&gt; for CS</div>
     <a href="#s1" class="active">01 — What is HTML?</a>
@@ -413,63 +412,54 @@
     <a href="#s10">10 — Quick Quiz</a>
   </nav>
 
-  <!-- Main content -->
+  <!-- ── Main ── -->
   <main>
     <div class="hero">
       <div class="tag">// CS Quickstart Guide</div>
       <h1>HTML<br><em>Fundamentals</em></h1>
-      <p>// for computer science students · interactive reference</p>
+      <p>// click <span style="color:var(--accent5)">▶ render</span> on any code block to preview it in the monitor →</p>
     </div>
-
     <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
 
     <!-- 01 -->
     <section id="s1">
-      <div class="section-header">
-        <span class="section-num">01</span>
-        <h2>What is HTML?</h2>
-      </div>
-
+      <div class="section-header"><span class="section-num">01</span><h2>What is HTML?</h2></div>
       <p>HTML stands for <strong>HyperText Markup Language</strong>. It is <em>not</em> a programming language — it has no logic, no loops, no variables. It is a <strong>markup language</strong>: a way to annotate text so a browser knows how to display it.</p>
-
       <div class="callout info">
         <strong>CS mental model</strong>
         Think of HTML as a <strong>data structure</strong> — specifically a <strong>tree</strong> (the DOM). Every element is a node. Parent/child relationships define nesting. Your browser parses this tree and renders it visually.
       </div>
-
-      <p>The browser reads your HTML file top-to-bottom, builds a tree called the <strong>DOM (Document Object Model)</strong>, and paints pixels on screen. CSS styles those pixels. JavaScript manipulates the tree at runtime.</p>
-
+      <p>The browser reads your file top-to-bottom, builds the <strong>DOM (Document Object Model)</strong>, and paints pixels. CSS styles those pixels. JavaScript manipulates the tree at runtime.</p>
       <div class="card-grid">
-        <div class="card">
-          <div class="card-tag">HTML</div>
-          <div class="card-desc">Structure &amp; content. What exists on the page.</div>
-        </div>
-        <div class="card">
-          <div class="card-tag">CSS</div>
-          <div class="card-desc">Style &amp; layout. What things look like.</div>
-        </div>
-        <div class="card">
-          <div class="card-tag">JavaScript</div>
-          <div class="card-desc">Behavior &amp; logic. What things do.</div>
-        </div>
+        <div class="card"><div class="card-tag">HTML</div><div class="card-desc">Structure &amp; content. What exists on the page.</div></div>
+        <div class="card"><div class="card-tag">CSS</div><div class="card-desc">Style &amp; layout. What things look like.</div></div>
+        <div class="card"><div class="card-tag">JavaScript</div><div class="card-desc">Behavior &amp; logic. What things do.</div></div>
       </div>
     </section>
 
     <!-- 02 -->
     <section id="s2">
-      <div class="section-header">
-        <span class="section-num">02</span>
-        <h2>Document Structure</h2>
-      </div>
-
+      <div class="section-header"><span class="section-num">02</span><h2>Document Structure</h2></div>
       <p>Every HTML file follows this skeleton. Memorize it — you'll type it thousands of times.</p>
-
-      <div class="code-block">
+      <div class="code-block" id="cb-skeleton">
         <div class="cb-header">
-          <span>skeleton.html</span>
-          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          <span class="cb-filename">skeleton.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-skeleton','skeleton.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
         </div>
-        <pre><span class="c">&lt;!-- This line tells the browser: "I'm HTML5" --&gt;</span>
+        <pre data-raw="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;My Page Title&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello, World!&lt;/h1&gt;
+    &lt;p&gt;This is my first HTML page.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;"><span class="c">&lt;!-- Tells the browser: "I am HTML5" --&gt;</span>
 <span class="t">&lt;!DOCTYPE html&gt;</span>
 
 <span class="t">&lt;html</span> <span class="a">lang</span>=<span class="v">"en"</span><span class="t">&gt;</span>
@@ -484,170 +474,217 @@
   <span class="t">&lt;body&gt;</span>
     <span class="c">&lt;!-- Visible content goes here --&gt;</span>
     <span class="t">&lt;h1&gt;</span>Hello, World!<span class="t">&lt;/h1&gt;</span>
+    <span class="t">&lt;p&gt;</span>This is my first HTML page.<span class="t">&lt;/p&gt;</span>
   <span class="t">&lt;/body&gt;</span>
 
 <span class="t">&lt;/html&gt;</span></pre>
       </div>
-
-      <h3>Key points</h3>
       <table>
         <tr><th>Part</th><th>Role</th></tr>
-        <tr><td>&lt;!DOCTYPE html&gt;</td><td>Tells browser to use HTML5 (not optional)</td></tr>
-        <tr><td>&lt;html&gt;</td><td>Root element — every other element is its descendant</td></tr>
-        <tr><td>&lt;head&gt;</td><td>Metadata, links to CSS/JS files, page title</td></tr>
-        <tr><td>&lt;body&gt;</td><td>Everything the user sees</td></tr>
+        <tr><td>&lt;!DOCTYPE html&gt;</td><td>Declares HTML5 — not optional</td></tr>
+        <tr><td>&lt;html&gt;</td><td>Root element; every other element is its descendant</td></tr>
+        <tr><td>&lt;head&gt;</td><td>Metadata, CSS/JS links, page title (invisible)</td></tr>
+        <tr><td>&lt;body&gt;</td><td>Everything the user actually sees</td></tr>
       </table>
     </section>
 
     <!-- 03 -->
     <section id="s3">
-      <div class="section-header">
-        <span class="section-num">03</span>
-        <h2>Core Tags</h2>
+      <div class="section-header"><span class="section-num">03</span><h2>Core Tags</h2></div>
+      <p>HTML has ~100 tags. You'll use maybe 20 regularly.</p>
+
+      <h3>Text tags</h3>
+      <div class="code-block" id="cb-text">
+        <div class="cb-header">
+          <span class="cb-filename">text-tags.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-text','text-tags.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+        </div>
+        <pre data-raw="&lt;h1&gt;Heading 1 (biggest)&lt;/h1&gt;
+&lt;h2&gt;Heading 2&lt;/h2&gt;
+&lt;h3&gt;Heading 3&lt;/h3&gt;
+&lt;p&gt;This is a paragraph.&lt;/p&gt;
+&lt;p&gt;This is &lt;strong&gt;bold&lt;/strong&gt; and this is &lt;em&gt;italic&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Inline code looks like: &lt;code&gt;print(&quot;hello&quot;)&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;After a horizontal rule.&lt;/p&gt;"><span class="t">&lt;h1&gt;</span>Heading 1 (biggest)<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;h2&gt;</span>Heading 2<span class="t">&lt;/h2&gt;</span>
+<span class="t">&lt;h3&gt;</span>Heading 3<span class="t">&lt;/h3&gt;</span>
+<span class="t">&lt;p&gt;</span>This is a paragraph.<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span>This is <span class="t">&lt;strong&gt;</span>bold<span class="t">&lt;/strong&gt;</span> and this is <span class="t">&lt;em&gt;</span>italic<span class="t">&lt;/em&gt;</span>.<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span>Inline code: <span class="t">&lt;code&gt;</span>print("hello")<span class="t">&lt;/code&gt;&lt;/p&gt;</span>
+<span class="t">&lt;hr&gt;</span>
+<span class="t">&lt;p&gt;</span>After a horizontal rule.<span class="t">&lt;/p&gt;</span></pre>
       </div>
 
-      <p>HTML has ~100 tags. You'll use maybe 20 regularly. Here are the essential ones.</p>
+      <h3>Containers: div vs span</h3>
+      <div class="code-block" id="cb-containers">
+        <div class="cb-header">
+          <span class="cb-filename">containers.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-containers','containers.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+        </div>
+        <pre data-raw="&lt;style&gt;
+  .box { background:#dbeafe; border:1px solid #93c5fd; padding:10px; margin:6px 0; border-radius:4px; }
+  .red { color:crimson; font-weight:bold; }
+&lt;/style&gt;
 
-      <h3>Text</h3>
-      <div class="code-block">
-        <div class="cb-header"><span>text-tags.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-        <pre><span class="c">&lt;!-- Headings: h1 is biggest, h6 is smallest --&gt;</span>
-<span class="t">&lt;h1&gt;</span>Page Title<span class="t">&lt;/h1&gt;</span>
-<span class="t">&lt;h2&gt;</span>Section<span class="t">&lt;/h2&gt;</span>
-<span class="t">&lt;h3&gt;</span>Sub-section<span class="t">&lt;/h3&gt;</span>
+&lt;!-- div is block-level: full width, new line each time --&gt;
+&lt;div class=&quot;box&quot;&gt;I am div #1 (block). I take full width.&lt;/div&gt;
+&lt;div class=&quot;box&quot;&gt;I am div #2 — on a new line automatically.&lt;/div&gt;
 
-<span class="c">&lt;!-- Paragraph --&gt;</span>
-<span class="t">&lt;p&gt;</span>This is a paragraph of text.<span class="t">&lt;/p&gt;</span>
+&lt;!-- span is inline: flows within text --&gt;
+&lt;p&gt;Normal text, &lt;span class=&quot;red&quot;&gt;this part is red&lt;/span&gt;, then normal again.&lt;/p&gt;"><span class="c">&lt;!-- div: block-level generic container --&gt;</span>
+<span class="t">&lt;div&gt;</span>I am a div (block). I take full width.<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div&gt;</span>Another div — on a new line.<span class="t">&lt;/div&gt;</span>
 
-<span class="c">&lt;!-- Inline: bold, italic, code --&gt;</span>
-<span class="t">&lt;p&gt;</span>This is <span class="t">&lt;strong&gt;</span>bold<span class="t">&lt;/strong&gt;</span>, this is <span class="t">&lt;em&gt;</span>italic<span class="t">&lt;/em&gt;</span>.<span class="t">&lt;/p&gt;</span>
-<span class="t">&lt;p&gt;</span>Inline code: <span class="t">&lt;code&gt;</span>print("hello")<span class="t">&lt;/code&gt;</span><span class="t">&lt;/p&gt;</span>
-
-<span class="c">&lt;!-- Line break (no closing tag needed) --&gt;</span>
-<span class="t">&lt;br&gt;</span>
-
-<span class="c">&lt;!-- Horizontal rule --&gt;</span>
-<span class="t">&lt;hr&gt;</span></pre>
+<span class="c">&lt;!-- span: inline, flows with text --&gt;</span>
+<span class="t">&lt;p&gt;</span>Normal <span class="t">&lt;span</span> <span class="a">style</span>=<span class="v">"color:red"</span><span class="t">&gt;</span>red text<span class="t">&lt;/span&gt;</span> normal again.<span class="t">&lt;/p&gt;</span></pre>
       </div>
-
-      <h3>Containers</h3>
-      <div class="code-block">
-        <div class="cb-header"><span>containers.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-        <pre><span class="c">&lt;!-- div: block-level generic container --&gt;</span>
-<span class="t">&lt;div&gt;</span>
-  <span class="t">&lt;p&gt;</span>I'm inside a div.<span class="t">&lt;/p&gt;</span>
-<span class="t">&lt;/div&gt;</span>
-
-<span class="c">&lt;!-- span: inline generic container --&gt;</span>
-<span class="t">&lt;p&gt;</span>Normal text <span class="t">&lt;span</span> <span class="a">style</span>=<span class="v">"color:red"</span><span class="t">&gt;</span>red text<span class="t">&lt;/span&gt;</span> normal again.<span class="t">&lt;/p&gt;</span></pre>
-      </div>
-
-      <div class="callout warn">
+      <div class="callout">
         <strong>Block vs Inline</strong>
-        <strong>&lt;div&gt;</strong> is <em>block-level</em>: takes the full width, starts on a new line. <strong>&lt;span&gt;</strong> is <em>inline</em>: flows with text. This distinction matters hugely for CSS layout.
+        <code>&lt;div&gt;</code> is block-level: starts on a new line, takes full width. <code>&lt;span&gt;</code> is inline: sits inside text. This distinction is fundamental to CSS layout.
       </div>
     </section>
 
     <!-- 04 -->
     <section id="s4">
-      <div class="section-header">
-        <span class="section-num">04</span>
-        <h2>Attributes</h2>
-      </div>
+      <div class="section-header"><span class="section-num">04</span><h2>Attributes</h2></div>
+      <p>Attributes add extra information to elements. Syntax: <code>name="value"</code> inside the opening tag.</p>
+      <div class="code-block" id="cb-attrs">
+        <div class="cb-header">
+          <span class="cb-filename">attributes.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-attrs','attributes.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+        </div>
+        <pre data-raw="&lt;style&gt;
+  #intro { color: navy; font-weight: bold; }
+  .highlight { background: #fef08a; padding: 2px 5px; border-radius: 3px; }
+&lt;/style&gt;
 
-      <p>Attributes provide extra information about an element. Syntax: <code>name="value"</code> inside the opening tag.</p>
+&lt;!-- id: unique per page --&gt;
+&lt;p id=&quot;intro&quot;&gt;I have id=&quot;intro&quot; — navy + bold from CSS.&lt;/p&gt;
 
-      <div class="code-block">
-        <div class="cb-header"><span>attributes.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-        <pre><span class="c">&lt;!-- id: unique identifier (like a variable name) --&gt;</span>
-<span class="t">&lt;p</span> <span class="a">id</span>=<span class="v">"intro"</span><span class="t">&gt;</span>First paragraph.<span class="t">&lt;/p&gt;</span>
+&lt;!-- class: reusable group --&gt;
+&lt;p class=&quot;highlight&quot;&gt;class=&quot;highlight&quot; — yellow bg.&lt;/p&gt;
+&lt;p class=&quot;highlight&quot;&gt;Same class, same style!&lt;/p&gt;
+
+&lt;!-- style: inline CSS --&gt;
+&lt;p style=&quot;color:green; font-size:18px;&quot;&gt;Inline styled green text.&lt;/p&gt;
+
+&lt;!-- title: tooltip on hover --&gt;
+&lt;p&gt;Hover over: &lt;abbr title=&quot;HyperText Markup Language&quot;&gt;HTML&lt;/abbr&gt;&lt;/p&gt;"><span class="c">&lt;!-- id: unique identifier --&gt;</span>
+<span class="t">&lt;p</span> <span class="a">id</span>=<span class="v">"intro"</span><span class="t">&gt;</span>I have id="intro".<span class="t">&lt;/p&gt;</span>
 
 <span class="c">&lt;!-- class: reusable group label --&gt;</span>
 <span class="t">&lt;p</span> <span class="a">class</span>=<span class="v">"highlight"</span><span class="t">&gt;</span>Styled paragraph.<span class="t">&lt;/p&gt;</span>
 
-<span class="c">&lt;!-- style: inline CSS (avoid for large projects) --&gt;</span>
-<span class="t">&lt;p</span> <span class="a">style</span>=<span class="v">"color: blue; font-size: 20px;"</span><span class="t">&gt;</span>Blue text.<span class="t">&lt;/p&gt;</span>
+<span class="c">&lt;!-- style: inline CSS --&gt;</span>
+<span class="t">&lt;p</span> <span class="a">style</span>=<span class="v">"color:blue; font-size:20px;"</span><span class="t">&gt;</span>Blue text.<span class="t">&lt;/p&gt;</span>
 
-<span class="c">&lt;!-- title: tooltip on hover --&gt;</span>
+<span class="c">&lt;!-- title: tooltip --&gt;</span>
 <span class="t">&lt;abbr</span> <span class="a">title</span>=<span class="v">"HyperText Markup Language"</span><span class="t">&gt;</span>HTML<span class="t">&lt;/abbr&gt;</span></pre>
       </div>
-
       <div class="callout info">
         <strong>id vs class</strong>
-        <code>id</code> must be unique per page — like a primary key in a database. <code>class</code> can be shared by many elements. In JavaScript: <code>getElementById()</code> vs <code>getElementsByClassName()</code>.
+        <code>id</code> must be unique per page — like a primary key. <code>class</code> can be shared. In JS: <code>getElementById()</code> vs <code>getElementsByClassName()</code>.
       </div>
     </section>
 
     <!-- 05 -->
     <section id="s5">
-      <div class="section-header">
-        <span class="section-num">05</span>
-        <h2>Links &amp; Images</h2>
-      </div>
+      <div class="section-header"><span class="section-num">05</span><h2>Links &amp; Images</h2></div>
+      <div class="code-block" id="cb-links">
+        <div class="cb-header">
+          <span class="cb-filename">links-images.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-links','links-images.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+        </div>
+        <pre data-raw="&lt;p&gt;&lt;a href=&quot;https://example.com&quot;&gt;External link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://wikipedia.org&quot; target=&quot;_blank&quot;&gt;Wikipedia (opens new tab)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;#bottom&quot;&gt;Jump to bottom of this page ↓&lt;/a&gt;&lt;/p&gt;
 
-      <div class="code-block">
-        <div class="cb-header"><span>links-images.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-        <pre><span class="c">&lt;!-- Anchor tag: href = where to go --&gt;</span>
+&lt;img src=&quot;https://picsum.photos/280/120&quot; alt=&quot;A random photo&quot; style=&quot;display:block;margin:12px 0;border-radius:6px&quot;&gt;
+
+&lt;p id=&quot;bottom&quot; style=&quot;margin-top:16px;color:gray;font-size:14px&quot;&gt;— you jumped here via the fragment link —&lt;/p&gt;"><span class="c">&lt;!-- External link --&gt;</span>
 <span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"https://example.com"</span><span class="t">&gt;</span>Click me<span class="t">&lt;/a&gt;</span>
 
 <span class="c">&lt;!-- Open in new tab --&gt;</span>
 <span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"https://example.com"</span> <span class="a">target</span>=<span class="v">"_blank"</span><span class="t">&gt;</span>New tab<span class="t">&lt;/a&gt;</span>
 
-<span class="c">&lt;!-- Relative link (same website) --&gt;</span>
-<span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"./about.html"</span><span class="t">&gt;</span>About page<span class="t">&lt;/a&gt;</span>
-
 <span class="c">&lt;!-- Jump to element by id --&gt;</span>
 <span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"#intro"</span><span class="t">&gt;</span>Go to intro<span class="t">&lt;/a&gt;</span>
 
-<span class="c">&lt;!-- Image: self-closing, alt is required for accessibility --&gt;</span>
-<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"photo.jpg"</span> <span class="a">alt</span>=<span class="v">"A description"</span> <span class="a">width</span>=<span class="v">"300"</span><span class="t">&gt;</span></pre>
+<span class="c">&lt;!-- Image (self-closing, alt required) --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"https://picsum.photos/280/120"</span> <span class="a">alt</span>=<span class="v">"A random photo"</span><span class="t">&gt;</span></pre>
       </div>
-
-      <h3>URL types</h3>
       <table>
-        <tr><th>Type</th><th>Example</th><th>When to use</th></tr>
+        <tr><th>URL type</th><th>Example</th><th>When to use</th></tr>
         <tr><td>Absolute</td><td>https://site.com/page</td><td>External links</td></tr>
-        <tr><td>Relative</td><td>./images/logo.png</td><td>Files within your project</td></tr>
-        <tr><td>Root-relative</td><td>/images/logo.png</td><td>From site root</td></tr>
+        <tr><td>Relative</td><td>./images/logo.png</td><td>Files inside your project</td></tr>
         <tr><td>Fragment</td><td>#section-id</td><td>Jump within same page</td></tr>
       </table>
     </section>
 
     <!-- 06 -->
     <section id="s6">
-      <div class="section-header">
-        <span class="section-num">06</span>
-        <h2>Lists &amp; Tables</h2>
-      </div>
+      <div class="section-header"><span class="section-num">06</span><h2>Lists &amp; Tables</h2></div>
+      <div class="code-block" id="cb-lists">
+        <div class="cb-header">
+          <span class="cb-filename">lists-tables.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-lists','lists-tables.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+        </div>
+        <pre data-raw="&lt;h3&gt;Unordered list&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Python&lt;/li&gt;
+  &lt;li&gt;C++&lt;/li&gt;
+  &lt;li&gt;JavaScript&lt;/li&gt;
+&lt;/ul&gt;
 
-      <div class="code-block">
-        <div class="cb-header"><span>lists.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-        <pre><span class="c">&lt;!-- Unordered list (bullets) --&gt;</span>
-<span class="t">&lt;ul&gt;</span>
+&lt;h3&gt;Ordered list&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;Compile&lt;/li&gt;
+  &lt;li&gt;Run&lt;/li&gt;
+  &lt;li&gt;Debug&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3&gt;Table&lt;/h3&gt;
+&lt;table border=&quot;1&quot; cellpadding=&quot;7&quot; style=&quot;border-collapse:collapse;font-size:14px&quot;&gt;
+  &lt;thead style=&quot;background:#f0f4ff&quot;&gt;
+    &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Major&lt;/th&gt;&lt;th&gt;Grade&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Alice&lt;/td&gt;&lt;td&gt;CS&lt;/td&gt;&lt;td&gt;A&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Bob&lt;/td&gt;&lt;td&gt;EE&lt;/td&gt;&lt;td&gt;B+&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;"><span class="t">&lt;ul&gt;</span>
   <span class="t">&lt;li&gt;</span>Python<span class="t">&lt;/li&gt;</span>
   <span class="t">&lt;li&gt;</span>C++<span class="t">&lt;/li&gt;</span>
   <span class="t">&lt;li&gt;</span>JavaScript<span class="t">&lt;/li&gt;</span>
 <span class="t">&lt;/ul&gt;</span>
 
-<span class="c">&lt;!-- Ordered list (numbered) --&gt;</span>
 <span class="t">&lt;ol&gt;</span>
-  <span class="t">&lt;li&gt;</span>First<span class="t">&lt;/li&gt;</span>
-  <span class="t">&lt;li&gt;</span>Second<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Compile<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Run<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Debug<span class="t">&lt;/li&gt;</span>
 <span class="t">&lt;/ol&gt;</span>
 
-<span class="c">&lt;!-- Table structure --&gt;</span>
 <span class="t">&lt;table&gt;</span>
-  <span class="t">&lt;thead&gt;</span>
-    <span class="t">&lt;tr&gt;</span>
-      <span class="t">&lt;th&gt;</span>Name<span class="t">&lt;/th&gt;</span>  <span class="c">&lt;!-- th = header cell --&gt;</span>
-      <span class="t">&lt;th&gt;</span>Grade<span class="t">&lt;/th&gt;</span>
-    <span class="t">&lt;/tr&gt;</span>
-  <span class="t">&lt;/thead&gt;</span>
+  <span class="t">&lt;thead&gt;&lt;tr&gt;&lt;th&gt;</span>Name<span class="t">&lt;/th&gt;&lt;th&gt;</span>Grade<span class="t">&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;</span>
   <span class="t">&lt;tbody&gt;</span>
-    <span class="t">&lt;tr&gt;</span>
-      <span class="t">&lt;td&gt;</span>Alice<span class="t">&lt;/td&gt;</span>  <span class="c">&lt;!-- td = data cell --&gt;</span>
-      <span class="t">&lt;td&gt;</span>A<span class="t">&lt;/td&gt;</span>
-    <span class="t">&lt;/tr&gt;</span>
+    <span class="t">&lt;tr&gt;&lt;td&gt;</span>Alice<span class="t">&lt;/td&gt;&lt;td&gt;</span>A<span class="t">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="t">&lt;tr&gt;&lt;td&gt;</span>Bob<span class="t">&lt;/td&gt;&lt;td&gt;</span>B+<span class="t">&lt;/td&gt;&lt;/tr&gt;</span>
   <span class="t">&lt;/tbody&gt;</span>
 <span class="t">&lt;/table&gt;</span></pre>
       </div>
@@ -655,120 +692,187 @@
 
     <!-- 07 -->
     <section id="s7">
-      <div class="section-header">
-        <span class="section-num">07</span>
-        <h2>Forms</h2>
-      </div>
+      <div class="section-header"><span class="section-num">07</span><h2>Forms</h2></div>
+      <p>Forms collect user input and send it to a server (or handle it with JavaScript).</p>
+      <div class="code-block" id="cb-form">
+        <div class="cb-header">
+          <span class="cb-filename">form.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-form','form.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+        </div>
+        <pre data-raw="&lt;style&gt;
+  body { font-family: sans-serif; padding: 16px; font-size: 14px; }
+  label { display:block; margin-top:10px; font-weight:bold; }
+  input, select { display:block; margin-top:4px; padding:6px 10px; width:100%; border:1px solid #ccc; border-radius:4px; }
+  .row { display:flex; align-items:center; gap:8px; margin-top:10px; }
+  .row input { width:auto; margin:0; }
+  button { margin-top:14px; padding:8px 20px; background:#7aa2f7; color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:14px; }
+  button:hover { background:#5a8af4; }
+&lt;/style&gt;
 
-      <p>Forms collect user input and send it to a server (or process it with JavaScript). Very important for web apps.</p>
+&lt;form&gt;
+  &lt;label for=&quot;name&quot;&gt;Username&lt;/label&gt;
+  &lt;input type=&quot;text&quot; id=&quot;name&quot; placeholder=&quot;Enter your name&quot;&gt;
 
-      <div class="code-block">
-        <div class="cb-header"><span>form.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-        <pre><span class="t">&lt;form</span> <span class="a">action</span>=<span class="v">"/submit"</span> <span class="a">method</span>=<span class="v">"POST"</span><span class="t">&gt;</span>
+  &lt;label for=&quot;major&quot;&gt;Major&lt;/label&gt;
+  &lt;select id=&quot;major&quot;&gt;
+    &lt;option value=&quot;cs&quot;&gt;Computer Science&lt;/option&gt;
+    &lt;option value=&quot;ee&quot;&gt;Electrical Engineering&lt;/option&gt;
+    &lt;option value=&quot;math&quot;&gt;Mathematics&lt;/option&gt;
+  &lt;/select&gt;
 
-  <span class="c">&lt;!-- Text input --&gt;</span>
+  &lt;div class=&quot;row&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; id=&quot;agree&quot;&gt;
+    &lt;label for=&quot;agree&quot; style=&quot;margin:0;font-weight:normal&quot;&gt;I agree to the terms&lt;/label&gt;
+  &lt;/div&gt;
+
+  &lt;button type=&quot;button&quot; onclick=&quot;alert('Form submitted!')&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;"><span class="t">&lt;form</span> <span class="a">action</span>=<span class="v">"/submit"</span> <span class="a">method</span>=<span class="v">"POST"</span><span class="t">&gt;</span>
+
   <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"username"</span><span class="t">&gt;</span>Username:<span class="t">&lt;/label&gt;</span>
-  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"text"</span> <span class="a">id</span>=<span class="v">"username"</span> <span class="a">name</span>=<span class="v">"username"</span> <span class="a">placeholder</span>=<span class="v">"Enter name"</span><span class="t">&gt;</span>
+  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"text"</span> <span class="a">id</span>=<span class="v">"username"</span> <span class="a">placeholder</span>=<span class="v">"Enter name"</span><span class="t">&gt;</span>
 
-  <span class="c">&lt;!-- Password --&gt;</span>
-  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"password"</span> <span class="a">name</span>=<span class="v">"pwd"</span><span class="t">&gt;</span>
-
-  <span class="c">&lt;!-- Dropdown --&gt;</span>
   <span class="t">&lt;select</span> <span class="a">name</span>=<span class="v">"major"</span><span class="t">&gt;</span>
     <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"cs"</span><span class="t">&gt;</span>Computer Science<span class="t">&lt;/option&gt;</span>
     <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"ee"</span><span class="t">&gt;</span>Electrical Engineering<span class="t">&lt;/option&gt;</span>
   <span class="t">&lt;/select&gt;</span>
 
-  <span class="c">&lt;!-- Checkbox --&gt;</span>
-  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"checkbox"</span> <span class="a">name</span>=<span class="v">"agree"</span> <span class="a">id</span>=<span class="v">"agree"</span><span class="t">&gt;</span>
-  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"agree"</span><span class="t">&gt;</span>I agree<span class="t">&lt;/label&gt;</span>
-
-  <span class="c">&lt;!-- Submit button --&gt;</span>
+  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"checkbox"</span><span class="t">&gt;</span> I agree
   <span class="t">&lt;button</span> <span class="a">type</span>=<span class="v">"submit"</span><span class="t">&gt;</span>Submit<span class="t">&lt;/button&gt;</span>
 
 <span class="t">&lt;/form&gt;</span></pre>
       </div>
-
       <div class="callout info">
         <strong>GET vs POST</strong>
-        <code>method="GET"</code> appends data to the URL (visible, bookmarkable — use for search). <code>method="POST"</code> sends data in the request body (use for login, file upload, sensitive data).
+        <code>GET</code> appends data to the URL (visible — use for search). <code>POST</code> sends data in the body (hidden — use for passwords, sensitive data).
       </div>
     </section>
 
     <!-- 08 -->
     <section id="s8">
-      <div class="section-header">
-        <span class="section-num">08</span>
-        <h2>Semantic HTML</h2>
+      <div class="section-header"><span class="section-num">08</span><h2>Semantic HTML</h2></div>
+      <p>Instead of <code>&lt;div&gt;</code> for everything, HTML5 added <strong>semantic tags</strong> that describe meaning. Better for accessibility, SEO, and readability.</p>
+      <div class="code-block" id="cb-semantic">
+        <div class="cb-header">
+          <span class="cb-filename">semantic.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-semantic','semantic.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+        </div>
+        <pre data-raw="&lt;style&gt;
+  * { box-sizing:border-box; margin:0; padding:0; font-family:sans-serif; font-size:13px; }
+  header { background:#1a1b26; color:white; padding:10px 14px; }
+  header h1 { font-size:15px; }
+  nav { background:#24283b; padding:6px 14px; display:flex; gap:12px; }
+  nav a { color:#7aa2f7; text-decoration:none; }
+  main { display:flex; gap:10px; padding:10px 14px; background:#f8f9fa; }
+  article { flex:1; background:white; padding:10px; border-radius:5px; border:1px solid #e2e8f0; }
+  article h2 { font-size:14px; margin-bottom:6px; }
+  aside { width:120px; background:#fffbeb; padding:8px; border-radius:5px; border:1px solid #fde68a; font-size:12px; }
+  aside strong { display:block; margin-bottom:4px; }
+  footer { background:#1a1b26; color:#888; padding:7px 14px; font-size:11px; }
+&lt;/style&gt;
+
+&lt;header&gt;&lt;h1&gt;My CS Blog&lt;/h1&gt;&lt;/header&gt;
+&lt;nav&gt;
+  &lt;a href=&quot;#&quot;&gt;Home&lt;/a&gt;
+  &lt;a href=&quot;#&quot;&gt;About&lt;/a&gt;
+  &lt;a href=&quot;#&quot;&gt;Contact&lt;/a&gt;
+&lt;/nav&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;What is an Algorithm?&lt;/h2&gt;
+    &lt;section&gt;&lt;p&gt;An algorithm is a step-by-step procedure to solve a problem...&lt;/p&gt;&lt;/section&gt;
+  &lt;/article&gt;
+  &lt;aside&gt;
+    &lt;strong&gt;Related:&lt;/strong&gt;
+    &lt;a href=&quot;#&quot;&gt;Data Structures&lt;/a&gt;&lt;br&gt;
+    &lt;a href=&quot;#&quot;&gt;Sorting Algorithms&lt;/a&gt;
+  &lt;/aside&gt;
+&lt;/main&gt;
+&lt;footer&gt;© 2026 My Blog&lt;/footer&gt;"><span class="t">&lt;header&gt;</span>
+  <span class="t">&lt;nav&gt;</span>...<span class="t">&lt;/nav&gt;</span>
+<span class="t">&lt;/header&gt;</span>
+
+<span class="t">&lt;main&gt;</span>
+  <span class="t">&lt;article&gt;</span>
+    <span class="t">&lt;h1&gt;</span>Post Title<span class="t">&lt;/h1&gt;</span>
+    <span class="t">&lt;section&gt;&lt;p&gt;</span>Content...<span class="t">&lt;/p&gt;&lt;/section&gt;</span>
+  <span class="t">&lt;/article&gt;</span>
+  <span class="t">&lt;aside&gt;</span>Related links<span class="t">&lt;/aside&gt;</span>
+<span class="t">&lt;/main&gt;</span>
+
+<span class="t">&lt;footer&gt;</span>© 2026<span class="t">&lt;/footer&gt;</span></pre>
       </div>
-
-      <p>Instead of using <code>&lt;div&gt;</code> for everything, HTML5 introduced <strong>semantic tags</strong> that describe meaning. This matters for accessibility, SEO, and readability.</p>
-
-      <div class="code-block">
-        <div class="cb-header"><span>semantic.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-        <pre><span class="t">&lt;body&gt;</span>
-  <span class="t">&lt;header&gt;</span>
-    <span class="t">&lt;nav&gt;</span>...<span class="t">&lt;/nav&gt;</span>
-  <span class="t">&lt;/header&gt;</span>
-
-  <span class="t">&lt;main&gt;</span>
-    <span class="t">&lt;article&gt;</span>
-      <span class="t">&lt;h1&gt;</span>Post Title<span class="t">&lt;/h1&gt;</span>
-      <span class="t">&lt;section&gt;</span>
-        <span class="t">&lt;p&gt;</span>Content...<span class="t">&lt;/p&gt;</span>
-      <span class="t">&lt;/section&gt;</span>
-    <span class="t">&lt;/article&gt;</span>
-
-    <span class="t">&lt;aside&gt;</span>Related links<span class="t">&lt;/aside&gt;</span>
-  <span class="t">&lt;/main&gt;</span>
-
-  <span class="t">&lt;footer&gt;</span>© 2026<span class="t">&lt;/footer&gt;</span>
-<span class="t">&lt;/body&gt;</span></pre>
-      </div>
-
       <div class="card-grid">
         <div class="card"><div class="card-tag">&lt;header&gt;</div><div class="card-desc">Top of page or section</div></div>
         <div class="card"><div class="card-tag">&lt;nav&gt;</div><div class="card-desc">Navigation links</div></div>
         <div class="card"><div class="card-tag">&lt;main&gt;</div><div class="card-desc">Primary content (one per page)</div></div>
-        <div class="card"><div class="card-tag">&lt;article&gt;</div><div class="card-desc">Self-contained content (blog post)</div></div>
+        <div class="card"><div class="card-tag">&lt;article&gt;</div><div class="card-desc">Self-contained content</div></div>
         <div class="card"><div class="card-tag">&lt;section&gt;</div><div class="card-desc">Thematic grouping</div></div>
-        <div class="card"><div class="card-tag">&lt;aside&gt;</div><div class="card-desc">Sidebar / tangential content</div></div>
-        <div class="card"><div class="card-tag">&lt;footer&gt;</div><div class="card-desc">Bottom of page or section</div></div>
+        <div class="card"><div class="card-tag">&lt;aside&gt;</div><div class="card-desc">Sidebar content</div></div>
+        <div class="card"><div class="card-tag">&lt;footer&gt;</div><div class="card-desc">Bottom of page</div></div>
       </div>
     </section>
 
     <!-- 09 -->
     <section id="s9">
-      <div class="section-header">
-        <span class="section-num">09</span>
-        <h2>HTML + CSS + JS Together</h2>
-      </div>
-
-      <p>Here's how all three layers connect in one file:</p>
-
-      <div class="code-block">
-        <div class="cb-header"><span>complete-example.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
-        <pre><span class="t">&lt;!DOCTYPE html&gt;</span>
+      <div class="section-header"><span class="section-num">09</span><h2>HTML + CSS + JS Together</h2></div>
+      <p>Here's how all three layers connect — a fully working interactive counter:</p>
+      <div class="code-block" id="cb-full">
+        <div class="cb-header">
+          <span class="cb-filename">complete-example.html</span>
+          <div class="cb-buttons">
+            <button class="render-btn" onclick="renderBlock('cb-full','complete-example.html')">&#9654; render</button>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+        </div>
+        <pre data-raw="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;Counter&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; text-align: center; padding: 30px; background: #f8fafc; }
+    h1 { margin-bottom: 8px; color: #1e293b; }
+    #count { font-size: 4rem; color: #7aa2f7; font-weight: bold; margin: 0; }
+    button { margin-top: 12px; padding: 10px 28px; font-size: 1rem; cursor: pointer;
+             border: none; background: #7aa2f7; color: #fff; border-radius: 8px; }
+    button:hover { background: #5a8af4; }
+    #msg { margin-top: 10px; color: #94a3b8; font-size: 14px; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Click Counter&lt;/h1&gt;
+  &lt;p id=&quot;count&quot;&gt;0&lt;/p&gt;
+  &lt;button onclick=&quot;increment()&quot;&gt;Click me&lt;/button&gt;
+  &lt;p id=&quot;msg&quot;&gt;0 clicks so far&lt;/p&gt;
+  &lt;script&gt;
+    let n = 0;
+    function increment() {
+      n++;
+      document.getElementById('count').textContent = n;
+      document.getElementById('msg').textContent = n + ' click' + (n !== 1 ? 's' : '') + ' so far';
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;"><span class="t">&lt;!DOCTYPE html&gt;</span>
 <span class="t">&lt;html</span> <span class="a">lang</span>=<span class="v">"en"</span><span class="t">&gt;</span>
 <span class="t">&lt;head&gt;</span>
-  <span class="t">&lt;meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span><span class="t">&gt;</span>
   <span class="t">&lt;title&gt;</span>Counter<span class="t">&lt;/title&gt;</span>
-
-  <span class="c">&lt;!-- CSS: &lt;style&gt; tag in &lt;head&gt; --&gt;</span>
   <span class="t">&lt;style&gt;</span>
-    <span class="k">body</span> { font-family: sans-serif; text-align: center; padding: 40px; }
-    <span class="k">#count</span> { font-size: 3rem; color: #7aa2f7; }
-    <span class="k">button</span> { padding: 10px 24px; font-size: 1rem; cursor: pointer; }
+    <span class="k">body</span> { text-align: center; padding: 30px; }
+    <span class="k">#count</span> { font-size: 4rem; color: #7aa2f7; }
+    <span class="k">button</span> { padding: 10px 24px; cursor: pointer; }
   <span class="t">&lt;/style&gt;</span>
 <span class="t">&lt;/head&gt;</span>
 <span class="t">&lt;body&gt;</span>
-
-  <span class="c">&lt;!-- HTML structure --&gt;</span>
   <span class="t">&lt;h1&gt;</span>Click Counter<span class="t">&lt;/h1&gt;</span>
   <span class="t">&lt;p</span> <span class="a">id</span>=<span class="v">"count"</span><span class="t">&gt;</span>0<span class="t">&lt;/p&gt;</span>
   <span class="t">&lt;button</span> <span class="a">onclick</span>=<span class="v">"increment()"</span><span class="t">&gt;</span>Click me<span class="t">&lt;/button&gt;</span>
-
-  <span class="c">&lt;!-- JS: &lt;script&gt; tag before &lt;/body&gt; --&gt;</span>
   <span class="t">&lt;script&gt;</span>
     <span class="k">let</span> n = 0;
     <span class="k">function</span> increment() {
@@ -776,51 +880,37 @@
       document.getElementById(<span class="v">'count'</span>).textContent = n;
     }
   <span class="t">&lt;/script&gt;</span>
-
 <span class="t">&lt;/body&gt;</span>
 <span class="t">&lt;/html&gt;</span></pre>
       </div>
-
-      <div class="preview-wrap">
-        <div class="pw-header">
-          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span style="margin-left:8px">live preview</span>
-        </div>
-        <iframe id="demo-frame" height="160" srcdoc="<!DOCTYPE html><html><head><style>body{font-family:sans-serif;text-align:center;padding:30px;margin:0}#count{font-size:3rem;color:#7aa2f7;margin:8px 0}button{padding:10px 24px;font-size:1rem;cursor:pointer;border:none;background:#7aa2f7;color:#fff;border-radius:6px}button:hover{background:#5a8af4}</style></head><body><h1 style='margin:0 0 4px'>Click Counter</h1><p id='count'>0</p><button onclick='n++;document.getElementById(&quot;count&quot;).textContent=n'>Click me</button><script>let n=0;</script></body></html>"></iframe>
-      </div>
-
       <div class="callout success">
         <strong>How to link external files</strong>
-        CSS: <code>&lt;link rel="stylesheet" href="style.css"&gt;</code> in &lt;head&gt;<br>
-        JS: <code>&lt;script src="app.js"&gt;&lt;/script&gt;</code> before &lt;/body&gt;
+        CSS: <code>&lt;link rel="stylesheet" href="style.css"&gt;</code> inside &lt;head&gt;<br>
+        JS: <code>&lt;script src="app.js"&gt;&lt;/script&gt;</code> just before &lt;/body&gt;
       </div>
     </section>
 
     <!-- 10 -->
     <section id="s10">
-      <div class="section-header">
-        <span class="section-num">10</span>
-        <h2>Quick Quiz</h2>
-      </div>
-
+      <div class="section-header"><span class="section-num">10</span><h2>Quick Quiz</h2></div>
       <p>Test yourself. Click an answer to check.</p>
 
       <div class="quiz-q" id="q1">
         <div class="q-text">Q1 — What is the correct way to add a unique identifier to an element?</div>
         <div class="quiz-options">
-          <button class="quiz-opt" onclick="answer(this,'wrong','q1','Use class=&quot;myname&quot; — class is for groups, not unique IDs.')">class="myname"</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q1','class=&quot;myname&quot; — class is for groups, not unique IDs.')">class="myname"</button>
           <button class="quiz-opt" onclick="answer(this,'correct','q1','✓ id must be unique per page, like a primary key.')">id="myname"</button>
-          <button class="quiz-opt" onclick="answer(this,'wrong','q1','name is used for form inputs, not general identification.')">name="myname"</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q1','name is for form inputs, not general identification.')">name="myname"</button>
         </div>
         <div class="quiz-explain" id="q1-explain"></div>
       </div>
 
       <div class="quiz-q" id="q2">
-        <div class="q-text">Q2 — Which tag makes text appear bold AND conveys semantic importance?</div>
+        <div class="q-text">Q2 — Which tag is both visually bold AND semantically important?</div>
         <div class="quiz-options">
-          <button class="quiz-opt" onclick="answer(this,'wrong','q2','&lt;b&gt; makes text bold visually, but has no semantic meaning.')"><b>&lt;b&gt;</b></button>
-          <button class="quiz-opt" onclick="answer(this,'correct','q2','✓ &lt;strong&gt; is semantically &quot;important&quot;, and renders bold by default.')">&lt;strong&gt;</button>
-          <button class="quiz-opt" onclick="answer(this,'wrong','q2','&lt;mark&gt; highlights text in yellow — not bold.')"><mark>&lt;mark&gt;</mark></button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q2','&lt;b&gt; makes text bold visually but has no semantic meaning.')">&lt;b&gt;</button>
+          <button class="quiz-opt" onclick="answer(this,'correct','q2','✓ &lt;strong&gt; is semantically &quot;important&quot; and renders bold by default.')">&lt;strong&gt;</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q2','&lt;mark&gt; highlights text in yellow — not bold.')">&lt;mark&gt;</button>
         </div>
         <div class="quiz-explain" id="q2-explain"></div>
       </div>
@@ -828,8 +918,8 @@
       <div class="quiz-q" id="q3">
         <div class="q-text">Q3 — Where should &lt;script src="app.js"&gt;&lt;/script&gt; be placed?</div>
         <div class="quiz-options">
-          <button class="quiz-opt" onclick="answer(this,'wrong','q3','If put in &lt;head&gt;, JS runs before the DOM is built — elements won\'t exist yet.')">Inside &lt;head&gt;</button>
-          <button class="quiz-opt" onclick="answer(this,'correct','q3','✓ Just before &lt;/body&gt; ensures the DOM is fully loaded before JS runs.')">Just before &lt;/body&gt;</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q3','In &lt;head&gt;, JS runs before the DOM is built — elements won\'t exist yet.')">Inside &lt;head&gt;</button>
+          <button class="quiz-opt" onclick="answer(this,'correct','q3','✓ Just before &lt;/body&gt; ensures the DOM is fully loaded first.')">Just before &lt;/body&gt;</button>
           <button class="quiz-opt" onclick="answer(this,'wrong','q3','Scripts don\'t go inside &lt;div&gt;.')">Inside a &lt;div&gt;</button>
         </div>
         <div class="quiz-explain" id="q3-explain"></div>
@@ -838,64 +928,138 @@
       <div class="quiz-q" id="q4">
         <div class="q-text">Q4 — Which HTTP method sends form data in the request body (not the URL)?</div>
         <div class="quiz-options">
-          <button class="quiz-opt" onclick="answer(this,'wrong','q4','GET appends data to the URL as query params: ?name=value')">GET</button>
-          <button class="quiz-opt" onclick="answer(this,'correct','q4','✓ POST sends data in the body — safer for passwords and sensitive info.')">POST</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q4','GET appends data to the URL: ?name=value — visible to everyone.')">GET</button>
+          <button class="quiz-opt" onclick="answer(this,'correct','q4','✓ POST sends data in the body — better for passwords and sensitive info.')">POST</button>
           <button class="quiz-opt" onclick="answer(this,'wrong','q4','PUT is a REST API method, not a standard HTML form method.')">PUT</button>
         </div>
         <div class="quiz-explain" id="q4-explain"></div>
       </div>
-
     </section>
 
   </main>
-</div>
+
+  <!-- ── Monitor panel ── -->
+  <div class="monitor-panel" id="monitor">
+    <div class="monitor-titlebar">
+      <div class="monitor-dots">
+        <span class="mdot r"></span><span class="mdot y"></span><span class="mdot g"></span>
+      </div>
+      <div class="monitor-title" id="monitor-title">browser preview &nbsp;·&nbsp; <span>no file loaded</span></div>
+      <button class="monitor-clear" onclick="clearMonitor()">&#10005;</button>
+    </div>
+
+    <div class="monitor-screen">
+      <div class="monitor-placeholder" id="monitor-ph">
+        <svg class="ph-icon" width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="7" width="46" height="30" rx="3" stroke="currentColor" stroke-width="2"/>
+          <line x1="17" y1="37" x2="35" y2="37" stroke="currentColor" stroke-width="2"/>
+          <line x1="26" y1="37" x2="26" y2="45" stroke="currentColor" stroke-width="2"/>
+          <line x1="14" y1="45" x2="38" y2="45" stroke="currentColor" stroke-width="2"/>
+          <path d="M20 19 L26 14 L32 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="26" y1="14" x2="26" y2="26" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Click <strong style="color:var(--accent5)">&#9654; render</strong><br>on any code block<br>to preview it here
+        <span class="ph-hint">↑ 8 renderable examples above</span>
+      </div>
+      <iframe class="monitor-iframe" id="monitor-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+
+    <div class="monitor-footer" id="monitor-footer">ready</div>
+  </div>
+
+</div><!-- /.layout -->
 
 <script>
-  // Copy button
+  let activeId = null;
+
+  function renderBlock(blockId, filename) {
+    const block = document.getElementById(blockId);
+    const raw = block.querySelector('pre').dataset.raw;
+
+    // Decode HTML entities
+    const ta = document.createElement('textarea');
+    ta.innerHTML = raw;
+    const html = ta.value;
+
+    // Inject into iframe
+    const iframe = document.getElementById('monitor-iframe');
+    iframe.srcdoc = html;
+    iframe.classList.remove('flash');
+    void iframe.offsetWidth;
+    iframe.classList.add('flash');
+
+    // Show monitor
+    document.getElementById('monitor').classList.add('has-content');
+    document.getElementById('monitor-title').innerHTML =
+      'browser preview &nbsp;·&nbsp; <span>' + filename + '</span>';
+    document.getElementById('monitor-footer').textContent =
+      'rendering: ' + filename;
+
+    // Deactivate previous
+    if (activeId && activeId !== blockId) {
+      const prev = document.getElementById(activeId);
+      prev.classList.remove('active-source');
+      const pb = prev.querySelector('.render-btn');
+      if (pb) { pb.innerHTML = '&#9654; render'; pb.classList.remove('active'); }
+    }
+
+    // Activate current
+    block.classList.add('active-source');
+    const btn = block.querySelector('.render-btn');
+    btn.innerHTML = '&#9679; live';
+    btn.classList.add('active');
+    activeId = blockId;
+  }
+
+  function clearMonitor() {
+    document.getElementById('monitor').classList.remove('has-content');
+    document.getElementById('monitor-iframe').srcdoc = 'about:blank';
+    document.getElementById('monitor-title').innerHTML =
+      'browser preview &nbsp;·&nbsp; <span>no file loaded</span>';
+    document.getElementById('monitor-footer').textContent = 'ready';
+    if (activeId) {
+      const prev = document.getElementById(activeId);
+      if (prev) {
+        prev.classList.remove('active-source');
+        const pb = prev.querySelector('.render-btn');
+        if (pb) { pb.innerHTML = '&#9654; render'; pb.classList.remove('active'); }
+      }
+      activeId = null;
+    }
+  }
+
   function copyCode(btn) {
-    const pre = btn.closest('.code-block').querySelector('pre');
-    const text = pre.innerText;
-    navigator.clipboard.writeText(text).then(() => {
+    const block = btn.closest('.code-block');
+    const ta = document.createElement('textarea');
+    ta.innerHTML = block.querySelector('pre').dataset.raw;
+    navigator.clipboard.writeText(ta.value).then(() => {
       btn.textContent = 'copied!';
       btn.classList.add('copied');
       setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
     });
   }
 
-  // Quiz
   function answer(btn, result, qid, explain) {
     const q = document.getElementById(qid);
     if (q.dataset.answered) return;
     q.dataset.answered = 'yes';
-    const opts = q.querySelectorAll('.quiz-opt');
-    opts.forEach(o => o.disabled = true);
+    q.querySelectorAll('.quiz-opt').forEach(o => o.disabled = true);
     btn.classList.add(result);
     const exp = document.getElementById(qid + '-explain');
     exp.textContent = explain;
     exp.style.display = 'block';
-    updateProgress();
+    const n = document.querySelectorAll('.quiz-q[data-answered]').length;
+    document.getElementById('progress').style.width = (n / 4 * 100) + '%';
   }
 
   // Scroll spy
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('nav a');
-
   window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 80) current = s.id;
-    });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
+    let cur = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
   });
-
-  // Progress
-  function updateProgress() {
-    const answered = document.querySelectorAll('.quiz-q[data-answered]').length;
-    document.getElementById('progress').style.width = (answered / 4 * 100) + '%';
-  }
 </script>
-
 </body>
 </html>
