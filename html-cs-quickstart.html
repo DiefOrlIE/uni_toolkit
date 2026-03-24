@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML for CS Students</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap');
+
+  :root {
+    --bg: #0e0f14;
+    --surface: #161820;
+    --surface2: #1e2030;
+    --border: #2a2d45;
+    --accent: #7aa2f7;
+    --accent2: #bb9af7;
+    --accent3: #9ece6a;
+    --accent4: #f7768e;
+    --accent5: #e0af68;
+    --text: #c0caf5;
+    --muted: #565f89;
+    --bright: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  nav {
+    width: 220px;
+    min-width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 28px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  nav .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+    letter-spacing: .05em;
+  }
+
+  nav .logo span { color: var(--accent4); }
+
+  nav a {
+    display: block;
+    padding: 7px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    transition: all .15s;
+    border-left: 2px solid transparent;
+  }
+
+  nav a:hover, nav a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(122,162,247,.07);
+  }
+
+  main {
+    flex: 1;
+    padding: 48px 56px;
+    max-width: 860px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    margin-bottom: 56px;
+  }
+
+  .hero .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--bright);
+    line-height: 1.2;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero p {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Sections ── */
+  section {
+    margin-bottom: 64px;
+    scroll-margin-top: 24px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent4);
+    background: rgba(247,118,142,.1);
+    border: 1px solid rgba(247,118,142,.25);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.55rem;
+    color: var(--bright);
+    font-weight: 700;
+  }
+
+  h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin: 24px 0 10px;
+  }
+
+  p { margin-bottom: 12px; }
+
+  /* ── Code blocks ── */
+  .code-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+    font-size: 13.5px;
+  }
+
+  .code-block .cb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 4px;
+    padding: 2px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .copy-btn.copied { color: var(--accent3); border-color: var(--accent3); }
+
+  pre {
+    padding: 18px 20px;
+    overflow-x: auto;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  /* syntax colors */
+  .t { color: var(--accent4); }    /* tag */
+  .a { color: var(--accent5); }    /* attr */
+  .v { color: var(--accent3); }    /* value */
+  .c { color: var(--muted); font-style: italic; }  /* comment */
+  .k { color: var(--accent2); }    /* keyword/special */
+
+  /* ── Info cards ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .card .card-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .card .card-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── Callout ── */
+  .callout {
+    border-left: 3px solid var(--accent5);
+    background: rgba(224,175,104,.06);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .callout.info { border-color: var(--accent); background: rgba(122,162,247,.06); }
+  .callout.success { border-color: var(--accent3); background: rgba(158,206,106,.06); }
+  .callout.warn { border-color: var(--accent5); }
+
+  .callout strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--accent5);
+  }
+
+  .callout.info strong { color: var(--accent); }
+  .callout.success strong { color: var(--accent3); }
+
+  /* ── Table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    margin: 16px 0;
+  }
+
+  th {
+    text-align: left;
+    padding: 8px 14px;
+    background: var(--surface);
+    color: var(--accent2);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  td {
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+  td:first-child { color: var(--accent); }
+
+  /* ── Live preview ── */
+  .preview-wrap {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .preview-wrap .pw-header {
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #f7768e; }
+  .dot.y { background: #e0af68; }
+  .dot.g { background: #9ece6a; }
+
+  iframe {
+    width: 100%;
+    border: none;
+    background: #fff;
+    display: block;
+  }
+
+  /* ── Quiz ── */
+  .quiz-q {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 12px 0;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+
+  .quiz-q:hover { border-color: var(--accent); }
+
+  .quiz-q .q-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--bright);
+    margin-bottom: 12px;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+
+  .quiz-opt {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+    text-align: left;
+  }
+
+  .quiz-opt:hover { color: var(--text); border-color: var(--muted); }
+  .quiz-opt.correct { border-color: var(--accent3); color: var(--accent3); background: rgba(158,206,106,.08); }
+  .quiz-opt.wrong { border-color: var(--accent4); color: var(--accent4); background: rgba(247,118,142,.08); }
+
+  .quiz-explain {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    display: none;
+  }
+
+  /* ── Progress ── */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width .4s ease;
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav id="sidebar">
+    <div class="logo">&lt;<span>html</span>&gt; for CS</div>
+    <a href="#s1" class="active">01 — What is HTML?</a>
+    <a href="#s2">02 — Document Structure</a>
+    <a href="#s3">03 — Core Tags</a>
+    <a href="#s4">04 — Attributes</a>
+    <a href="#s5">05 — Links &amp; Images</a>
+    <a href="#s6">06 — Lists &amp; Tables</a>
+    <a href="#s7">07 — Forms</a>
+    <a href="#s8">08 — Semantic HTML</a>
+    <a href="#s9">09 — HTML + CSS + JS</a>
+    <a href="#s10">10 — Quick Quiz</a>
+  </nav>
+
+  <!-- Main content -->
+  <main>
+    <div class="hero">
+      <div class="tag">// CS Quickstart Guide</div>
+      <h1>HTML<br><em>Fundamentals</em></h1>
+      <p>// for computer science students · interactive reference</p>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+    <!-- 01 -->
+    <section id="s1">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>What is HTML?</h2>
+      </div>
+
+      <p>HTML stands for <strong>HyperText Markup Language</strong>. It is <em>not</em> a programming language — it has no logic, no loops, no variables. It is a <strong>markup language</strong>: a way to annotate text so a browser knows how to display it.</p>
+
+      <div class="callout info">
+        <strong>CS mental model</strong>
+        Think of HTML as a <strong>data structure</strong> — specifically a <strong>tree</strong> (the DOM). Every element is a node. Parent/child relationships define nesting. Your browser parses this tree and renders it visually.
+      </div>
+
+      <p>The browser reads your HTML file top-to-bottom, builds a tree called the <strong>DOM (Document Object Model)</strong>, and paints pixels on screen. CSS styles those pixels. JavaScript manipulates the tree at runtime.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-tag">HTML</div>
+          <div class="card-desc">Structure &amp; content. What exists on the page.</div>
+        </div>
+        <div class="card">
+          <div class="card-tag">CSS</div>
+          <div class="card-desc">Style &amp; layout. What things look like.</div>
+        </div>
+        <div class="card">
+          <div class="card-tag">JavaScript</div>
+          <div class="card-desc">Behavior &amp; logic. What things do.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section id="s2">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Document Structure</h2>
+      </div>
+
+      <p>Every HTML file follows this skeleton. Memorize it — you'll type it thousands of times.</p>
+
+      <div class="code-block">
+        <div class="cb-header">
+          <span>skeleton.html</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><span class="c">&lt;!-- This line tells the browser: "I'm HTML5" --&gt;</span>
+<span class="t">&lt;!DOCTYPE html&gt;</span>
+
+<span class="t">&lt;html</span> <span class="a">lang</span>=<span class="v">"en"</span><span class="t">&gt;</span>
+
+  <span class="t">&lt;head&gt;</span>
+    <span class="c">&lt;!-- Metadata: not visible on the page --&gt;</span>
+    <span class="t">&lt;meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span><span class="t">&gt;</span>
+    <span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"viewport"</span> <span class="a">content</span>=<span class="v">"width=device-width, initial-scale=1.0"</span><span class="t">&gt;</span>
+    <span class="t">&lt;title&gt;</span>My Page Title<span class="t">&lt;/title&gt;</span>
+  <span class="t">&lt;/head&gt;</span>
+
+  <span class="t">&lt;body&gt;</span>
+    <span class="c">&lt;!-- Visible content goes here --&gt;</span>
+    <span class="t">&lt;h1&gt;</span>Hello, World!<span class="t">&lt;/h1&gt;</span>
+  <span class="t">&lt;/body&gt;</span>
+
+<span class="t">&lt;/html&gt;</span></pre>
+      </div>
+
+      <h3>Key points</h3>
+      <table>
+        <tr><th>Part</th><th>Role</th></tr>
+        <tr><td>&lt;!DOCTYPE html&gt;</td><td>Tells browser to use HTML5 (not optional)</td></tr>
+        <tr><td>&lt;html&gt;</td><td>Root element — every other element is its descendant</td></tr>
+        <tr><td>&lt;head&gt;</td><td>Metadata, links to CSS/JS files, page title</td></tr>
+        <tr><td>&lt;body&gt;</td><td>Everything the user sees</td></tr>
+      </table>
+    </section>
+
+    <!-- 03 -->
+    <section id="s3">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>Core Tags</h2>
+      </div>
+
+      <p>HTML has ~100 tags. You'll use maybe 20 regularly. Here are the essential ones.</p>
+
+      <h3>Text</h3>
+      <div class="code-block">
+        <div class="cb-header"><span>text-tags.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="c">&lt;!-- Headings: h1 is biggest, h6 is smallest --&gt;</span>
+<span class="t">&lt;h1&gt;</span>Page Title<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;h2&gt;</span>Section<span class="t">&lt;/h2&gt;</span>
+<span class="t">&lt;h3&gt;</span>Sub-section<span class="t">&lt;/h3&gt;</span>
+
+<span class="c">&lt;!-- Paragraph --&gt;</span>
+<span class="t">&lt;p&gt;</span>This is a paragraph of text.<span class="t">&lt;/p&gt;</span>
+
+<span class="c">&lt;!-- Inline: bold, italic, code --&gt;</span>
+<span class="t">&lt;p&gt;</span>This is <span class="t">&lt;strong&gt;</span>bold<span class="t">&lt;/strong&gt;</span>, this is <span class="t">&lt;em&gt;</span>italic<span class="t">&lt;/em&gt;</span>.<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span>Inline code: <span class="t">&lt;code&gt;</span>print("hello")<span class="t">&lt;/code&gt;</span><span class="t">&lt;/p&gt;</span>
+
+<span class="c">&lt;!-- Line break (no closing tag needed) --&gt;</span>
+<span class="t">&lt;br&gt;</span>
+
+<span class="c">&lt;!-- Horizontal rule --&gt;</span>
+<span class="t">&lt;hr&gt;</span></pre>
+      </div>
+
+      <h3>Containers</h3>
+      <div class="code-block">
+        <div class="cb-header"><span>containers.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="c">&lt;!-- div: block-level generic container --&gt;</span>
+<span class="t">&lt;div&gt;</span>
+  <span class="t">&lt;p&gt;</span>I'm inside a div.<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;/div&gt;</span>
+
+<span class="c">&lt;!-- span: inline generic container --&gt;</span>
+<span class="t">&lt;p&gt;</span>Normal text <span class="t">&lt;span</span> <span class="a">style</span>=<span class="v">"color:red"</span><span class="t">&gt;</span>red text<span class="t">&lt;/span&gt;</span> normal again.<span class="t">&lt;/p&gt;</span></pre>
+      </div>
+
+      <div class="callout warn">
+        <strong>Block vs Inline</strong>
+        <strong>&lt;div&gt;</strong> is <em>block-level</em>: takes the full width, starts on a new line. <strong>&lt;span&gt;</strong> is <em>inline</em>: flows with text. This distinction matters hugely for CSS layout.
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section id="s4">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Attributes</h2>
+      </div>
+
+      <p>Attributes provide extra information about an element. Syntax: <code>name="value"</code> inside the opening tag.</p>
+
+      <div class="code-block">
+        <div class="cb-header"><span>attributes.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="c">&lt;!-- id: unique identifier (like a variable name) --&gt;</span>
+<span class="t">&lt;p</span> <span class="a">id</span>=<span class="v">"intro"</span><span class="t">&gt;</span>First paragraph.<span class="t">&lt;/p&gt;</span>
+
+<span class="c">&lt;!-- class: reusable group label --&gt;</span>
+<span class="t">&lt;p</span> <span class="a">class</span>=<span class="v">"highlight"</span><span class="t">&gt;</span>Styled paragraph.<span class="t">&lt;/p&gt;</span>
+
+<span class="c">&lt;!-- style: inline CSS (avoid for large projects) --&gt;</span>
+<span class="t">&lt;p</span> <span class="a">style</span>=<span class="v">"color: blue; font-size: 20px;"</span><span class="t">&gt;</span>Blue text.<span class="t">&lt;/p&gt;</span>
+
+<span class="c">&lt;!-- title: tooltip on hover --&gt;</span>
+<span class="t">&lt;abbr</span> <span class="a">title</span>=<span class="v">"HyperText Markup Language"</span><span class="t">&gt;</span>HTML<span class="t">&lt;/abbr&gt;</span></pre>
+      </div>
+
+      <div class="callout info">
+        <strong>id vs class</strong>
+        <code>id</code> must be unique per page — like a primary key in a database. <code>class</code> can be shared by many elements. In JavaScript: <code>getElementById()</code> vs <code>getElementsByClassName()</code>.
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section id="s5">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Links &amp; Images</h2>
+      </div>
+
+      <div class="code-block">
+        <div class="cb-header"><span>links-images.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="c">&lt;!-- Anchor tag: href = where to go --&gt;</span>
+<span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"https://example.com"</span><span class="t">&gt;</span>Click me<span class="t">&lt;/a&gt;</span>
+
+<span class="c">&lt;!-- Open in new tab --&gt;</span>
+<span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"https://example.com"</span> <span class="a">target</span>=<span class="v">"_blank"</span><span class="t">&gt;</span>New tab<span class="t">&lt;/a&gt;</span>
+
+<span class="c">&lt;!-- Relative link (same website) --&gt;</span>
+<span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"./about.html"</span><span class="t">&gt;</span>About page<span class="t">&lt;/a&gt;</span>
+
+<span class="c">&lt;!-- Jump to element by id --&gt;</span>
+<span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"#intro"</span><span class="t">&gt;</span>Go to intro<span class="t">&lt;/a&gt;</span>
+
+<span class="c">&lt;!-- Image: self-closing, alt is required for accessibility --&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"photo.jpg"</span> <span class="a">alt</span>=<span class="v">"A description"</span> <span class="a">width</span>=<span class="v">"300"</span><span class="t">&gt;</span></pre>
+      </div>
+
+      <h3>URL types</h3>
+      <table>
+        <tr><th>Type</th><th>Example</th><th>When to use</th></tr>
+        <tr><td>Absolute</td><td>https://site.com/page</td><td>External links</td></tr>
+        <tr><td>Relative</td><td>./images/logo.png</td><td>Files within your project</td></tr>
+        <tr><td>Root-relative</td><td>/images/logo.png</td><td>From site root</td></tr>
+        <tr><td>Fragment</td><td>#section-id</td><td>Jump within same page</td></tr>
+      </table>
+    </section>
+
+    <!-- 06 -->
+    <section id="s6">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>Lists &amp; Tables</h2>
+      </div>
+
+      <div class="code-block">
+        <div class="cb-header"><span>lists.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="c">&lt;!-- Unordered list (bullets) --&gt;</span>
+<span class="t">&lt;ul&gt;</span>
+  <span class="t">&lt;li&gt;</span>Python<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>C++<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>JavaScript<span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ul&gt;</span>
+
+<span class="c">&lt;!-- Ordered list (numbered) --&gt;</span>
+<span class="t">&lt;ol&gt;</span>
+  <span class="t">&lt;li&gt;</span>First<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Second<span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ol&gt;</span>
+
+<span class="c">&lt;!-- Table structure --&gt;</span>
+<span class="t">&lt;table&gt;</span>
+  <span class="t">&lt;thead&gt;</span>
+    <span class="t">&lt;tr&gt;</span>
+      <span class="t">&lt;th&gt;</span>Name<span class="t">&lt;/th&gt;</span>  <span class="c">&lt;!-- th = header cell --&gt;</span>
+      <span class="t">&lt;th&gt;</span>Grade<span class="t">&lt;/th&gt;</span>
+    <span class="t">&lt;/tr&gt;</span>
+  <span class="t">&lt;/thead&gt;</span>
+  <span class="t">&lt;tbody&gt;</span>
+    <span class="t">&lt;tr&gt;</span>
+      <span class="t">&lt;td&gt;</span>Alice<span class="t">&lt;/td&gt;</span>  <span class="c">&lt;!-- td = data cell --&gt;</span>
+      <span class="t">&lt;td&gt;</span>A<span class="t">&lt;/td&gt;</span>
+    <span class="t">&lt;/tr&gt;</span>
+  <span class="t">&lt;/tbody&gt;</span>
+<span class="t">&lt;/table&gt;</span></pre>
+      </div>
+    </section>
+
+    <!-- 07 -->
+    <section id="s7">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Forms</h2>
+      </div>
+
+      <p>Forms collect user input and send it to a server (or process it with JavaScript). Very important for web apps.</p>
+
+      <div class="code-block">
+        <div class="cb-header"><span>form.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="t">&lt;form</span> <span class="a">action</span>=<span class="v">"/submit"</span> <span class="a">method</span>=<span class="v">"POST"</span><span class="t">&gt;</span>
+
+  <span class="c">&lt;!-- Text input --&gt;</span>
+  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"username"</span><span class="t">&gt;</span>Username:<span class="t">&lt;/label&gt;</span>
+  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"text"</span> <span class="a">id</span>=<span class="v">"username"</span> <span class="a">name</span>=<span class="v">"username"</span> <span class="a">placeholder</span>=<span class="v">"Enter name"</span><span class="t">&gt;</span>
+
+  <span class="c">&lt;!-- Password --&gt;</span>
+  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"password"</span> <span class="a">name</span>=<span class="v">"pwd"</span><span class="t">&gt;</span>
+
+  <span class="c">&lt;!-- Dropdown --&gt;</span>
+  <span class="t">&lt;select</span> <span class="a">name</span>=<span class="v">"major"</span><span class="t">&gt;</span>
+    <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"cs"</span><span class="t">&gt;</span>Computer Science<span class="t">&lt;/option&gt;</span>
+    <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"ee"</span><span class="t">&gt;</span>Electrical Engineering<span class="t">&lt;/option&gt;</span>
+  <span class="t">&lt;/select&gt;</span>
+
+  <span class="c">&lt;!-- Checkbox --&gt;</span>
+  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"checkbox"</span> <span class="a">name</span>=<span class="v">"agree"</span> <span class="a">id</span>=<span class="v">"agree"</span><span class="t">&gt;</span>
+  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"agree"</span><span class="t">&gt;</span>I agree<span class="t">&lt;/label&gt;</span>
+
+  <span class="c">&lt;!-- Submit button --&gt;</span>
+  <span class="t">&lt;button</span> <span class="a">type</span>=<span class="v">"submit"</span><span class="t">&gt;</span>Submit<span class="t">&lt;/button&gt;</span>
+
+<span class="t">&lt;/form&gt;</span></pre>
+      </div>
+
+      <div class="callout info">
+        <strong>GET vs POST</strong>
+        <code>method="GET"</code> appends data to the URL (visible, bookmarkable — use for search). <code>method="POST"</code> sends data in the request body (use for login, file upload, sensitive data).
+      </div>
+    </section>
+
+    <!-- 08 -->
+    <section id="s8">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>Semantic HTML</h2>
+      </div>
+
+      <p>Instead of using <code>&lt;div&gt;</code> for everything, HTML5 introduced <strong>semantic tags</strong> that describe meaning. This matters for accessibility, SEO, and readability.</p>
+
+      <div class="code-block">
+        <div class="cb-header"><span>semantic.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="t">&lt;body&gt;</span>
+  <span class="t">&lt;header&gt;</span>
+    <span class="t">&lt;nav&gt;</span>...<span class="t">&lt;/nav&gt;</span>
+  <span class="t">&lt;/header&gt;</span>
+
+  <span class="t">&lt;main&gt;</span>
+    <span class="t">&lt;article&gt;</span>
+      <span class="t">&lt;h1&gt;</span>Post Title<span class="t">&lt;/h1&gt;</span>
+      <span class="t">&lt;section&gt;</span>
+        <span class="t">&lt;p&gt;</span>Content...<span class="t">&lt;/p&gt;</span>
+      <span class="t">&lt;/section&gt;</span>
+    <span class="t">&lt;/article&gt;</span>
+
+    <span class="t">&lt;aside&gt;</span>Related links<span class="t">&lt;/aside&gt;</span>
+  <span class="t">&lt;/main&gt;</span>
+
+  <span class="t">&lt;footer&gt;</span>© 2026<span class="t">&lt;/footer&gt;</span>
+<span class="t">&lt;/body&gt;</span></pre>
+      </div>
+
+      <div class="card-grid">
+        <div class="card"><div class="card-tag">&lt;header&gt;</div><div class="card-desc">Top of page or section</div></div>
+        <div class="card"><div class="card-tag">&lt;nav&gt;</div><div class="card-desc">Navigation links</div></div>
+        <div class="card"><div class="card-tag">&lt;main&gt;</div><div class="card-desc">Primary content (one per page)</div></div>
+        <div class="card"><div class="card-tag">&lt;article&gt;</div><div class="card-desc">Self-contained content (blog post)</div></div>
+        <div class="card"><div class="card-tag">&lt;section&gt;</div><div class="card-desc">Thematic grouping</div></div>
+        <div class="card"><div class="card-tag">&lt;aside&gt;</div><div class="card-desc">Sidebar / tangential content</div></div>
+        <div class="card"><div class="card-tag">&lt;footer&gt;</div><div class="card-desc">Bottom of page or section</div></div>
+      </div>
+    </section>
+
+    <!-- 09 -->
+    <section id="s9">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2>HTML + CSS + JS Together</h2>
+      </div>
+
+      <p>Here's how all three layers connect in one file:</p>
+
+      <div class="code-block">
+        <div class="cb-header"><span>complete-example.html</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><span class="t">&lt;!DOCTYPE html&gt;</span>
+<span class="t">&lt;html</span> <span class="a">lang</span>=<span class="v">"en"</span><span class="t">&gt;</span>
+<span class="t">&lt;head&gt;</span>
+  <span class="t">&lt;meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span><span class="t">&gt;</span>
+  <span class="t">&lt;title&gt;</span>Counter<span class="t">&lt;/title&gt;</span>
+
+  <span class="c">&lt;!-- CSS: &lt;style&gt; tag in &lt;head&gt; --&gt;</span>
+  <span class="t">&lt;style&gt;</span>
+    <span class="k">body</span> { font-family: sans-serif; text-align: center; padding: 40px; }
+    <span class="k">#count</span> { font-size: 3rem; color: #7aa2f7; }
+    <span class="k">button</span> { padding: 10px 24px; font-size: 1rem; cursor: pointer; }
+  <span class="t">&lt;/style&gt;</span>
+<span class="t">&lt;/head&gt;</span>
+<span class="t">&lt;body&gt;</span>
+
+  <span class="c">&lt;!-- HTML structure --&gt;</span>
+  <span class="t">&lt;h1&gt;</span>Click Counter<span class="t">&lt;/h1&gt;</span>
+  <span class="t">&lt;p</span> <span class="a">id</span>=<span class="v">"count"</span><span class="t">&gt;</span>0<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;button</span> <span class="a">onclick</span>=<span class="v">"increment()"</span><span class="t">&gt;</span>Click me<span class="t">&lt;/button&gt;</span>
+
+  <span class="c">&lt;!-- JS: &lt;script&gt; tag before &lt;/body&gt; --&gt;</span>
+  <span class="t">&lt;script&gt;</span>
+    <span class="k">let</span> n = 0;
+    <span class="k">function</span> increment() {
+      n++;
+      document.getElementById(<span class="v">'count'</span>).textContent = n;
+    }
+  <span class="t">&lt;/script&gt;</span>
+
+<span class="t">&lt;/body&gt;</span>
+<span class="t">&lt;/html&gt;</span></pre>
+      </div>
+
+      <div class="preview-wrap">
+        <div class="pw-header">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span style="margin-left:8px">live preview</span>
+        </div>
+        <iframe id="demo-frame" height="160" srcdoc="<!DOCTYPE html><html><head><style>body{font-family:sans-serif;text-align:center;padding:30px;margin:0}#count{font-size:3rem;color:#7aa2f7;margin:8px 0}button{padding:10px 24px;font-size:1rem;cursor:pointer;border:none;background:#7aa2f7;color:#fff;border-radius:6px}button:hover{background:#5a8af4}</style></head><body><h1 style='margin:0 0 4px'>Click Counter</h1><p id='count'>0</p><button onclick='n++;document.getElementById(&quot;count&quot;).textContent=n'>Click me</button><script>let n=0;</script></body></html>"></iframe>
+      </div>
+
+      <div class="callout success">
+        <strong>How to link external files</strong>
+        CSS: <code>&lt;link rel="stylesheet" href="style.css"&gt;</code> in &lt;head&gt;<br>
+        JS: <code>&lt;script src="app.js"&gt;&lt;/script&gt;</code> before &lt;/body&gt;
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section id="s10">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2>Quick Quiz</h2>
+      </div>
+
+      <p>Test yourself. Click an answer to check.</p>
+
+      <div class="quiz-q" id="q1">
+        <div class="q-text">Q1 — What is the correct way to add a unique identifier to an element?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answer(this,'wrong','q1','Use class=&quot;myname&quot; — class is for groups, not unique IDs.')">class="myname"</button>
+          <button class="quiz-opt" onclick="answer(this,'correct','q1','✓ id must be unique per page, like a primary key.')">id="myname"</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q1','name is used for form inputs, not general identification.')">name="myname"</button>
+        </div>
+        <div class="quiz-explain" id="q1-explain"></div>
+      </div>
+
+      <div class="quiz-q" id="q2">
+        <div class="q-text">Q2 — Which tag makes text appear bold AND conveys semantic importance?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answer(this,'wrong','q2','&lt;b&gt; makes text bold visually, but has no semantic meaning.')"><b>&lt;b&gt;</b></button>
+          <button class="quiz-opt" onclick="answer(this,'correct','q2','✓ &lt;strong&gt; is semantically &quot;important&quot;, and renders bold by default.')">&lt;strong&gt;</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q2','&lt;mark&gt; highlights text in yellow — not bold.')"><mark>&lt;mark&gt;</mark></button>
+        </div>
+        <div class="quiz-explain" id="q2-explain"></div>
+      </div>
+
+      <div class="quiz-q" id="q3">
+        <div class="q-text">Q3 — Where should &lt;script src="app.js"&gt;&lt;/script&gt; be placed?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answer(this,'wrong','q3','If put in &lt;head&gt;, JS runs before the DOM is built — elements won\'t exist yet.')">Inside &lt;head&gt;</button>
+          <button class="quiz-opt" onclick="answer(this,'correct','q3','✓ Just before &lt;/body&gt; ensures the DOM is fully loaded before JS runs.')">Just before &lt;/body&gt;</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q3','Scripts don\'t go inside &lt;div&gt;.')">Inside a &lt;div&gt;</button>
+        </div>
+        <div class="quiz-explain" id="q3-explain"></div>
+      </div>
+
+      <div class="quiz-q" id="q4">
+        <div class="q-text">Q4 — Which HTTP method sends form data in the request body (not the URL)?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" onclick="answer(this,'wrong','q4','GET appends data to the URL as query params: ?name=value')">GET</button>
+          <button class="quiz-opt" onclick="answer(this,'correct','q4','✓ POST sends data in the body — safer for passwords and sensitive info.')">POST</button>
+          <button class="quiz-opt" onclick="answer(this,'wrong','q4','PUT is a REST API method, not a standard HTML form method.')">PUT</button>
+        </div>
+        <div class="quiz-explain" id="q4-explain"></div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Copy button
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+    });
+  }
+
+  // Quiz
+  function answer(btn, result, qid, explain) {
+    const q = document.getElementById(qid);
+    if (q.dataset.answered) return;
+    q.dataset.answered = 'yes';
+    const opts = q.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.disabled = true);
+    btn.classList.add(result);
+    const exp = document.getElementById(qid + '-explain');
+    exp.textContent = explain;
+    exp.style.display = 'block';
+    updateProgress();
+  }
+
+  // Scroll spy
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  // Progress
+  function updateProgress() {
+    const answered = document.querySelectorAll('.quiz-q[data-answered]').length;
+    document.getElementById('progress').style.width = (answered / 4 * 100) + '%';
+  }
+</script>
+
+</body>
+</html>
