@@ -1,0 +1,1635 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Units 1-2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --card-bg: #fffdf8;
+    --ink: #1a1108;
+    --muted: #7a6e5f;
+    --accent: #8b2e12;
+    --accent-light: #c9523a;
+    --border: #d9cfc0;
+    --highlight: #fff3cd;
+    --tag-bg: #ede8df;
+    --green: #2e6b3e;
+    --blue: #1a3f6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 4rem;
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(10px);
+    background: rgba(245, 240, 232, .92);
+    border-bottom: 1px solid rgba(139, 46, 18, .12);
+  }
+  .topbar-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1rem 1rem;
+    display: flex;
+    gap: .8rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topbar-copy {
+    min-width: 220px;
+  }
+  .topbar-copy .eyebrow {
+    font-size: .78rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .topbar-copy h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    color: var(--accent);
+    line-height: 1.1;
+    margin-top: .2rem;
+  }
+  .chapter-tabs {
+    display: flex;
+    gap: .8rem;
+    flex-wrap: wrap;
+  }
+  .chapter-tab {
+    appearance: none;
+    background: rgba(255,255,255,.68);
+    color: var(--accent);
+    border: 1.5px solid rgba(139, 46, 18, .20);
+    border-radius: 999px;
+    padding: .85rem 1.35rem;
+    font: inherit;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+  .chapter-tab strong {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .chapter-tab span {
+    display: block;
+    font-size: .82rem;
+    margin-top: .15rem;
+    color: var(--muted);
+  }
+  .chapter-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .chapter-tab.active span { color: rgba(255,255,255,.82); }
+  .chapter-section { display: none; padding-top: 1.5rem; }
+  .chapter-section.active { display: block; }
+  .chapter-section > header,
+  .chapter-section > .controls,
+  .chapter-section > .cards-grid,
+  .chapter-section > footer {
+    width: min(920px, calc(100vw - 2rem));
+  }
+  .chapter-section.unit1 > header,
+  .chapter-section.unit1 > .controls,
+  .chapter-section.unit1 > .cards-grid,
+  .chapter-section.unit1 > footer {
+    width: min(860px, calc(100vw - 2rem));
+  }
+  .chapter-section header {
+    margin: 0 auto 2.5rem;
+    text-align: center;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 1.5rem;
+  }
+  .chapter-section header .eyebrow {
+    font-size: .78rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .4rem;
+  }
+  .chapter-section header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .chapter-section header p { margin-top: .5rem; color: var(--muted); font-size: .92rem; font-style: italic; }
+  .controls {
+    margin: 0 auto 2rem;
+    display: flex;
+    gap: .7rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progress-bar-wrap {
+    flex: 1 1 240px;
+    background: var(--border);
+    border-radius: 99px;
+    height: 8px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width .4s ease;
+    width: 0%;
+  }
+  .progress-label { font-size: .8rem; color: var(--muted); white-space: nowrap; }
+  .btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: .45rem 1.1rem;
+    font-size: .83rem;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: .03em;
+    transition: background .2s;
+  }
+  .btn:hover { background: var(--accent-light); }
+  .btn.secondary { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+  .btn.secondary:hover { background: var(--accent); color: #fff; }
+  .cards-grid { margin: 0 auto; display: grid; gap: 1.6rem; }
+  .card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,.04);
+    transition: border-color .2s ease;
+  }
+  .card:hover { border-color: rgba(139, 46, 18, .22); }
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.2rem 1.4rem 1rem;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color .2s;
+  }
+  .card.open .card-head { border-bottom-color: var(--border); }
+  .word-num { font-size: .72rem; font-weight: 600; color: var(--accent); letter-spacing: .1em; margin-top: .25rem; min-width: 2rem; }
+  .word-main { flex: 1; }
+  .word-title { font-family: 'Playfair Display', serif; font-size: 1.55rem; font-weight: 700; color: var(--ink); line-height: 1.1; }
+  .word-meta { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .35rem; align-items: center; }
+  .tag { display: inline-block; background: var(--tag-bg); border-radius: 4px; padding: .15rem .55rem; font-size: .72rem; letter-spacing: .04em; color: var(--muted); }
+  .tag.pos { background: #e8f0fd; color: var(--blue); font-weight: 600; }
+  .tag.reg { background: #fce8e8; color: var(--accent); }
+  .tag.mastered { background: #d4edda; color: var(--green); }
+  .word-definition { margin-top: .5rem; font-size: 1rem; color: #2a2010; line-height: 1.55; }
+  .toggle-icon { font-size: 1.1rem; color: var(--muted); padding-top: .2rem; transition: transform .25s; flex-shrink: 0; }
+  .card.open .toggle-icon { transform: rotate(180deg); }
+  .master-btn {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    flex-shrink: 0;
+    margin-top: .1rem;
+    transition: all .2s;
+  }
+  .master-btn:hover { border-color: var(--green); }
+  .master-btn.done { background: var(--green); border-color: var(--green); color: #fff; }
+  .card-body { display: none; padding: 1.2rem 1.4rem 1.4rem; }
+  .card.open .card-body { display: block; }
+  .section { margin-bottom: 1.2rem; }
+  .section:last-child { margin-bottom: 0; }
+  .section-title {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .5rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .collocations { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .colloc { background: var(--highlight); border: 1px solid #e8d89a; border-radius: 6px; padding: .25rem .7rem; font-size: .87rem; color: #5a4400; }
+  .example { border-left: 3px solid var(--accent); padding: .5rem .9rem; margin-bottom: .6rem; font-size: .92rem; line-height: 1.6; background: #fdf8f2; border-radius: 0 6px 6px 0; }
+  .example:last-child { margin-bottom: 0; }
+  .example em { color: var(--accent); font-style: normal; font-weight: 600; }
+  .example .source { display: block; font-size: .72rem; color: var(--muted); margin-top: .25rem; font-style: italic; }
+  .family-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .family-item { background: #f0ebff; border-radius: 6px; padding: .3rem .75rem; font-size: .85rem; }
+  .family-item .fi-pos { color: var(--blue); font-size: .72rem; margin-right: .3em; font-weight: 600; }
+  .syn-ant { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .syn-block h4 { font-size: .75rem; font-weight: 600; color: var(--muted); margin-bottom: .3rem; }
+  .syn-block .words { font-size: .9rem; }
+  .syn-block.syn .words { color: var(--green); }
+  .syn-block.ant .words { color: var(--accent); }
+  .cloze-wrap { background: #f2f8ff; border: 1px solid #c8ddf5; border-radius: 8px; padding: .9rem 1.1rem; }
+  .cloze-sentence { font-size: .95rem; line-height: 1.6; margin-bottom: .8rem; color: var(--ink); }
+  .blank { display: inline-block; min-width: 105px; border-bottom: 2px solid var(--blue); color: transparent; user-select: none; }
+  .reveal-btn { font-size: .78rem; background: var(--blue); color: #fff; border: none; border-radius: 5px; padding: .3rem .8rem; cursor: pointer; font-family: inherit; transition: background .2s; }
+  .reveal-btn:hover { background: #2a5fa8; }
+  .cloze-answer { display: none; margin-top: .5rem; font-size: .88rem; color: var(--blue); }
+  .cloze-answer.shown { display: block; }
+  .cloze-answer strong { font-family: 'Playfair Display', serif; font-size: 1rem; }
+  .transcript-quote { font-style: italic; color: var(--muted); font-size: .88rem; border-left: 3px solid var(--border); padding: .4rem .8rem; margin-top: .4rem; line-height: 1.55; }
+  .transcript-quote em { font-style: normal; font-weight: 600; color: var(--accent); }
+  .note-box { background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: .6rem .9rem; font-size: .88rem; line-height: 1.5; }
+  footer { margin: 3rem auto 0; text-align: center; font-size: .78rem; color: var(--muted); font-style: italic; border-top: 1px solid var(--border); padding-top: 1rem; }
+  @media (max-width: 600px) {
+    body { padding-bottom: 2rem; }
+    .topbar-inner { padding: .85rem .85rem; }
+    .chapter-section header h1 { font-size: 1.6rem; }
+    .word-title { font-size: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-copy">
+        <div class="eyebrow">Merged Vocabulary Workbook</div>
+        <h1>Unit 1 + Unit 2</h1>
+      </div>
+      <div class="chapter-tabs" aria-label="Vocabulary Units">
+        <button class="chapter-tab active" type="button" data-tab="unit1">
+          <strong>Unit 1</strong>
+          <span>Do Schools Kill Creativity</span>
+        </button>
+        <button class="chapter-tab" type="button" data-tab="unit2">
+          <strong>Unit 2</strong>
+          <span>Creativity and AI</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="chapter-section unit1 active" id="unit1-section">
+<header>
+  <p class="eyebrow">Do Schools Kill Creativity &middot; Ken Robinson TED Talk</p>
+  <h1>Unit 1 Vocabulary</h1>
+  <p>13 words &nbsp;&middot;&nbsp; click any card to expand &nbsp;&middot;&nbsp; mark words as mastered when ready</p>
+</header>
+
+<div class="controls">
+  <div style="display:flex;align-items:center;gap:.7rem;flex:1 1 200px;">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="u1-progressFill"></div></div>
+    <span class="progress-label" id="u1-progressLabel">0 / 13 mastered</span>
+  </div>
+  <button class="btn secondary" onclick="u1ExpandAll()">Expand All</button>
+  <button class="btn secondary" onclick="u1CollapseAll()">Collapse All</button>
+  <button class="btn" onclick="u1ResetMastered()">Reset Progress</button>
+</div>
+
+<div class="cards-grid" id="u1-cardsGrid">
+
+
+<div class="card" id="u1-card-1">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-1')">
+    <span class="word-num">01</span>
+    <div class="word-main">
+      <div class="word-title">predicated</div>
+      <div class="word-meta"><span class="tag pos">adj / v (past part.)</span><span class="tag reg">Formal &middot; Academic</span></div>
+      <div class="word-definition">Based on or determined by a particular idea or condition; founded upon something as a necessary precondition.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-1" onclick="u1ToggleMaster(event,'u1-card-1')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"Our education system is <em>predicated</em> on the idea of academic ability."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">predicated <b>on</b></span><span class="colloc">predicated <b>upon</b></span>
+        <span class="colloc">success predicated on effort</span><span class="colloc">argument predicated on evidence</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">The entire marketing strategy is <em>predicated on</em> the assumption that consumers want cheaper options.<span class="source">General business usage</span></div>
+      <div class="example">Her optimism is <em>predicated on</em> years of hard-won experience.<span class="source">General usage</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">v</span>predicate</span>
+        <span class="family-item"><span class="fi-pos">n</span>predication</span>
+        <span class="family-item"><span class="fi-pos">adj</span>predicated</span>
+        <span class="family-item"><span class="fi-pos">n (grammar)</span>predicate</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Formal and academic. Commonly used in essays, speeches, and journalism. In casual speech, simply say <em>based on</em>.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">based on &middot; founded on &middot; grounded in &middot; contingent on</div></div>
+        <div class="syn-block ant"><h4>Antonyms</h4><div class="words">independent of &middot; regardless of &middot; unrelated to</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Robinson argues that the school system is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> on academic ability, ignoring other forms of intelligence.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>predicated</strong> &mdash; The system is <em>built upon</em> (predicated on) one narrow idea of intelligence. Note: always followed by <em>on</em> or <em>upon</em>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-2">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-2')">
+    <span class="word-num">02</span>
+    <div class="word-main">
+      <div class="word-title">steer</div>
+      <div class="word-meta"><span class="tag pos">verb</span><span class="tag reg">General &middot; Neutral</span></div>
+      <div class="word-definition">To guide or direct the course of someone or something, often gently or indirectly.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-2" onclick="u1ToggleMaster(event,'u1-card-2')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"You were probably <em>steered</em> benignly away from things at school when you were a kid."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">steer <b>away from</b></span><span class="colloc">steer <b>toward(s)</b></span>
+        <span class="colloc">steer <b>clear of</b></span><span class="colloc">steer a conversation</span><span class="colloc">steer a course</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">Parents often <em>steer</em> their children <em>toward</em> stable careers without realising they are suppressing a genuine passion.<span class="source">General usage</span></div>
+      <div class="example">She skilfully <em>steered</em> the conversation away from the topic of money.<span class="source">Social context</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">v</span>steer</span>
+        <span class="family-item"><span class="fi-pos">n</span>steering</span>
+        <span class="family-item"><span class="fi-pos">phrase</span>steer clear</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Neutral and versatile. Works in formal writing ("the policy steers investment toward...") and everyday speech ("steer him away from trouble").
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">guide &middot; direct &middot; channel &middot; navigate &middot; lead</div></div>
+        <div class="syn-block ant"><h4>Antonyms</h4><div class="words">mislead &middot; misdirect &middot; leave to chance</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Many well-meaning teachers <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> students away from the arts, fearing there are no jobs in that field.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>steer</strong> &mdash; Note the fixed collocation: <em>steer someone away from something</em>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-3">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-3')">
+    <span class="word-num">03</span>
+    <div class="word-main">
+      <div class="word-title">engulfed</div>
+      <div class="word-meta"><span class="tag pos">adj / v (past part.)</span><span class="tag reg">Descriptive &middot; Slightly literary</span></div>
+      <div class="word-definition">Completely surrounded, covered, or overwhelmed by something powerful or vast &mdash;usually implying the subject has little control.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-3" onclick="u1ToggleMaster(event,'u1-card-3')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"The whole world is <em>engulfed</em> in a revolution."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">engulfed <b>in</b> flames</span><span class="colloc">engulfed <b>in</b> a revolution</span>
+        <span class="colloc">engulfed <b>by</b> grief</span><span class="colloc">engulfed <b>by</b> the crowd</span><span class="colloc">engulfed <b>in</b> darkness</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">The forest was <em>engulfed in</em> thick smoke within minutes of the fire breaking out.<span class="source">News context</span></div>
+      <div class="example">She felt <em>engulfed by</em> a wave of emotion when she heard the news.<span class="source">Literary/emotional context</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">v</span>engulf</span>
+        <span class="family-item"><span class="fi-pos">adj</span>engulfed</span>
+        <span class="family-item"><span class="fi-pos">n</span>engulfment</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      More vivid and dramatic than "surrounded." Often used in journalism and literature. Use <em>in</em> for fire/crisis/revolution; use <em>by</em> for emotions and people.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">overwhelmed &middot; swallowed up &middot; enveloped &middot; consumed &middot; immersed</div></div>
+        <div class="syn-block ant"><h4>Antonyms</h4><div class="words">untouched &middot; unaffected &middot; free from</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Robinson argues that the world is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> in a technological revolution that education has yet to recognise.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>engulfed</strong> &mdash; The preposition is <em>in</em> for revolutions and crises: <em>engulfed in</em> something.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-4">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-4')">
+    <span class="word-num">04</span>
+    <div class="word-main">
+      <div class="word-title">protracted</div>
+      <div class="word-meta"><span class="tag pos">adjective</span><span class="tag reg">Formal &middot; Academic / Journalistic</span></div>
+      <div class="word-definition">Lasting an unusually or unnecessarily long time; drawn out beyond what is reasonable. Carries a slightly negative connotation.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-4" onclick="u1ToggleMaster(event,'u1-card-4')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"The whole system of public education around the world is a <em>protracted</em> process of university entrance."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">a protracted <b>conflict</b></span><span class="colloc">a protracted <b>process</b></span>
+        <span class="colloc">a protracted <b>negotiation</b></span><span class="colloc">a protracted <b>legal dispute</b></span><span class="colloc">protracted <b>battle</b></span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">After a <em>protracted</em> legal dispute, the two companies finally reached a settlement.<span class="source">Legal/journalistic context</span></div>
+      <div class="example">The <em>protracted</em> civil war left millions homeless and the economy in ruins.<span class="source">News writing</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">v</span>protract</span>
+        <span class="family-item"><span class="fi-pos">adj</span>protracted</span>
+        <span class="family-item"><span class="fi-pos">n</span>protraction</span>
+        <span class="family-item"><span class="fi-pos">n (tool)</span>protractor</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Formal. Preferred over "long" or "lengthy" in academic and journalistic writing. The connotation is not just duration, but unnecessary or frustrating duration.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">prolonged &middot; drawn-out &middot; lengthy &middot; extended &middot; long-running</div></div>
+        <div class="syn-block ant"><h4>Antonyms</h4><div class="words">brief &middot; short-lived &middot; concise &middot; swift</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Robinson describes global education as a <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> process of preparing students solely for university entrance.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>protracted</strong> &mdash; It is not merely long; it implies the length is excessive or wasteful. Compare: "a long process" vs. "a protracted process" &mdash; the latter implies frustration.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-5">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-5')">
+    <span class="word-num">05</span>
+    <div class="word-main">
+      <div class="word-title">kinesthetically</div>
+      <div class="word-meta"><span class="tag pos">adverb</span><span class="tag reg">Academic &middot; Psychology / Education</span></div>
+      <div class="word-definition">In a manner related to bodily movement, physical sensation, and the awareness of one's own body in space; through the experience of movement.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-5" onclick="u1ToggleMaster(event,'u1-card-5')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"We think visually, we think in sound, we think <em>kinesthetically</em>. We think in abstract terms, we think in movement."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">think <b>kinesthetically</b></span><span class="colloc">learn <b>kinesthetically</b></span>
+        <span class="colloc"><b>kinesthetic</b> learner</span><span class="colloc"><b>kinesthetic</b> intelligence</span><span class="colloc"><b>kinesthetic</b> awareness</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">Some students learn most effectively <em>kinesthetically</em> &mdash; they need to build, touch, and move to understand a concept.<span class="source">Education context</span></div>
+      <div class="example">Dancers process choreography <em>kinesthetically</em>, encoding movement directly into muscle memory.<span class="source">Performing arts context</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">adj</span>kinesthetic</span>
+        <span class="family-item"><span class="fi-pos">adv</span>kinesthetically</span>
+        <span class="family-item"><span class="fi-pos">n</span>kinesthesia</span>
+        <span class="family-item"><span class="fi-pos">n</span>kinesthetics</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Specialized academic/scientific vocabulary used in education, psychology, and neuroscience. Related to Howard Gardner's theory of "bodily-kinesthetic intelligence." In casual speech, say "through movement" instead.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Near-synonyms</h4><div class="words">through movement &middot; physically &middot; tactilely &middot; sensorially</div></div>
+        <div class="syn-block ant"><h4>Contrast (other modes)</h4><div class="words">visually &middot; auditorily &middot; abstractly</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Robinson argues that we think not only visually and in sound, but also <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> &mdash; through physical movement.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>kinesthetically</strong> &mdash; Remember the three-part list from the talk: <em>visually</em> &bull; <em>in sound</em> &bull; <em>kinesthetically</em>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-6">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-6')">
+    <span class="word-num">06</span>
+    <div class="word-main">
+      <div class="word-title">compartments</div>
+      <div class="word-meta"><span class="tag pos">noun (plural)</span><span class="tag reg">General &middot; Also figurative</span></div>
+      <div class="word-definition">Separate, enclosed sections within a larger space or system. Used literally (physical partitions) or figuratively (isolated areas of thought, identity, or life).</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-6" onclick="u1ToggleMaster(event,'u1-card-6')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"The brain isn't divided into <em>compartments</em>. In fact, creativity... comes about through the interaction of different disciplinary ways of seeing things."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">divided into <b>compartments</b></span><span class="colloc">separate <b>compartments</b></span>
+        <span class="colloc">mental <b>compartments</b></span><span class="colloc">watertight <b>compartments</b></span><span class="colloc"><b>compartmentalize</b> emotions</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">The ship's hull is divided into watertight <em>compartments</em> to prevent sinking if one section is breached.<span class="source">Technical/literal</span></div>
+      <div class="example">He kept his work and family life in entirely separate <em>compartments</em>, never mixing the two.<span class="source">Figurative usage</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">n</span>compartment</span>
+        <span class="family-item"><span class="fi-pos">v</span>compartmentalize</span>
+        <span class="family-item"><span class="fi-pos">n</span>compartmentalization</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Neutral. The literal meaning is common and everyday. The metaphorical use ("compartmentalize feelings") is also widely used in psychology and self-help contexts.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">sections &middot; divisions &middot; partitions &middot; cells &middot; segments</div></div>
+        <div class="syn-block ant"><h4>Antonyms</h4><div class="words">unified whole &middot; open space &middot; integrated system</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Robinson's key insight is that the brain is not divided into separate <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>; intelligence is inherently interactive.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>compartments</strong> &mdash; The related verb: <em>compartmentalize</em>. "We compartmentalize school subjects, but creativity crosses those boundaries."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-7">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-7')">
+    <span class="word-num">07</span>
+    <div class="word-main">
+      <div class="word-title">disciplinary</div>
+      <div class="word-meta"><span class="tag pos">adjective</span><span class="tag reg">Academic / Institutional</span></div>
+      <div class="word-definition">Relating to a particular academic discipline or field of study (Meaning 1); or relating to discipline, rules, and punishment (Meaning 2). <em>In the lecture, Meaning 1 applies.</em></div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-7" onclick="u1ToggleMaster(event,'u1-card-7')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"Creativity... comes about through the interaction of different <em>disciplinary</em> ways of seeing things."</div>
+    </div>
+    <div class="section"><div class="section-title">Two meanings &mdash; don't confuse them</div>
+      <div class="collocations">
+        <span class="colloc">disciplinary <b>boundaries</b> (academic fields)</span>
+        <span class="colloc">cross-<b>disciplinary</b> research</span>
+        <span class="colloc">disciplinary <b>action</b> (punishment)</span>
+        <span class="colloc">disciplinary <b>hearing</b> (punishment)</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">The most exciting discoveries often happen at the intersection of different <em>disciplinary</em> perspectives.<span class="source">Academic context &mdash; "field of study" meaning</span></div>
+      <div class="example">The employee faced <em>disciplinary</em> action after repeatedly arriving late.<span class="source">Workplace context &mdash; "punishment" meaning</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">n</span>discipline</span>
+        <span class="family-item"><span class="fi-pos">adj</span>disciplinary</span>
+        <span class="family-item"><span class="fi-pos">adj</span>cross-disciplinary</span>
+        <span class="family-item"><span class="fi-pos">adj</span>multidisciplinary</span>
+        <span class="family-item"><span class="fi-pos">v</span>discipline</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Formal. The "academic field" sense is common in university and research settings. Context will always clarify which meaning is intended.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms (academic sense)</h4><div class="words">subject-based &middot; field-specific &middot; domain-related</div></div>
+        <div class="syn-block ant"><h4>Contrast</h4><div class="words">interdisciplinary &middot; holistic &middot; cross-disciplinary</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">True creativity, Robinson suggests, emerges from the interaction of different <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ways of seeing the world.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>disciplinary</strong> &mdash; Here it means "relating to academic disciplines/fields," <em>not</em> rules and punishment. Context is key.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-8">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-8')">
+    <span class="word-num">08</span>
+    <div class="word-main">
+      <div class="word-title">epiphany</div>
+      <div class="word-meta"><span class="tag pos">noun</span><span class="tag reg">Slightly literary &middot; Widely used</span></div>
+      <div class="word-definition">A sudden, profound moment of insight, realization, or understanding; a revelation. (Also: the Christian feast of January 6th, capitalised.)</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-8" onclick="u1ToggleMaster(event,'u1-card-8')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"I'm doing a new book at the moment called '<em>Epiphany</em>,' which is based on a series of interviews with people about how they discovered their talent."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">have an <b>epiphany</b></span><span class="colloc">experience an <b>epiphany</b></span>
+        <span class="colloc">a sudden <b>epiphany</b></span><span class="colloc">moment of <b>epiphany</b></span><span class="colloc">a creative <b>epiphany</b></span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">She had an <em>epiphany</em> in the middle of the lecture: she had been studying the wrong subject for three years.<span class="source">Academic/personal context</span></div>
+      <div class="example">The artist described the first time he heard jazz as a kind of <em>epiphany</em> &mdash; everything suddenly made sense.<span class="source">Creative context</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">n</span>epiphany</span>
+        <span class="family-item"><span class="fi-pos">adj</span>epiphanic</span>
+        <span class="family-item"><span class="fi-pos">n (Christian feast)</span>Epiphany</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Originally a religious term, now widely used in everyday and literary English. Not overly formal &mdash; you can say "I had an epiphany" in conversation. Carries a sense of drama and profundity; do not use it for minor realisations.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">revelation &middot; breakthrough &middot; flash of insight &middot; awakening &middot; eureka moment</div></div>
+        <div class="syn-block ant"><h4>Antonyms</h4><div class="words">confusion &middot; gradual understanding &middot; slow dawning</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Robinson's book "<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" traces the sudden moments when people discovered what they were truly meant to do.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>Epiphany</strong> &mdash; The key phrase: <em>have / experience an epiphany</em>. This is always sudden, not gradual.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-9">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-9')">
+    <span class="word-num">09</span>
+    <div class="word-main">
+      <div class="word-title">prompted</div>
+      <div class="word-meta"><span class="tag pos">verb (past tense / past part.)</span><span class="tag reg">General &middot; Neutral</span></div>
+      <div class="word-definition">Caused or triggered someone to do something; inspired or motivated an action or thought.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-9" onclick="u1ToggleMaster(event,'u1-card-9')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"It's really <em>prompted</em> by a conversation I had with a wonderful woman... Gillian Lynne."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">prompted <b>by</b> something</span><span class="colloc">prompt <b>a response</b></span>
+        <span class="colloc">prompt <b>a question</b></span><span class="colloc">prompt <b>action</b></span><span class="colloc">prompt someone <b>to do</b></span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">The accident <em>prompted</em> the government to introduce stricter safety regulations.<span class="source">News/causal context</span></div>
+      <div class="example">What <em>prompted</em> you to study computer science?<span class="source">Conversational usage</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">v</span>prompt</span>
+        <span class="family-item"><span class="fi-pos">adj</span>prompt (= quick)</span>
+        <span class="family-item"><span class="fi-pos">adv</span>promptly</span>
+        <span class="family-item"><span class="fi-pos">n</span>prompt (AI/theatre)</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Versatile &mdash; used in formal writing and everyday speech. Also: the technical term in AI for the input text given to a language model (the 鎻愮ず璇?you use daily comes from this same word).
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">triggered &middot; sparked &middot; inspired &middot; motivated &middot; led to &middot; caused</div></div>
+        <div class="syn-block ant"><h4>Antonyms</h4><div class="words">discouraged &middot; deterred &middot; prevented &middot; suppressed</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">The book Robinson is writing was <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> by a memorable conversation with the choreographer Gillian Lynne.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>prompted</strong> &mdash; Note the passive: "was prompted <em>by</em>." Active version: "A conversation <em>prompted</em> him to write the book."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-10">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-10')">
+    <span class="word-num">10</span>
+    <div class="word-main">
+      <div class="word-title">choreographer</div>
+      <div class="word-meta"><span class="tag pos">noun</span><span class="tag reg">Performing arts</span></div>
+      <div class="word-definition">A person who designs and arranges the movements and sequences of steps for a dance performance or musical production.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-10" onclick="u1ToggleMaster(event,'u1-card-10')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"She's a <em>choreographer</em>, and everybody knows her work. She did 'Cats' and 'Phantom of the Opera.'"</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">award-winning <b>choreographer</b></span><span class="colloc">lead <b>choreographer</b></span>
+        <span class="colloc"><b>choreograph</b> a dance</span><span class="colloc">acclaimed <b>choreography</b></span><span class="colloc">film <b>choreographer</b></span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">Gillian Lynne is the <em>choreographer</em> behind some of the most famous musicals in West End history.<span class="source">Context from the TED talk</span></div>
+      <div class="example">The film's <em>choreographer</em> spent six months training the cast before filming began.<span class="source">Film industry context</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">n</span>choreographer</span>
+        <span class="family-item"><span class="fi-pos">v</span>choreograph</span>
+        <span class="family-item"><span class="fi-pos">n</span>choreography</span>
+        <span class="family-item"><span class="fi-pos">adj</span>choreographic</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Specific to the performing arts. Used in formal and journalistic contexts when discussing theatre, dance, or film. The professional title; in casual speech you might say "the person who designed the dances."
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Related terms</h4><div class="words">dance director &middot; movement director</div></div>
+        <div class="syn-block ant"><h4>Other production roles</h4><div class="words">director &middot; composer &middot; set designer</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">If Gillian's teachers had told her to sit still, the world would never have known the brilliant <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> she became.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>choreographer</strong> &mdash; Verb: <em>choreograph</em>. Art form: <em>choreography</em>. "She choreographed the entire show" = she designed all its dances.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-11">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-11')">
+    <span class="word-num">11</span>
+    <div class="word-main">
+      <div class="word-title">fidget</div>
+      <div class="word-meta"><span class="tag pos">verb / noun</span><span class="tag reg">Informal &middot; Everyday</span></div>
+      <div class="word-definition">To make small, restless, or nervous movements &mdash; such as tapping, shifting, or wiggling &mdash; especially when it is difficult to sit still.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-11" onclick="u1ToggleMaster(event,'u1-card-11')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"She couldn't concentrate; she was <em>fidgeting</em>. I think now they'd say she had ADHD."</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc"><b>fidget</b> in one's seat</span><span class="colloc"><b>fidget</b> nervously</span>
+        <span class="colloc">stop <b>fidgeting</b></span><span class="colloc">fidget <b>with</b> something</span><span class="colloc"><b>fidget</b> spinner</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">The student <em>fidgeted</em> constantly in her chair, unable to focus on the lecture.<span class="source">Classroom context</span></div>
+      <div class="example">He <em>fidgeted</em> with his pen during the interview, betraying his nervousness.<span class="source">Social context</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">v</span>fidget</span>
+        <span class="family-item"><span class="fi-pos">n</span>fidget (person who fidgets)</span>
+        <span class="family-item"><span class="fi-pos">n</span>the fidgets (restlessness)</span>
+        <span class="family-item"><span class="fi-pos">adj</span>fidgety</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Informal and conversational. Very common in everyday English. "Stop fidgeting!" is something parents and teachers say frequently. A "fidget spinner" is a popular toy built around this concept.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">squirm &middot; wriggle &middot; shift &middot; twitch &middot; be restless</div></div>
+        <div class="syn-block ant"><h4>Antonyms</h4><div class="words">sit still &middot; remain composed &middot; concentrate calmly</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Gillian couldn't concentrate in class and kept <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> &mdash; behaviour that today might be labelled ADHD.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>fidgeting</strong> &mdash; Continuous form (-ing) is most natural after "kept." Adjective form: <em>fidgety</em>. "She was a very fidgety child."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-12">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-12')">
+    <span class="word-num">12</span>
+    <div class="word-main">
+      <div class="word-title">oak-paneled</div>
+      <div class="word-meta"><span class="tag pos">adjective (compound)</span><span class="tag reg">Descriptive &middot; British / Literary</span></div>
+      <div class="word-definition">Describing a room or space whose walls are lined with panels of oak wood &mdash; a traditional feature of formal, authoritative, or old-fashioned British institutional spaces.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-12" onclick="u1ToggleMaster(event,'u1-card-12')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"Anyway, she went to see this specialist. So, this <em>oak-paneled</em> room, and she was there with her mother..."</div>
+    </div>
+    <div class="section"><div class="section-title">Why this word matters (atmosphere-building)</div>
+      Robinson uses <em>oak-paneled</em> deliberately. It paints a picture of a stiff, formal, traditional medical office &mdash; implying authority and rigidity. This sets up the contrast with Gillian's vibrant, physical energy. <strong>One adjective carries all of that meaning.</strong> This is a key technique in spoken and written English.
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc">oak-paneled <b>room</b></span><span class="colloc">oak-paneled <b>walls</b></span>
+        <span class="colloc">oak-paneled <b>office</b></span><span class="colloc">wood-paneled <b>study</b></span><span class="colloc">paneled <b>ceiling</b></span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">She sat nervously in the <em>oak-paneled</em> boardroom, surrounded by portraits of former chairmen.<span class="source">Corporate/formal context</span></div>
+      <div class="example">The solicitor's <em>oak-paneled</em> office smelled of old books and furniture polish.<span class="source">British professional setting</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">n</span>panel</span>
+        <span class="family-item"><span class="fi-pos">n</span>paneling (AmE) / panelling (BrE)</span>
+        <span class="family-item"><span class="fi-pos">adj</span>paneled / panelled</span>
+        <span class="family-item"><span class="fi-pos">adj</span>wood-paneled</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Descriptive and slightly literary. Very British in connotation &mdash; conjures old schools, law firms, and doctors' surgeries. Used to create atmosphere more than to convey information.
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Gillian sat silently in the grand, <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> room, waiting while the doctor spoke to her mother.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>oak-paneled</strong> &mdash; This is a compound adjective, always hyphenated. The visual of the room &mdash; formal, traditional, imposing &mdash; contrasts perfectly with Gillian's joyful dancing a minute later.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" id="u1-card-13">
+  <div class="card-head" onclick="u1ToggleCard('u1-card-13')">
+    <span class="word-num">13</span>
+    <div class="word-main">
+      <div class="word-title">audition</div>
+      <div class="word-meta"><span class="tag pos">verb / noun</span><span class="tag reg">Performing arts &middot; Widely known</span></div>
+      <div class="word-definition">As a noun: a tryout or trial performance to demonstrate skills for a role, school place, or professional position. As a verb: to perform in such a tryout, or to evaluate performers.</div>
+    </div>
+    <button class="master-btn" id="mb-u1-card-13" onclick="u1ToggleMaster(event,'u1-card-13')" title="Mark as mastered">&#10003;</button>
+    <span class="toggle-icon">&#9662;</span>
+  </div>
+  <div class="card-body">
+    <div class="section"><div class="section-title">From the Transcript</div>
+      <div class="transcript-quote">"She was eventually <em>auditioned</em> for the Royal Ballet School."</div>
+    </div>
+    <div class="section"><div class="section-title">Note on your Chinese translation</div>
+      <div class="note-box">Your translation was "娴烽€? (large-scale open audition), but <em>audition</em> is broader &mdash; it refers to any trial performance to earn a place, and can be small and private. "娴烽€? specifically suggests a mass, open-call competition like a talent show. For the Royal Ballet School, a more precise translation would be <b>璇曢暅 / 璇曟紨 / 閬撮€?/b>.</div>
+    </div>
+    <div class="section"><div class="section-title">Common Collocations</div>
+      <div class="collocations">
+        <span class="colloc"><b>audition</b> for a role</span><span class="colloc"><b>audition</b> for a school</span>
+        <span class="colloc">hold <b>auditions</b></span><span class="colloc">pass / fail an <b>audition</b></span><span class="colloc">be called back for <b>auditions</b></span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Example Sentences</div>
+      <div class="example">She <em>auditioned</em> for the Royal Ballet School at thirteen and was accepted immediately.<span class="source">Context from the TED talk</span></div>
+      <div class="example">The director is <em>holding auditions</em> for the new production next Tuesday.<span class="source">Theatre context</span></div>
+    </div>
+    <div class="section"><div class="section-title">Word Family</div>
+      <div class="family-grid">
+        <span class="family-item"><span class="fi-pos">n</span>audition</span>
+        <span class="family-item"><span class="fi-pos">v</span>audition</span>
+        <span class="family-item"><span class="fi-pos">n</span>auditorium</span>
+        <span class="family-item"><span class="fi-pos">adj</span>auditory</span>
+        <span class="family-item"><span class="fi-pos">n</span>audience</span>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Register Notes</div>
+      Well-known in performing arts contexts. Both noun and verb forms are common. Note the preposition: <em>audition <b>for</b></em> something. "She was auditioned" (passive) means the school gave her the audition.
+    </div>
+    <div class="section"><div class="section-title">Synonyms / Antonyms</div>
+      <div class="syn-ant">
+        <div class="syn-block syn"><h4>Synonyms</h4><div class="words">tryout &middot; trial performance &middot; screen test (film) &middot; try out for</div></div>
+        <div class="syn-block ant"><h4>Contrast</h4><div class="words">be cast directly &middot; be appointed without a trial</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">Cloze Practice</div>
+      <div class="cloze-wrap">
+        <div class="cloze-sentence">Thanks to her teacher's advice, Gillian enrolled in dance school and eventually <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> for the Royal Ballet School.</div>
+        <button class="reveal-btn" onclick="u1RevealCloze(this)">Reveal Answer</button>
+        <div class="cloze-answer"><strong>auditioned</strong> &mdash; Preposition: <em>audition <b>for</b></em> something. "She auditioned <em>for</em> the lead role / <em>for</em> a place at the school."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  Based on Ken Robinson's TED Talk "Do Schools Kill Creativity?" (2006) &nbsp;&middot;&nbsp; Unit 1 Vocabulary &nbsp;&middot;&nbsp; NJU English
+</footer>
+  </section>
+
+  <section class="chapter-section unit2" id="unit2-section">
+<header>
+  <p class="eyebrow">Creativity and AI - Demis Hassabis Lecture</p>
+  <h1>Unit 2 Vocabulary</h1>
+  <p>61 entries from Unit 2 Part 1 and Part 2 - click any card to expand - mark words as mastered when ready</p>
+</header>
+
+<div class="controls">
+  <div style="display:flex;align-items:center;gap:.7rem;flex:1 1 260px;">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="u2-progressFill"></div></div>
+    <span class="progress-label" id="u2-progressLabel">0 / 61 mastered</span>
+  </div>
+  <button class="btn secondary" onclick="u2ExpandAll()">Expand All</button>
+  <button class="btn secondary" onclick="u2CollapseAll()">Collapse All</button>
+  <button class="btn" onclick="u2ResetMastered()">Reset Progress</button>
+</div>
+
+<div class="cards-grid" id="u2-cardsGrid"></div>
+
+<footer>
+  Based on the Unit 2 handouts and transcripts for "Creativity and AI" - Unit 2 Vocabulary - NJU English
+</footer>
+  </section>
+
+<script>
+  const chapterTabs = [...document.querySelectorAll('.chapter-tab')];
+  const chapterSections = [...document.querySelectorAll('.chapter-section')];
+
+  function setActiveTab(tab) {
+    chapterTabs.forEach((button) => button.classList.toggle('active', button.dataset.tab === tab));
+    chapterSections.forEach((section) => section.classList.toggle('active', section.id === tab + '-section'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  chapterTabs.forEach((button) => {
+    button.addEventListener('click', () => setActiveTab(button.dataset.tab));
+  });
+
+  function updateSectionProgress(mastered, total, fillId, labelId) {
+    const count = mastered.size;
+    document.getElementById(fillId).style.width = (count / total * 100) + '%';
+    document.getElementById(labelId).textContent = count + ' / ' + total + ' mastered';
+  }
+
+  function applySectionMastered(id, buttonId, markText) {
+    const btn = document.getElementById(buttonId + id);
+    const card = document.getElementById(id);
+    if (!btn || !card) return;
+    btn.classList.add('done');
+    const meta = card.querySelector('.word-meta');
+    if (meta && !meta.querySelector('.tag.mastered')) {
+      const t = document.createElement('span');
+      t.className = 'tag mastered';
+      t.textContent = markText;
+      meta.appendChild(t);
+    }
+  }
+
+  function removeSectionMastered(id, buttonId) {
+    const btn = document.getElementById(buttonId + id);
+    const card = document.getElementById(id);
+    if (!btn || !card) return;
+    btn.classList.remove('done');
+    const t = card.querySelector('.tag.mastered');
+    if (t) t.remove();
+  }
+
+  function toggleSectionCard(id) {
+    const card = document.getElementById(id);
+    if (card) card.classList.toggle('open');
+  }
+
+  function expandSectionCards(sectionId) {
+    document.querySelectorAll('#' + sectionId + ' .card').forEach((card) => card.classList.add('open'));
+  }
+
+  function collapseSectionCards(sectionId) {
+    document.querySelectorAll('#' + sectionId + ' .card').forEach((card) => card.classList.remove('open'));
+  }
+
+  function toggleSectionCloze(btn) {
+    const ans = btn.nextElementSibling;
+    ans.classList.toggle('shown');
+    btn.textContent = ans.classList.contains('shown') ? 'Hide Answer' : 'Reveal Answer';
+  }
+
+  const u1Total = 13;
+  let u1Mastered = new Set();
+  try { u1Mastered = new Set(JSON.parse(localStorage.getItem('vocab_u1_mastered') || '[]')); } catch (e) {}
+
+  function u1Save() {
+    try { localStorage.setItem('vocab_u1_mastered', JSON.stringify([...u1Mastered])); } catch (e) {}
+  }
+  function u1UpdateProgress() { updateSectionProgress(u1Mastered, u1Total, 'u1-progressFill', 'u1-progressLabel'); }
+  function u1ApplyMastered(id) { applySectionMastered(id, 'mb-', 'Mastered'); }
+  function u1RemoveMastered(id) { removeSectionMastered(id, 'mb-'); }
+  function u1ToggleMaster(e, id) {
+    e.stopPropagation();
+    if (u1Mastered.has(id)) {
+      u1Mastered.delete(id);
+      u1RemoveMastered(id);
+    } else {
+      u1Mastered.add(id);
+      u1ApplyMastered(id);
+    }
+    u1Save();
+    u1UpdateProgress();
+  }
+  function u1ToggleCard(id) { toggleSectionCard(id); }
+  function u1ExpandAll() { expandSectionCards('unit1-section'); }
+  function u1CollapseAll() { collapseSectionCards('unit1-section'); }
+  function u1ResetMastered() {
+    if (!confirm('Reset all mastered progress?')) return;
+    u1Mastered.clear();
+    u1Save();
+    for (let i = 1; i <= u1Total; i++) u1RemoveMastered('u1-card-' + i);
+    u1UpdateProgress();
+  }
+  function u1RevealCloze(btn) { toggleSectionCloze(btn); }
+
+  const u2VocabData = [
+
+  {
+    word: "renowned", pos: "adj", register: "Formal / Academic", definition: "Widely known and admired for excellence.",
+    quote: "Demis Hassabis co-founded the <em>renowned</em> artificial intelligence lab DeepMind.",
+    collocations: ["a renowned lab", "a renowned scholar", "internationally renowned", "renowned for innovation"],
+    examples: [{ text: "The host introduced DeepMind as a <em>renowned</em> AI lab before the lecture began.", source: "Lecture context" }, { text: "She became <em>renowned</em> for her work on machine learning and ethics.", source: "Academic context" }],
+    family: ["adj renowned", "n renown", "adv renownedly"], note: "Usually positive and often used in introductions, profiles, and formal writing.", synonyms: ["famous", "celebrated", "distinguished"], antonyms: ["unknown", "obscure"], cloze: "DeepMind was described as a __________ artificial intelligence lab in the lecture introduction.", answer: "renowned"
+  },
+  {
+    word: "prodigy", pos: "noun", register: "Neutral / High-frequency", definition: "A young person with exceptional talent or ability.",
+    quote: "He was introduced as a former chess <em>prodigy</em>.",
+    collocations: ["a chess prodigy", "child prodigy", "mathematical prodigy", "musical prodigy"],
+    examples: [{ text: "The audience heard that Hassabis had been a chess <em>prodigy</em> before moving into AI research.", source: "Lecture context" }, { text: "The violin <em>prodigy</em> gave her first international performance at age ten.", source: "General usage" }],
+    family: ["n prodigy", "adj prodigious", "adv prodigiously"], note: "Strong praise word, often used for unusual ability at a very young age.", synonyms: ["genius", "whiz kid", "wonder child"], antonyms: ["beginner", "amateur"], cloze: "The Guardian profile highlighted his early success as a chess __________.", answer: "prodigy"
+  },
+  {
+    word: "eclectic", pos: "adj", register: "Academic / Descriptive", definition: "Drawing ideas, styles, or influences from many different sources.",
+    quote: "The talk drew on his <em>eclectic</em> experiences as a researcher, neuroscientist, and game designer.",
+    collocations: ["an eclectic background", "eclectic interests", "an eclectic mix", "eclectic tastes"],
+    examples: [{ text: "His <em>eclectic</em> career made him a persuasive speaker on creativity and AI.", source: "Lecture context" }, { text: "The course has an <em>eclectic</em> reading list ranging from philosophy to computer science.", source: "Academic context" }],
+    family: ["adj eclectic", "n eclecticism", "n eclecticist"], note: "Usually positive; suggests breadth rather than lack of focus.", synonyms: ["diverse", "wide-ranging", "varied"], antonyms: ["narrow", "uniform"], cloze: "The introduction emphasized his __________ experiences across AI, neuroscience, and design.", answer: "eclectic"
+  },
+  {
+    word: "without further ado", pos: "fixed phrase", register: "Formal spoken transition", definition: "Without delaying any longer; immediately.",
+    quote: "Without further ado, I'd love you to give a big welcome to Demis Hassabis.",
+    collocations: ["proceed without further ado", "and now, without further ado", "begin without further ado"],
+    examples: [{ text: "The host ended the introduction and, <em>without further ado</em>, invited the speaker to begin.", source: "Lecture context" }, { text: "<em>Without further ado</em>, let us move to the main argument of today's presentation.", source: "Presentation context" }],
+    family: ["phrase without further ado", "n ado"], note: "Common in speeches and hosting; it sounds more polished than simply saying 'let's start.'", synonyms: ["immediately", "without delay", "straightaway"], antonyms: ["after a long preamble", "eventually"], cloze: "The host said, '__________, I'd love you to give a big welcome to Demis Hassabis.'", answer: "without further ado"
+  },
+  {
+    word: "inaugural", pos: "adj", register: "Formal / Institutional", definition: "Occurring first in a series; marking the official beginning of something.",
+    quote: "He said it was an honor to give the <em>inaugural</em> Rothschild lecture.",
+    collocations: ["an inaugural lecture", "an inaugural event", "the inaugural season", "inaugural address"],
+    examples: [{ text: "Hassabis referred to the event as the <em>inaugural</em> Rothschild lecture at the Royal Academy.", source: "Lecture context" }, { text: "The university's <em>inaugural</em> research forum drew scholars from across Asia.", source: "Institutional context" }],
+    family: ["adj inaugural", "v inaugurate", "n inauguration"], note: "Often used for lectures, ceremonies, speeches, and first official events.", synonyms: ["first", "opening", "initial"], antonyms: ["final", "closing"], cloze: "He described the event as the __________ Rothschild lecture.", answer: "inaugural"
+  },
+  {
+    word: "amphitheater", pos: "noun", register: "Formal / Descriptive", definition: "A circular or semicircular venue with rising rows of seats; also a tiered lecture space.",
+    quote: "He praised the wonderful and inspiring <em>amphitheater</em> they were sitting in.",
+    collocations: ["a Roman amphitheater", "an open-air amphitheater", "lecture amphitheater", "sit in the amphitheater"],
+    examples: [{ text: "The speaker began by admiring the inspiring <em>amphitheater</em> at the Royal Academy.", source: "Lecture context" }, { text: "Our first-year biology class meets in a large <em>amphitheater</em> with tiered seating.", source: "Campus context" }],
+    family: ["n amphitheater"], note: "In academic settings, it can describe a stepped lecture hall as well as a historical performance venue.", synonyms: ["auditorium", "tiered hall"], antonyms: ["flat classroom"], cloze: "The talk was delivered in a beautiful, inspiring __________.", answer: "amphitheater"
+  },
+  {
+    word: "rush headlong into", pos: "verb phrase", register: "Vivid / Idiomatic", definition: "To move into something very quickly and often without enough caution.",
+    quote: "He said dialogue between arts and sciences would matter more as we <em>rush headlong into</em> the modern technological world.",
+    collocations: ["rush headlong into change", "rush headlong into danger", "rush headlong into the future"],
+    examples: [{ text: "The lecture warned that as we <em>rush headlong into</em> a technological world, dialogue becomes more vital.", source: "Lecture context" }, { text: "Universities should not <em>rush headlong into</em> AI adoption without clear policies.", source: "Policy context" }],
+    family: ["adj headlong", "adv headlong"], note: "Usually suggests speed plus insufficient reflection or restraint.", synonyms: ["plunge into", "charge into", "hurtle into"], antonyms: ["ease into", "approach cautiously"], cloze: "He argued that scientific and artistic dialogue matters as we __________ the modern technological world.", answer: "rush headlong into"
+  },
+  {
+    word: "roadmap", pos: "noun", register: "Business / Academic", definition: "A clear plan that shows stages, priorities, or direction.",
+    quote: "He said DeepMind had an ambitious <em>roadmap</em> that it was still carrying out.",
+    collocations: ["an ambitious roadmap", "a strategic roadmap", "follow a roadmap", "set out a roadmap"],
+    examples: [{ text: "DeepMind's ambitious <em>roadmap</em> was presented as part of its long-term mission.", source: "Lecture context" }, { text: "The department released a three-year <em>roadmap</em> for digital teaching reform.", source: "Planning context" }],
+    family: ["n roadmap"], note: "Often used metaphorically in strategy, management, and research planning.", synonyms: ["plan", "blueprint", "strategy"], antonyms: ["confusion", "improvisation"], cloze: "The company had an ambitious __________ for advancing artificial intelligence.", answer: "roadmap"
+  },
+  {
+    word: "fuse together", pos: "verb phrase", register: "Academic / Metaphorical", definition: "To combine two or more things into a unified whole.",
+    quote: "DeepMind wanted to <em>fuse together</em> the best from academia and the startup world.",
+    collocations: ["fuse together ideas", "fuse together disciplines", "fuse together art and science"],
+    examples: [{ text: "The lecture described DeepMind's goal of <em>fusing together</em> academic thinking and startup energy.", source: "Lecture context" }, { text: "The course tries to <em>fuse together</em> design practice and computational theory.", source: "Academic context" }],
+    family: ["v fuse", "n fusion", "adj fused"], note: "Useful when stressing integration rather than simple addition.", synonyms: ["combine", "blend", "integrate"], antonyms: ["separate", "split"], cloze: "Their model aimed to __________ the best of academia with the best of startups.", answer: "fuse together"
+  },
+  {
+    word: "academia", pos: "noun", register: "Formal / Institutional", definition: "The world of universities, scholarship, and academic research.",
+    quote: "He contrasted the best from <em>academia</em> with the pace of the startup world.",
+    collocations: ["the world of academia", "academia and industry", "stay in academia", "leave academia"],
+    examples: [{ text: "The speaker wanted to borrow blue-sky thinking from <em>academia</em> and speed from startups.", source: "Lecture context" }, { text: "Many researchers now move between <em>academia</em> and industry labs.", source: "Professional context" }],
+    family: ["n academia", "adj academic", "n academic"], note: "Usually treated as an uncountable noun for the academic world as a whole.", synonyms: ["the academic world", "scholarship"], antonyms: ["industry", "commerce"], cloze: "He argued that science could move faster by combining the best of __________ and the startup world.", answer: "academia"
+  },
+  {
+    word: "startups", pos: "noun", register: "Business / Innovation", definition: "New companies, especially ones aiming for rapid growth through innovation.",
+    quote: "He admired the focus, energy, and pace of the world's best <em>startups</em>.",
+    collocations: ["tech startups", "early-stage startups", "startup culture", "fund startups"],
+    examples: [{ text: "The lecture praised the energy and pace found in strong <em>startups</em>.", source: "Lecture context" }, { text: "University incubators often connect researchers with local <em>startups</em>.", source: "Business context" }],
+    family: ["n startup", "adj startup"], note: "Usually plural when speaking generally about the innovation ecosystem.", synonyms: ["new ventures", "young companies"], antonyms: ["established corporations"], cloze: "DeepMind wanted the best thinking from academia and the best pace from __________.", answer: "startups"
+  },
+  {
+    word: "mutually exclusive", pos: "adj phrase", register: "Formal / Logical", definition: "Unable to exist, happen, or be true at the same time.",
+    quote: "He said the two environments did not have to be <em>mutually exclusive</em>.",
+    collocations: ["not mutually exclusive", "two mutually exclusive options", "mutually exclusive categories"],
+    examples: [{ text: "The lecture argued that academia and startups are not <em>mutually exclusive</em> models for scientific progress.", source: "Lecture context" }, { text: "In policy design, speed and safety should not be treated as <em>mutually exclusive</em> goals.", source: "General usage" }],
+    family: ["adv mutually", "adj exclusive", "n exclusivity"], note: "Common in logic, mathematics, and argumentation when contrasting alternatives.", synonyms: ["incompatible", "contradictory"], antonyms: ["compatible", "coexisting"], cloze: "He insisted that academic ambition and startup pace were not __________.", answer: "mutually exclusive"
+  },
+  {
+    word: "articulate", pos: "verb", register: "Formal / Academic", definition: "To express an idea clearly and effectively in words.",
+    quote: "He said DeepMind could <em>articulate</em> its mission as a two-step mission.",
+    collocations: ["articulate a vision", "articulate a concern", "clearly articulate", "articulate an argument"],
+    examples: [{ text: "He <em>articulated</em> DeepMind's mission in two steps: solve intelligence, then use it to solve other problems.", source: "Lecture context" }, { text: "Strong presenters can <em>articulate</em> complex ideas without oversimplifying them.", source: "Presentation context" }],
+    family: ["v articulate", "adj articulate", "n articulation"], note: "The verb focuses on clear verbal expression; the adjective describes a person who speaks clearly.", synonyms: ["express", "state", "formulate"], antonyms: ["mumble", "obscure"], cloze: "A good lecturer can __________ an ambitious vision in language the audience can follow.", answer: "articulate"
+  },
+  {
+    word: "far-fetched", pos: "adj", register: "Informal to neutral", definition: "Difficult to believe because it seems unlikely or unrealistic.",
+    quote: "He hoped the idea would not seem so <em>far-fetched</em> by the end of the talk.",
+    collocations: ["sound far-fetched", "a far-fetched claim", "not so far-fetched after all"],
+    examples: [{ text: "The speaker admitted that solving almost everything with AI might sound <em>far-fetched</em> at first.", source: "Lecture context" }, { text: "Ten years ago, AI-generated scientific hypotheses seemed <em>far-fetched</em> to many researchers.", source: "General usage" }],
+    family: ["adj far-fetched"], note: "Often used to evaluate claims, ideas, theories, or scenarios.", synonyms: ["implausible", "unbelievable", "unlikely"], antonyms: ["credible", "plausible"], cloze: "At first, the idea of solving almost everything with AI may seem __________.", answer: "far-fetched"
+  },
+  {
+    word: "prosaically", pos: "adv", register: "Formal / Literary", definition: "In a plain, practical, or ordinary way rather than an imaginative one.",
+    quote: "More <em>prosaically</em>, he said the plan was to build the world's first general-purpose learning system.",
+    collocations: ["put it prosaically", "more prosaically speaking", "explain prosaically"],
+    examples: [{ text: "After describing a grand mission, he <em>prosaically</em> restated it as building a general-purpose learning system.", source: "Lecture context" }, { text: "The proposal sounds visionary, but <em>prosaically</em> it is a staffing and infrastructure problem.", source: "Analytical writing" }],
+    family: ["adv prosaically", "adj prosaic", "n prose"], note: "Useful when shifting from lofty vision to practical explanation.", synonyms: ["plainly", "practically", "matter-of-factly"], antonyms: ["poetically", "imaginatively"], cloze: "He restated the mission more __________ as building a general-purpose learning system.", answer: "prosaically"
+  },
+  {
+    word: "school", pos: "noun", register: "Academic / Abstract", definition: "A group of people who share a particular theory, style, or way of thinking.",
+    quote: "He said AI had long fallen between two <em>schools</em> of thought.",
+    collocations: ["a school of thought", "competing schools", "the realist school", "belong to a school"],
+    examples: [{ text: "The lecture contrasted two <em>schools</em> of AI: expert systems and learning systems.", source: "Lecture context" }, { text: "In linguistics, each theoretical <em>school</em> emphasizes different assumptions about language.", source: "Academic context" }],
+    family: ["n school"], note: "This meaning is abstract; it does not refer to a physical school building.", synonyms: ["tradition", "approach", "camp"], antonyms: ["consensus"], cloze: "The speaker described expert systems and learning systems as two __________ of thought.", answer: "schools"
+  },
+  {
+    word: "encapsulate", pos: "verb", register: "Academic / Formal", definition: "To express or contain the essential idea of something in compact form.",
+    quote: "Thousands of rules tried to <em>encapsulate</em> the solution to a problem in expert systems.",
+    collocations: ["encapsulate an idea", "encapsulate a problem", "encapsulate the spirit of", "encapsulate knowledge"],
+    examples: [{ text: "Expert systems tried to <em>encapsulate</em> knowledge in vast sets of if-then rules.", source: "Lecture context" }, { text: "That one sentence neatly <em>encapsulates</em> the tension between control and creativity.", source: "Analytical writing" }],
+    family: ["v encapsulate", "n encapsulation"], note: "Often used for summarizing, compressing, or formally representing knowledge.", synonyms: ["summarize", "capture", "condense"], antonyms: ["expand", "unpack"], cloze: "In early AI, programmers tried to __________ solutions inside rule-based databases.", answer: "encapsulate"
+  },
+  {
+    word: "brittle", pos: "adj", register: "Technical / Figurative", definition: "Easily broken physically, or fragile and unable to handle change.",
+    quote: "Expert systems were described as quite <em>brittle</em> when faced with the unexpected.",
+    collocations: ["a brittle material", "a brittle system", "brittle logic", "psychologically brittle"],
+    examples: [{ text: "The lecture criticized expert systems as <em>brittle</em> because they struggled with unfamiliar situations.", source: "Lecture context" }, { text: "A highly optimized but rigid model can be <em>brittle</em> outside the training data.", source: "Technical context" }],
+    family: ["adj brittle", "n brittleness"], note: "A useful metaphor in computing for systems that fail when conditions change.", synonyms: ["fragile", "breakable", "rigid"], antonyms: ["robust", "resilient"], cloze: "Because they could not handle surprises, expert systems were often __________.", answer: "brittle"
+  },
+  {
+    word: "in minute detail", pos: "phrase", register: "Formal", definition: "With extreme precision and attention to very small points.",
+    quote: "Programmers had to understand the solution <em>in minute detail</em> in order to hard-code it.",
+    collocations: ["describe in minute detail", "explain in minute detail", "study in minute detail"],
+    examples: [{ text: "The lecture noted that expert-system designers had to know solutions <em>in minute detail</em> before coding them.", source: "Lecture context" }, { text: "A lab notebook should record each step <em>in minute detail</em> so others can replicate the experiment.", source: "Research context" }],
+    family: ["adj minute", "n detail", "adj detailed"], note: "Here minute is pronounced /mai-NYOOT/ and means very small, not 60 seconds.", synonyms: ["meticulously", "precisely", "thoroughly"], antonyms: ["roughly", "generally"], cloze: "To build rule-based systems, programmers needed to understand the solution __________.", answer: "in minute detail"
+  },
+  {
+    word: "advent", pos: "noun", register: "Formal / Academic", definition: "The arrival or beginning of an important development.",
+    quote: "The <em>advent</em> of learning systems helped drive the recent AI revolution.",
+    collocations: ["the advent of AI", "the advent of modern medicine", "since the advent of"],
+    examples: [{ text: "The lecture linked the recent rejuvenation of AI to the <em>advent</em> of learning systems that finally worked.", source: "Lecture context" }, { text: "The <em>advent</em> of large language models has changed classroom policy discussions.", source: "Current academic context" }],
+    family: ["n advent"], note: "More formal than arrival and often used for historically significant changes.", synonyms: ["arrival", "emergence", "onset"], antonyms: ["disappearance", "end"], cloze: "He connected the AI revolution to the __________ of effective learning systems.", answer: "advent"
+  },
+  {
+    word: "rejuvenation", pos: "noun", register: "Formal / Positive", definition: "Renewed energy, strength, or growth after decline.",
+    quote: "Learning systems were said to be behind the <em>rejuvenation</em> of AI in the last decade.",
+    collocations: ["economic rejuvenation", "urban rejuvenation", "the rejuvenation of a field"],
+    examples: [{ text: "The speaker described the last decade as a period of <em>rejuvenation</em> in artificial intelligence.", source: "Lecture context" }, { text: "The new grant brought real <em>rejuvenation</em> to a research area that had been neglected.", source: "Academic context" }],
+    family: ["n rejuvenation", "v rejuvenate", "adj rejuvenated"], note: "Implies recovery plus fresh vitality, not just simple continuation.", synonyms: ["renewal", "revival", "revitalization"], antonyms: ["decline", "stagnation"], cloze: "He linked modern learning systems to the recent __________ of AI.", answer: "rejuvenation"
+  },
+  {
+    word: "the hit of the time", pos: "phrase", register: "Informal / Idiomatic", definition: "The person or thing that is extremely popular or dominant at a particular moment.",
+    quote: "Kasparov was described as the world chess champion, the <em>hit of the time</em>.",
+    collocations: ["the hit of the summer", "the hit of the year", "the hit at the time"],
+    examples: [{ text: "In the lecture's chess story, Kasparov was still the <em>hit of the time</em> when Deep Blue challenged him.", source: "Lecture context" }, { text: "That app became the <em>hit of the time</em> among university students during the pandemic.", source: "General usage" }],
+    family: ["n hit"], note: "More conversational than formal; often about popularity or public attention.", synonyms: ["sensation", "star", "big success"], antonyms: ["flop", "failure"], cloze: "Kasparov was still the chess world champion and the __________ when the match happened.", answer: "hit of the time"
+  },
+  {
+    word: "brute", pos: "noun", register: "Vivid / Figurative", definition: "A physically powerful but crude thing or creature; figuratively, a huge unwieldy machine.",
+    quote: "Kasparov was said to be facing a big <em>brute</em> of a machine.",
+    collocations: ["a brute of a machine", "brute force", "a brutal brute"],
+    examples: [{ text: "The speaker called Deep Blue a big <em>brute</em> of a machine packed with pre-programmed rules.", source: "Lecture context" }, { text: "The old server is a <em>brute</em>, but it still handles the workload.", source: "Figurative tech usage" }],
+    family: ["n brute", "adj brutal", "adv brutally"], note: "In computing, brute often implies raw power without elegance or flexibility.", synonyms: ["beast", "monster", "hulking machine"], antonyms: ["delicate tool", "elegant system"], cloze: "Kasparov held his own against a huge __________ of a machine.", answer: "brute"
+  },
+  {
+    word: "myriad of", pos: "phrase", register: "Formal / Literary", definition: "A very large number of; countless.",
+    quote: "Humans can do a <em>myriad of</em> things that Deep Blue could not do.",
+    collocations: ["a myriad of possibilities", "a myriad of tasks", "a myriad of reasons"],
+    examples: [{ text: "The lecture contrasted chess software with humans, who can perform a <em>myriad of</em> everyday tasks.", source: "Lecture context" }, { text: "Researchers now use AI for a <em>myriad of</em> medical and industrial applications.", source: "General usage" }],
+    family: ["adj myriad", "n myriad"], note: "Many style guides prefer myriad without of, but a myriad of is now common and acceptable.", synonyms: ["countless", "innumerable", "a vast number of"], antonyms: ["a handful of", "few"], cloze: "Humans can do a __________ things beyond playing one specialized game.", answer: "myriad of"
+  },
+  {
+    word: "notion", pos: "noun", register: "Neutral / Academic", definition: "An idea, concept, or belief, often still somewhat abstract.",
+    quote: "What Deep Blue lacked, he argued, was the <em>notion</em> of learning and generality.",
+    collocations: ["the notion of intelligence", "challenge a notion", "a vague notion", "traditional notions"],
+    examples: [{ text: "The lecture emphasized that Deep Blue lacked the <em>notion</em> of learning and generality.", source: "Lecture context" }, { text: "The paper challenges the <em>notion</em> that creativity belongs only to the arts.", source: "Academic writing" }],
+    family: ["n notion", "adj notional"], note: "Slightly softer than concept; it can suggest an idea that is still forming.", synonyms: ["idea", "concept", "belief"], antonyms: ["fact", "certainty"], cloze: "He said expert systems lacked the __________ of genuine learning.", answer: "notion"
+  },
+  {
+    word: "sensory apparatus", pos: "noun phrase", register: "Scientific", definition: "The system of organs or mechanisms used for sensing the environment.",
+    quote: "The agent interacts with the environment through its <em>sensory apparatus</em>.",
+    collocations: ["the visual apparatus", "human sensory apparatus", "sensory apparatus of the agent"],
+    examples: [{ text: "In the lecture diagram, the AI agent received observations through its <em>sensory apparatus</em>.", source: "Lecture context" }, { text: "A robot's <em>sensory apparatus</em> may include cameras, microphones, and touch sensors.", source: "Technical context" }],
+    family: ["adj sensory", "n sense", "n apparatus"], note: "Often used in scientific explanations of perception, biology, or robotics.", synonyms: ["sense system", "perceptual system"], antonyms: ["motor system"], cloze: "The agent's first contact with the environment comes through its __________.", answer: "sensory apparatus"
+  },
+  {
+    word: "incremental", pos: "adj", register: "Academic / Technical", definition: "Happening through small increases or step-by-step changes.",
+    quote: "The system updates itself in an <em>incremental</em> fashion until it reaches its goal.",
+    collocations: ["incremental change", "incremental improvement", "incremental update", "incremental gains"],
+    examples: [{ text: "The lecture described learning as an <em>incremental</em> cycle of action, feedback, and updating.", source: "Lecture context" }, { text: "Scientific progress is often <em>incremental</em>, even when the public notices only the breakthroughs.", source: "Academic context" }],
+    family: ["adj incremental", "n increment", "adv incrementally"], note: "Contrasts with sudden, radical, or revolutionary change.", synonyms: ["gradual", "step-by-step", "progressive"], antonyms: ["sudden", "dramatic"], cloze: "The agent improves in an __________ fashion through trial and error.", answer: "incremental"
+  },
+  {
+    word: "primate", pos: "noun / adj", register: "Scientific / Biological", definition: "A mammal belonging to the group that includes humans, apes, and monkeys.",
+    quote: "In the <em>primate</em> human brain, dopamine neurons implement a form of reinforcement learning.",
+    collocations: ["primate brain", "non-human primates", "primate species"],
+    examples: [{ text: "The lecture linked reinforcement learning to mechanisms in the <em>primate</em> brain.", source: "Lecture context" }, { text: "Comparative psychologists often study <em>primate</em> cognition to understand human learning.", source: "Scientific context" }],
+    family: ["n primate", "adj primate"], note: "Common in neuroscience, biology, and evolutionary discussion.", synonyms: ["ape", "higher mammal"], antonyms: ["non-primate mammal"], cloze: "He pointed to the dopamine system in the __________ brain as evidence for reinforcement learning.", answer: "primate"
+  },
+  {
+    word: "caveat", pos: "noun", register: "Formal / Academic", definition: "A warning, qualification, or limitation attached to a statement.",
+    quote: "He began with a <em>caveat</em>: his definitions did not cover all of intuition and creativity.",
+    collocations: ["an important caveat", "with one caveat", "add a caveat", "a caveat to the claim"],
+    examples: [{ text: "Before defining creativity, he offered a <em>caveat</em> that the definition was only one scientific way to discuss it.", source: "Lecture context" }, { text: "The study is promising, with one major <em>caveat</em>: the sample size was small.", source: "Academic writing" }],
+    family: ["n caveat"], note: "Very common in academic discussion when qualifying an argument.", synonyms: ["warning", "qualification", "reservation"], antonyms: ["guarantee", "certainty"], cloze: "He opened that section with a __________, noting that his definition was not exhaustive.", answer: "caveat"
+  },
+  {
+    word: "encompass", pos: "verb", register: "Formal / Academic", definition: "To include a wide range of things within one whole.",
+    quote: "He said his working definition did not <em>encompass</em> everything people mean by intuition and creativity.",
+    collocations: ["encompass a range of", "encompass all aspects", "widely encompass", "be encompassed by"],
+    examples: [{ text: "He admitted his scientific definition did not <em>encompass</em> every dimension of creativity.", source: "Lecture context" }, { text: "The new curriculum <em>encompasses</em> ethics, design, and data analysis.", source: "Academic context" }],
+    family: ["v encompass", "n compass"], note: "Common in formal writing when describing scope or coverage.", synonyms: ["include", "cover", "embrace"], antonyms: ["exclude", "omit"], cloze: "The speaker stressed that his operational definition did not __________ all possible meanings of creativity.", answer: "encompass"
+  },
+  {
+    word: "operationalize", pos: "verb", register: "Academic / Methodological", definition: "To define something abstract in measurable or testable terms.",
+    quote: "He wanted to <em>operationalize</em> definitions so they could be discussed scientifically.",
+    collocations: ["operationalize a concept", "operationalize creativity", "operationalize intelligence"],
+    examples: [{ text: "The lecture tried to <em>operationalize</em> creativity by defining it as synthesizing knowledge to produce a novel idea.", source: "Lecture context" }, { text: "Researchers must <em>operationalize</em> motivation before they can measure it reliably.", source: "Research methods" }],
+    family: ["v operationalize", "n operationalization", "adj operational"], note: "A key research-method word for turning ideas into observable variables or procedures.", synonyms: ["define for measurement", "make measurable"], antonyms: ["leave vague", "abstract away from"], cloze: "He tried to __________ intuition and creativity so they could be discussed scientifically.", answer: "operationalize"
+  },
+  {
+    word: "novel", pos: "adj", register: "Academic / Positive", definition: "New, original, and not merely repeated from what came before.",
+    quote: "He defined creativity as synthesizing knowledge to produce a <em>novel</em>, original idea.",
+    collocations: ["a novel idea", "novel research", "a novel approach", "scientifically novel"],
+    examples: [{ text: "In the lecture, creativity involved producing a <em>novel</em> idea rather than simply repeating old patterns.", source: "Lecture context" }, { text: "The team proposed a <em>novel</em> method for generating 3D scenes from 2D images.", source: "Research context" }],
+    family: ["adj novel", "n novelty", "adv novelly"], note: "In academic English, novel usually means new and original, not the book genre.", synonyms: ["original", "new", "innovative"], antonyms: ["conventional", "familiar"], cloze: "He linked creativity to the production of a __________, original idea.", answer: "novel"
+  },
+  {
+    word: "albeit", pos: "conj", register: "Formal / Written-like", definition: "Although; even though, especially when introducing a concession.",
+    quote: "AlphaGo demonstrated creativity, <em>albeit</em> in a constrained domain.",
+    collocations: ["small albeit important", "successful albeit limited", "useful albeit imperfect"],
+    examples: [{ text: "He argued that AlphaGo showed creativity, <em>albeit</em> within the restricted setting of a board game.", source: "Lecture context" }, { text: "The model is efficient, <em>albeit</em> less interpretable than earlier versions.", source: "Academic writing" }],
+    family: ["conj albeit"], note: "A compact formal alternative to although or even though.", synonyms: ["although", "though", "even if"], antonyms: ["because", "since"], cloze: "AlphaGo was creative, __________ still limited to a constrained domain.", answer: "albeit"
+  },
+  {
+    word: "constrain", pos: "verb", register: "Academic / Analytical", definition: "To limit what someone or something can do.",
+    quote: "The board-game setting still <em>constrained</em> what AlphaGo could achieve.",
+    collocations: ["constrain behavior", "constrain creativity", "be constrained by data", "severely constrained"],
+    examples: [{ text: "The lecture treated Go as a domain that still <em>constrained</em> machine creativity.", source: "Lecture context" }, { text: "Time pressure can <em>constrain</em> thoughtful discussion in seminars.", source: "General usage" }],
+    family: ["v constrain", "adj constrained", "n constraint"], note: "Often used in research, policy, and engineering to describe limits or restrictions.", synonyms: ["limit", "restrict", "confine"], antonyms: ["free", "enable"], cloze: "A narrow board-game environment can still __________ what an AI system can invent.", answer: "constrain"
+  },
+  {
+    word: "interpolation", pos: "noun", register: "Technical / AI", definition: "Creating something new by averaging or filling in within the range already covered by known examples.",
+    quote: "He called the first kind of machine creativity <em>interpolation</em>.",
+    collocations: ["linear interpolation", "image interpolation", "interpolation within the data range"],
+    examples: [{ text: "The lecture described <em>interpolation</em> as producing a new point still inside the space marked out by known examples.", source: "Lecture context" }, { text: "Many deep learning systems are excellent at <em>interpolation</em> but weaker at true invention.", source: "AI context" }],
+    family: ["n interpolation", "v interpolate", "adj interpolated"], note: "In the talk, it functions as a metaphor for a lower level of creativity based on existing patterns.", synonyms: ["in-between estimation", "averaging within range"], antonyms: ["extrapolation", "invention"], cloze: "He used the term __________ for creativity that stays within the space already covered by examples.", answer: "interpolation"
+  },
+  {
+    word: "extrapolation", pos: "noun", register: "Technical / Academic", definition: "Going beyond known examples to extend patterns or predictions outside the observed range.",
+    quote: "He described a higher level of creativity as <em>extrapolation</em> beyond the training examples.",
+    collocations: ["statistical extrapolation", "extrapolation beyond the data", "creative extrapolation"],
+    examples: [{ text: "AlphaGo was presented as capable of <em>extrapolation</em>, finding new moves beyond what humans had already seen.", source: "Lecture context" }, { text: "Forecasting often depends on careful <em>extrapolation</em> from limited trends.", source: "General usage" }],
+    family: ["n extrapolation", "v extrapolate", "adj extrapolative"], note: "In the lecture, this is more advanced than interpolation but still not full invention.", synonyms: ["projection", "extension beyond the known"], antonyms: ["interpolation", "mere repetition"], cloze: "He argued that AlphaGo showed __________ by finding new moves beyond the training examples.", answer: "extrapolation"
+  },
+  {
+    word: "crack", pos: "verb", register: "Informal / Problem-solving", definition: "To solve a difficult problem or break through an obstacle.",
+    quote: "He listed memory, analogy, and imagination as things AI still needs to <em>crack</em>.",
+    collocations: ["crack a problem", "crack the code", "crack the puzzle", "still trying to crack"],
+    examples: [{ text: "The lecture said AI researchers still need to <em>crack</em> concepts, analogy, memory, and imagination.", source: "Lecture context" }, { text: "After years of work, the lab finally <em>cracked</em> the optimization bottleneck.", source: "Research context" }],
+    family: ["v crack", "n crack", "adj crack"], note: "Common in speech and journalism for hard intellectual problems.", synonyms: ["solve", "break", "figure out"], antonyms: ["miss", "fail to solve"], cloze: "He named several capabilities that current AI systems still need to __________.", answer: "crack"
+  },
+  {
+    word: "analogy", pos: "noun", register: "Academic / Reasoning", definition: "A comparison that highlights similarity between two different things to aid understanding or reasoning.",
+    quote: "Reasoning by <em>analogy</em> was listed as one of the missing capabilities in current AI.",
+    collocations: ["draw an analogy", "reason by analogy", "a loose analogy", "false analogy"],
+    examples: [{ text: "The lecture treated reasoning by <em>analogy</em> as central to stronger forms of machine creativity.", source: "Lecture context" }, { text: "Teachers often use <em>analogy</em> to explain abstract mathematical ideas.", source: "Educational context" }],
+    family: ["n analogy", "adj analogous", "adv analogously"], note: "Important in logic, rhetoric, and cognitive science.", synonyms: ["comparison", "parallel"], antonyms: ["contrast", "difference"], cloze: "He argued that stronger AI will need reasoning by __________, not just pattern matching.", answer: "analogy"
+  },
+  {
+    word: "counterfactuals", pos: "noun", register: "Academic / Cognitive science", definition: "Imagined situations that are contrary to what actually happened or exists.",
+    quote: "Imagination matters because it lets us think about <em>counterfactuals</em>.",
+    collocations: ["counterfactual reasoning", "explore counterfactuals", "counterfactual scenario"],
+    examples: [{ text: "The lecture connected imagination to the ability to think through <em>counterfactuals</em> about what might happen under different plans.", source: "Lecture context" }, { text: "Historical analysis often relies on cautious <em>counterfactuals</em> to test causal claims.", source: "Academic usage" }],
+    family: ["n counterfactual", "adj counterfactual"], note: "Common in philosophy, history, cognitive science, and AI reasoning discussions.", synonyms: ["what-if scenarios", "alternative histories"], antonyms: ["facts", "actual events"], cloze: "Imagination helps humans reason about __________, not just the world as it is.", answer: "counterfactuals"
+  },
+  {
+    word: "reliant on", pos: "adj phrase", register: "Formal / Neutral", definition: "Dependent on something for support, functioning, or success.",
+    quote: "Memory was described as <em>reliant on</em> the hippocampus.",
+    collocations: ["reliant on memory", "reliant on data", "heavily reliant on", "overly reliant on"],
+    examples: [{ text: "The lecture explained that memory formation is <em>reliant on</em> the hippocampus.", source: "Lecture context" }, { text: "Modern forecasting is heavily <em>reliant on</em> high-quality data streams.", source: "General usage" }],
+    family: ["adj reliant", "v rely", "n reliance"], note: "Usually followed by on. Often slightly more formal than dependent on.", synonyms: ["dependent on", "based on"], antonyms: ["independent of"], cloze: "The speaker noted that memory is strongly __________ the hippocampus.", answer: "reliant on"
+  },
+  {
+    word: "hippocampus", pos: "noun", register: "Scientific / Neuroscience", definition: "A brain region crucial for forming memories and supporting imagination.",
+    quote: "Without the <em>hippocampus</em>, he said, you cannot form memories.",
+    collocations: ["damage to the hippocampus", "the hippocampus and memory", "hippocampal function"],
+    examples: [{ text: "The lecture centered the <em>hippocampus</em> in the discussion of memory and imagination.", source: "Lecture context" }, { text: "Neuroscientists often study the <em>hippocampus</em> to understand learning disorders.", source: "Scientific context" }],
+    family: ["n hippocampus", "adj hippocampal"], note: "A core neuroscience term; pronunciation matters in oral presentations.", synonyms: ["memory center"], antonyms: ["not applicable"], cloze: "He argued that without the __________, people cannot form memories normally.", answer: "hippocampus"
+  },
+  {
+    word: "impoverished", pos: "adj", register: "Formal / Evaluative", definition: "Poor, lacking richness, variety, or fullness.",
+    quote: "The patients' scene descriptions were much more <em>impoverished</em> than those of the control group.",
+    collocations: ["an impoverished description", "impoverished communities", "culturally impoverished", "emotionally impoverished"],
+    examples: [{ text: "Patients with hippocampal damage gave <em>impoverished</em> scene descriptions compared with controls.", source: "Lecture context" }, { text: "An overly generic essay often feels conceptually <em>impoverished</em>.", source: "Academic writing" }],
+    family: ["adj impoverished", "v impoverish", "n impoverishment"], note: "Can describe money poverty, but here it means reduced richness or quality.", synonyms: ["thin", "depleted", "meager"], antonyms: ["rich", "vivid", "full"], cloze: "Compared with controls, the patients produced much more __________ descriptions of imagined scenes.", answer: "impoverished"
+  },
+  {
+    word: "control cohort", pos: "noun phrase", register: "Research / Scientific", definition: "The comparison group in a study that is matched against the main experimental group.",
+    quote: "The patients were compared with a matched <em>control cohort</em>.",
+    collocations: ["matched control cohort", "compare with a control cohort", "healthy control cohort"],
+    examples: [{ text: "The lecture compared hippocampal patients with a matched <em>control cohort</em> to measure imagination richness.", source: "Lecture context" }, { text: "A reliable medical study usually includes an appropriate <em>control cohort</em>.", source: "Research methods" }],
+    family: ["n control", "n cohort"], note: "Common in experiments, especially clinical or psychological research.", synonyms: ["comparison group", "control group"], antonyms: ["experimental group"], cloze: "The patients' results were evaluated against a matched __________.", answer: "control cohort"
+  },
+  {
+    word: "disparate", pos: "adj", register: "Formal / Academic", definition: "Fundamentally different from each other; not naturally similar.",
+    quote: "The patients could not bind together <em>disparate</em> elements of a scene into a coherent whole.",
+    collocations: ["disparate elements", "disparate fields", "disparate data sources", "disparate groups"],
+    examples: [{ text: "The lecture explained that imagination requires binding <em>disparate</em> elements into one scene.", source: "Lecture context" }, { text: "Interdisciplinary research often connects <em>disparate</em> traditions that rarely meet.", source: "Academic context" }],
+    family: ["adj disparate", "n disparity"], note: "A strong formal word for substantial difference, not just minor variety.", synonyms: ["distinct", "unrelated", "different"], antonyms: ["similar", "uniform"], cloze: "They struggled to combine __________ scene elements into one mental image.", answer: "disparate"
+  },
+  {
+    word: "coherence", pos: "noun", register: "Academic / Analytical", definition: "Logical or structural unity; the quality of forming a connected whole.",
+    quote: "He called it a spatial <em>coherence</em> problem.",
+    collocations: ["spatial coherence", "narrative coherence", "internal coherence", "coherence of argument"],
+    examples: [{ text: "The lecture linked imagination failure to a lack of spatial <em>coherence</em> in scene construction.", source: "Lecture context" }, { text: "A strong essay needs both evidence and conceptual <em>coherence</em>.", source: "Academic writing" }],
+    family: ["n coherence", "adj coherent", "adv coherently"], note: "Useful for discussing writing, argument, perception, and scene construction.", synonyms: ["unity", "consistency", "connectedness"], antonyms: ["incoherence", "fragmentation"], cloze: "The speaker described the patients' difficulty as a problem of spatial __________.", answer: "coherence"
+  },
+  {
+    word: "give sb. a good flavor of", pos: "phrase", register: "Informal spoken presentation", definition: "To give someone a useful sense or impression of something, without being exhaustive.",
+    quote: "He said he hoped he had given the audience a good <em>flavor of</em> what was happening in AI.",
+    collocations: ["give a good flavor of the field", "give students a flavor of research", "get a flavor of"],
+    examples: [{ text: "Before moving to applications, he said he hoped the talk had given the audience a good <em>flavor of</em> current AI.", source: "Lecture context" }, { text: "This short seminar will give you a good <em>flavor of</em> what graduate study is like.", source: "Academic context" }],
+    family: ["n flavor"], note: "Common in spoken English; means an impression, not literal taste.", synonyms: ["give a sense of", "offer a feel for", "provide an impression of"], antonyms: ["mislead about", "obscure"], cloze: "He hoped the lecture had __________ what is happening at the cutting edge of AI.", answer: "given us a good flavor of"
+  },
+  {
+    word: "a whole host of", pos: "phrase", register: "Neutral / Spoken emphasis", definition: "A very large number of people, things, or possibilities.",
+    quote: "He mentioned a <em>whole host of</em> commercial applications for AI.",
+    collocations: ["a whole host of problems", "a whole host of applications", "a whole host of opportunities"],
+    examples: [{ text: "The application section listed <em>a whole host of</em> uses for AI in medicine, energy, education, and art.", source: "Lecture context" }, { text: "The new archive opens up <em>a whole host of</em> research questions.", source: "Academic context" }],
+    family: ["n host"], note: "Slightly conversational but common in talks and essays for strong quantity emphasis.", synonyms: ["many", "a wide range of", "numerous"], antonyms: ["very few", "a handful of"], cloze: "He pointed to __________ applications already emerging from AI research.", answer: "a whole host of"
+  },
+  {
+    word: "exoplanet", pos: "noun", register: "Scientific", definition: "A planet that orbits a star outside our solar system.",
+    quote: "He cited AI systems already used for discovering new <em>exoplanets</em>.",
+    collocations: ["discover an exoplanet", "an Earth-like exoplanet", "exoplanet detection"],
+    examples: [{ text: "Among the scientific applications, he mentioned using AI to discover new <em>exoplanets</em>.", source: "Lecture context" }, { text: "Astronomers use pattern recognition to identify possible <em>exoplanets</em> in telescope data.", source: "Science context" }],
+    family: ["n exoplanet"], note: "A specialist science word that often appears in astronomy and data-analysis contexts.", synonyms: ["extrasolar planet"], antonyms: ["planet in our solar system"], cloze: "He gave __________ discovery as one example of AI accelerating science.", answer: "exoplanet"
+  },
+  {
+    word: "plasma fusion reactor", pos: "noun phrase", register: "Scientific / Technical", definition: "A reactor system that aims to control extremely hot plasma in order to sustain nuclear fusion.",
+    quote: "He mentioned AI being used to help control <em>plasma fusion reactors</em>.",
+    collocations: ["control a plasma fusion reactor", "fusion reactor design", "plasma control"],
+    examples: [{ text: "The lecture listed control of <em>plasma fusion reactors</em> as a frontier scientific application for AI.", source: "Lecture context" }, { text: "Real-time prediction is crucial in a <em>plasma fusion reactor</em> because unstable plasma can damage equipment.", source: "Technical context" }],
+    family: ["n plasma", "n fusion", "n reactor"], note: "A compound technical term; in context it signals high-complexity scientific control problems.", synonyms: ["fusion reactor"], antonyms: ["not applicable"], cloze: "He highlighted AI work on controlling __________ as part of advanced scientific research.", answer: "plasma fusion reactors"
+  },
+  {
+    word: "retina", pos: "noun", register: "Medical / Biological", definition: "The light-sensitive layer at the back of the eye.",
+    quote: "He cited eye disease detection through <em>retina</em> scans.",
+    collocations: ["retina scan", "retinal disease", "the human retina", "retina imaging"],
+    examples: [{ text: "In the application section, he mentioned AI systems that detect eye disease from <em>retina</em> scans.", source: "Lecture context" }, { text: "High-resolution imaging helps clinicians identify subtle changes in the <em>retina</em>.", source: "Medical context" }],
+    family: ["n retina", "adj retinal"], note: "Retina is the noun; retinal is the adjective.", synonyms: ["retinal layer"], antonyms: ["not applicable"], cloze: "He used __________ scans as an example of medical image analysis by AI.", answer: "retina"
+  },
+  {
+    word: "bombarded with", pos: "verb phrase", register: "Vivid / Neutral", definition: "Overwhelmed by a large and continuous amount of something, especially information.",
+    quote: "We are <em>bombarded with</em> overwhelming amounts of information and data in modern life.",
+    collocations: ["bombarded with data", "bombarded with messages", "bombarded with requests"],
+    examples: [{ text: "The closing section argued that both personal and professional life leave us <em>bombarded with</em> information.", source: "Lecture context" }, { text: "Students are often <em>bombarded with</em> notifications that fragment their attention.", source: "General usage" }],
+    family: ["v bombard", "n bombardment"], note: "Strong metaphor; often implies overload rather than physical attack in modern usage.", synonyms: ["flooded with", "overloaded with", "deluged with"], antonyms: ["shielded from", "insulated from"], cloze: "He said modern life leaves us __________ overwhelming amounts of information and data.", answer: "bombarded with"
+  },
+  {
+    word: "buzzword", pos: "noun", register: "Neutral to critical", definition: "A fashionable term that becomes widely used, sometimes with little precision.",
+    quote: "He said big data was a huge <em>buzzword</em> in the early 2000s.",
+    collocations: ["management buzzword", "the latest buzzword", "become a buzzword"],
+    examples: [{ text: "The lecture called big data a major <em>buzzword</em> of the first decade of the century.", source: "Lecture context" }, { text: "Sustainability should be more than a campus <em>buzzword</em> used in brochures.", source: "General usage" }],
+    family: ["n buzzword"], note: "Often carries mild skepticism about trend-driven language.", synonyms: ["catchphrase", "fashionable term"], antonyms: ["precise term", "technical definition"], cloze: "He suggested that big data had once functioned as a huge __________.", answer: "buzzword"
+  },
+  {
+    word: "actionable", pos: "adj", register: "Business / Data / Applied", definition: "Useful enough to support practical action or decision-making.",
+    quote: "He described intelligence as converting data into useful, <em>actionable</em> knowledge.",
+    collocations: ["actionable knowledge", "actionable insight", "actionable feedback", "actionable recommendations"],
+    examples: [{ text: "The lecture defined intelligence as turning unstructured data into <em>actionable</em> knowledge.", source: "Lecture context" }, { text: "A dashboard is valuable only if it produces <em>actionable</em> insights, not raw numbers alone.", source: "Data context" }],
+    family: ["adj actionable", "v act", "n action"], note: "Common in analytics, business, and policy when information must lead to decisions.", synonyms: ["usable", "practical", "decision-ready"], antonyms: ["useless", "non-operational"], cloze: "Intelligence was defined as turning raw data into useful, __________ knowledge.", answer: "actionable"
+  },
+  {
+    word: "accrue to", pos: "verb phrase", register: "Formal / Legal / Policy", definition: "To come as a benefit or result to someone or something.",
+    quote: "He said the benefits of AI must <em>accrue to</em> everyone.",
+    collocations: ["benefits accrue to society", "profits accrue to investors", "rights accrue to citizens"],
+    examples: [{ text: "In the ethics section, he insisted that AI's benefits should <em>accrue to</em> everyone.", source: "Lecture context" }, { text: "The gains from public research should <em>accrue to</em> the wider community, not a narrow elite.", source: "Policy context" }],
+    family: ["v accrue", "n accrual"], note: "Typically used with benefits, rights, interest, or advantages.", synonyms: ["go to", "come to", "be gained by"], antonyms: ["be denied to", "be taken from"], cloze: "He argued that the benefits of AI must __________ everyone, not just a few firms.", answer: "accrue to"
+  },
+  {
+    word: "deploy", pos: "verb", register: "Formal / Technical / Policy", definition: "To put a system, tool, or resource into practical use.",
+    quote: "AI's impact depends on how society chooses to <em>deploy</em> and use it.",
+    collocations: ["deploy AI", "deploy a model", "deploy resources", "widely deployed"],
+    examples: [{ text: "The ethics section stressed that AI is neutral in itself and depends on how we <em>deploy</em> it.", source: "Lecture context" }, { text: "Hospitals must evaluate risk carefully before they <em>deploy</em> diagnostic AI tools.", source: "Applied context" }],
+    family: ["v deploy", "n deployment"], note: "Widely used in engineering, computing, military, and policy contexts.", synonyms: ["use", "roll out", "implement"], antonyms: ["withdraw", "retire"], cloze: "The key ethical question is how society chooses to __________ AI systems.", answer: "deploy"
+  },
+  {
+    word: "instrumental", pos: "adj", register: "Formal / Evaluative", definition: "Playing an essential or highly influential role in achieving something.",
+    quote: "He said DeepMind had been <em>instrumental</em> in co-founding the Partnership on AI.",
+    collocations: ["instrumental in change", "instrumental role", "be instrumental in co-founding"],
+    examples: [{ text: "The lecture said DeepMind had been <em>instrumental</em> in building an industry-wide ethics partnership.", source: "Lecture context" }, { text: "Peer feedback was <em>instrumental</em> in improving the final version of the paper.", source: "Academic context" }],
+    family: ["adj instrumental", "n instrument", "adv instrumentally"], note: "Usually followed by in when describing contribution to an outcome.", synonyms: ["crucial", "pivotal", "key"], antonyms: ["irrelevant", "marginal"], cloze: "He said the lab had been __________ in co-founding the Partnership on AI.", answer: "instrumental"
+  },
+  {
+    word: "construct", pos: "noun", register: "Academic / Abstract", definition: "A concept or idea that is built for analysis, explanation, or theory.",
+    quote: "He spoke of distilling intelligence into an algorithmic <em>construct</em>.",
+    collocations: ["theoretical construct", "algorithmic construct", "social construct", "conceptual construct"],
+    examples: [{ text: "Near the end, he described intelligence as an algorithmic <em>construct</em> that could be compared with the human brain.", source: "Lecture context" }, { text: "Motivation is a useful psychological <em>construct</em>, but it must be operationalized carefully.", source: "Academic context" }],
+    family: ["n construct", "v construct", "n construction"], note: "As a noun, construct is common in theory-heavy writing across psychology, sociology, and AI.", synonyms: ["concept", "framework", "model"], antonyms: ["reality", "raw fact"], cloze: "He imagined intelligence as an algorithmic __________ that might help us understand the mind.", answer: "construct"
+  },
+  {
+    word: "refined", pos: "adj", register: "Formal / Cultural", definition: "Polished, elegant, and showing cultivated taste or good judgment.",
+    quote: "Feynman joked that he might not be as <em>refined</em> aesthetically as his artist friend.",
+    collocations: ["refined taste", "refined style", "highly refined", "socially refined"],
+    examples: [{ text: "In the final anecdote, Feynman modestly said he was not as <em>refined</em> aesthetically as his artist friend.", source: "Lecture context" }, { text: "The gallery's layout feels simple but extremely <em>refined</em>.", source: "Art context" }],
+    family: ["adj refined", "v refine", "n refinement"], note: "Can refer to manners, taste, style, or something processed to a high level of purity.", synonyms: ["cultivated", "polished", "elegant"], antonyms: ["crude", "rough"], cloze: "Feynman said he might not be as aesthetically __________ as his artist friend.", answer: "refined"
+  },
+  {
+    word: "aesthetical", pos: "adj", register: "Formal / Rare compared with aesthetic", definition: "Relating to beauty or artistic judgment; more commonly expressed as aesthetic or aesthetically.",
+    quote: "The transcript uses <em>aesthetically</em>, but the listed vocabulary item points to the same beauty-related idea.",
+    collocations: ["aesthetical judgment", "aesthetical value", "aesthetical response"],
+    examples: [{ text: "The closing story turns from scientific explanation to <em>aesthetical</em> appreciation of a flower's beauty.", source: "Lecture-linked context" }, { text: "The redesign improved the site both functionally and <em>aesthetically</em>.", source: "General usage" }],
+    family: ["adj aesthetic", "adj aesthetical", "adv aesthetically", "n aesthetics"], note: "In modern English, aesthetic and aesthetically are much more common than aesthetical.", synonyms: ["artistic", "beautiful", "taste-related"], antonyms: ["ugly", "utilitarian"], cloze: "The speaker ended with a story about science deepening our __________ appreciation of a flower.", answer: "aesthetic"
+  },
+  {
+    word: "meadow", pos: "noun", register: "Neutral / Literary", definition: "A field covered with grass and often flowers, especially in the countryside.",
+    quote: "Feynman described walking through a <em>meadow</em> with his artist friend.",
+    collocations: ["flower meadow", "walk through a meadow", "mountain meadow"],
+    examples: [{ text: "In the closing story, Feynman and his friend walk through a <em>meadow</em> and talk about a flower.", source: "Lecture context" }, { text: "The ecology class carried out field observation in a nearby <em>meadow</em>.", source: "General usage" }],
+    family: ["n meadow"], note: "Often appears in descriptive, literary, or environmental contexts.", synonyms: ["grassland", "field"], antonyms: ["city street", "desert"], cloze: "Feynman's story begins with two friends walking through a __________.", answer: "meadow"
+  },
+  {
+    word: "pollinate", pos: "verb", register: "Scientific / Biological", definition: "To transfer pollen so that a plant can reproduce.",
+    quote: "Feynman noted that flowers evolved colors to attract insects to <em>pollinate</em> them.",
+    collocations: ["pollinate flowers", "be pollinated by insects", "cross-pollinate ideas"],
+    examples: [{ text: "The final quotation points out that flower colors evolved to attract insects that <em>pollinate</em> them.", source: "Lecture context" }, { text: "Bees <em>pollinate</em> many of the crops humans depend on.", source: "Biology context" }],
+    family: ["v pollinate", "n pollination", "n pollinator"], note: "Literal in biology; metaphorically, ideas can also cross-pollinate.", synonyms: ["fertilize", "cross-pollinate"], antonyms: ["sterilize"], cloze: "In the Feynman passage, insects are attracted by flower colors to __________ the plant.", answer: "pollinate"
+  },
+  ];
+  const u2Grid = document.getElementById('u2-cardsGrid');
+  const u2Total = u2VocabData.length;
+  let u2Mastered = new Set();
+  try { u2Mastered = new Set(JSON.parse(localStorage.getItem('vocab_u2_mastered') || '[]')); } catch (e) { u2Mastered = new Set(); }
+
+  function u2EscapeHtml(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+  function u2RenderFamily(items) {
+    return items.map((item) => {
+      const parts = item.split(' ');
+      const pos = parts.shift();
+      return `<span class="family-item"><span class="fi-pos">${u2EscapeHtml(pos)}</span>${u2EscapeHtml(parts.join(' '))}</span>`;
+    }).join('');
+  }
+  function u2RenderCards() {
+    u2Grid.innerHTML = u2VocabData.map((entry, index) => {
+      const id = `u2-card-${index + 1}`;
+      const collocations = entry.collocations.map((c) => `<span class="colloc">${u2EscapeHtml(c)}</span>`).join('');
+      const examples = entry.examples.map((ex) => `<div class="example">${ex.text}<span class="source">${u2EscapeHtml(ex.source)}</span></div>`).join('');
+      const syn = entry.synonyms.join(' - ');
+      const ant = entry.antonyms.join(' - ');
+      return `
+      <div class="card" id="${id}">
+        <div class="card-head" onclick="u2ToggleCard('${id}')">
+          <span class="word-num">${String(index + 1).padStart(2, '0')}</span>
+          <div class="word-main">
+            <div class="word-title">${u2EscapeHtml(entry.word)}</div>
+            <div class="word-meta">
+              <span class="tag pos">${u2EscapeHtml(entry.pos)}</span>
+              <span class="tag reg">${u2EscapeHtml(entry.register)}</span>
+            </div>
+            <div class="word-definition">${u2EscapeHtml(entry.definition)}</div>
+          </div>
+          <button class="master-btn" id="mb-${id}" onclick="u2ToggleMaster(event,'${id}')" title="Mark as mastered">&#10003;</button>
+          <span class="toggle-icon">&#9662;</span>
+        </div>
+        <div class="card-body">
+          <div class="section"><div class="section-title">From the Transcript</div><div class="transcript-quote">${entry.quote}</div></div>
+          <div class="section"><div class="section-title">Common Collocations</div><div class="collocations">${collocations}</div></div>
+          <div class="section"><div class="section-title">Example Sentences</div>${examples}</div>
+          <div class="section"><div class="section-title">Word Family</div><div class="family-grid">${u2RenderFamily(entry.family)}</div></div>
+          <div class="section"><div class="section-title">Register Notes</div>${u2EscapeHtml(entry.note)}</div>
+          <div class="section"><div class="section-title">Synonyms / Antonyms</div><div class="syn-ant"><div class="syn-block syn"><h4>Synonyms</h4><div class="words">${u2EscapeHtml(syn)}</div></div><div class="syn-block ant"><h4>Contrast</h4><div class="words">${u2EscapeHtml(ant)}</div></div></div></div>
+          <div class="section"><div class="section-title">Cloze Practice</div><div class="cloze-wrap"><div class="cloze-sentence">${u2EscapeHtml(entry.cloze).replace('__________', '<span class="blank">____________</span>')}</div><button class="reveal-btn" onclick="u2RevealCloze(this)">Reveal Answer</button><div class="cloze-answer"><strong>${u2EscapeHtml(entry.answer)}</strong></div></div></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  function u2Save() { try { localStorage.setItem('vocab_u2_mastered', JSON.stringify([...u2Mastered])); } catch (e) {} }
+  function u2UpdateProgress() { updateSectionProgress(u2Mastered, u2Total, 'u2-progressFill', 'u2-progressLabel'); }
+  function u2ApplyMastered(id) { applySectionMastered(id, 'mb-', 'Mastered'); }
+  function u2RemoveMastered(id) { removeSectionMastered(id, 'mb-'); }
+  function u2ToggleMaster(e, id) {
+    e.stopPropagation();
+    if (u2Mastered.has(id)) { u2Mastered.delete(id); u2RemoveMastered(id); } else { u2Mastered.add(id); u2ApplyMastered(id); }
+    u2Save();
+    u2UpdateProgress();
+  }
+  function u2ToggleCard(id) { toggleSectionCard(id); }
+  function u2ExpandAll() { expandSectionCards('unit2-section'); }
+  function u2CollapseAll() { collapseSectionCards('unit2-section'); }
+  function u2ResetMastered() {
+    if (!confirm('Reset all mastered progress?')) return;
+    u2Mastered.clear();
+    u2Save();
+    document.querySelectorAll('#unit2-section .card').forEach((card) => u2RemoveMastered(card.id));
+    u2UpdateProgress();
+  }
+  function u2RevealCloze(btn) { toggleSectionCloze(btn); }
+
+  u1Mastered.forEach((id) => u1ApplyMastered(id));
+  u1UpdateProgress();
+  u2RenderCards();
+  u2Mastered.forEach((id) => u2ApplyMastered(id));
+  u2UpdateProgress();
+</script>
+</body>
+</html>
