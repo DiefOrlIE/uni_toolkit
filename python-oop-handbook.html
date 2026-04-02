@@ -1,0 +1,438 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python 面向对象编程教学手册</title>
+  <style>
+    :root {
+      --paper: #f5efe5;
+      --ink: #1e1916;
+      --ink-soft: #5f554e;
+      --accent: #7b3f2c;
+      --accent-2: #34495f;
+      --line: rgba(30, 25, 22, 0.14);
+      --line-strong: rgba(30, 25, 22, 0.24);
+      --code-ink: #f6efe6;
+      --shadow: 0 28px 60px rgba(62, 37, 15, 0.11);
+      --content-width: 74rem;
+      --reading-width: 46rem;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(123, 63, 44, 0.08), transparent 28rem),
+        radial-gradient(circle at top right, rgba(52, 73, 95, 0.08), transparent 30rem),
+        linear-gradient(180deg, #f7f1e8 0%, var(--paper) 25%, #f3ebdf 100%);
+      font-family: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", "Times New Roman", "Georgia", serif;
+      line-height: 1.85;
+      letter-spacing: 0.01em;
+    }
+    a { color: inherit; }
+    h1, h2, h3, h4, p, li { margin-top: 0; }
+    code, pre, kbd, samp { font-family: "Cascadia Code", "Fira Code", "Consolas", monospace; }
+    .shell, .page-shell { width: min(calc(100% - 2.5rem), var(--content-width)); margin: 0 auto; }
+    .hero-wrap { padding: 2rem 0 1rem; }
+    .hero {
+      position: relative; overflow: hidden; min-height: 86vh; padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 2rem;
+      box-shadow: 0 30px 80px rgba(58, 35, 18, 0.14);
+      background: linear-gradient(135deg, rgba(255, 250, 242, 0.88), rgba(244, 235, 222, 0.78));
+    }
+    .hero::before, .hero::after { content: ""; position: absolute; border-radius: 999px; z-index: 0; }
+    .hero::before { width: 24rem; height: 24rem; top: -5rem; right: -4rem; background: rgba(123, 63, 44, 0.12); }
+    .hero::after { width: 18rem; height: 18rem; left: -4rem; bottom: -4rem; background: rgba(52, 73, 95, 0.14); }
+    .hero-grid, .intro-grid, .duo { display: grid; gap: 1.5rem; }
+    .hero-grid { grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.95fr); min-height: calc(86vh - 4rem); align-items: end; position: relative; z-index: 1; }
+    .intro-grid { grid-template-columns: minmax(0, 1.1fr) minmax(16rem, 0.9fr); }
+    .duo { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 1.15rem 0; }
+    .eyebrow { display: inline-block; margin-bottom: 1rem; padding: 0.35rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; color: var(--accent); background: rgba(255, 251, 246, 0.8); font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; }
+    .hero h1 { margin-bottom: 1rem; font-size: clamp(3rem, 7vw, 5.7rem); line-height: 1.06; letter-spacing: -0.03em; }
+    .lead { color: var(--ink-soft); font-size: 1.08rem; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.4rem 0 1.8rem; color: var(--ink-soft); font-size: 0.96rem; }
+    .hero-meta span { padding: 0.4rem 0.7rem; border: 1px solid var(--line); border-radius: 999px; background: rgba(255, 253, 249, 0.76); }
+    .hero-note, .hero-quote, .toc p, .panel p, .chapter-title p, .lede, .footer-note { color: var(--ink-soft); }
+    .hero-board, .toc, .intro, .chapter, .closing { border: 1px solid rgba(255, 255, 255, 0.72); background: linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 249, 241, 0.56)); box-shadow: var(--shadow); }
+    .hero-board { padding: 1.2rem; border-radius: 1.7rem; display: grid; gap: 1rem; }
+    .board-panel, .panel, .formula, .tip, .warning, .summary, .path-box { padding: 1rem 1.1rem; border-radius: 1rem; }
+    .board-panel, .panel, .formula { border: 1px solid var(--line); background: rgba(255, 252, 247, 0.85); }
+    .tip { border: 1px solid rgba(52, 73, 95, 0.18); background: rgba(52, 73, 95, 0.08); }
+    .warning { border: 1px solid rgba(123, 63, 44, 0.2); background: rgba(123, 63, 44, 0.09); }
+    .summary, .path-box { border: 1px dashed var(--line-strong); background: rgba(248, 242, 232, 0.86); }
+    .mini-block { padding: 0.95rem 1rem; border-left: 4px solid var(--accent); border-radius: 1rem; background: rgba(123, 63, 44, 0.08); }
+    .mini-block strong, .tip strong, .warning strong, .summary strong, .path-box strong { display: block; margin-bottom: 0.35rem; }
+    .page-shell { display: grid; grid-template-columns: 18rem minmax(0, 1fr); gap: 2rem; padding: 1rem 0 4rem; align-items: start; }
+    .toc { position: sticky; top: 1.1rem; padding: 1.25rem; border-radius: 1.4rem; backdrop-filter: blur(14px); }
+    .toc ol { margin: 0; padding-left: 1.3rem; }
+    .toc li { margin-bottom: 0.55rem; color: var(--ink-soft); }
+    .toc a { text-decoration: none; transition: color 180ms ease; }
+    .toc a:hover, .toc a.active { color: var(--accent); }
+    .toc-foot { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.9rem; }
+    .intro, .chapter, .closing { margin-bottom: 1.6rem; padding: 1.6rem; border-radius: 1.7rem; }
+    .chapter { position: relative; overflow: hidden; }
+    .chapter::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 0.5rem; background: linear-gradient(180deg, var(--accent), rgba(123, 63, 44, 0.16)); }
+    .chapter-header { display: flex; gap: 1rem; align-items: baseline; margin-bottom: 1.3rem; padding-left: 0.7rem; }
+    .chapter-no { min-width: 4.2rem; color: var(--accent); font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; }
+    .chapter-title h2 { margin-bottom: 0.25rem; font-size: clamp(1.65rem, 2vw, 2.3rem); letter-spacing: -0.02em; }
+    .chapter-body { width: min(100%, var(--reading-width)); margin-left: 0.7rem; }
+    .chapter-body h3 { margin: 1.8rem 0 0.75rem; font-size: 1.2rem; }
+    .chapter-body ul { padding-left: 1.35rem; }
+    .chapter-body li { margin-bottom: 0.45rem; }
+    pre { overflow-x: auto; margin: 1rem 0 1.2rem; padding: 1rem 1rem 1.1rem; border-radius: 1rem; background: linear-gradient(180deg, #1c1612, #15110e); color: var(--code-ink); line-height: 1.7; font-size: 0.92rem; }
+    code.inline { padding: 0.1rem 0.35rem; border-radius: 0.4rem; background: rgba(123, 63, 44, 0.09); color: var(--accent); font-size: 0.92em; }
+    .checklist { display: grid; gap: 0.7rem; margin: 1.1rem 0 0; }
+    .check-item { display: flex; gap: 0.75rem; align-items: flex-start; padding-bottom: 0.75rem; border-bottom: 1px solid var(--line); }
+    .check-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .check-item span { display: inline-flex; flex: 0 0 auto; justify-content: center; align-items: center; width: 1.65rem; height: 1.65rem; border-radius: 999px; background: rgba(123, 63, 44, 0.1); color: var(--accent); font-size: 0.84rem; }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 540ms ease, transform 540ms ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (max-width: 1050px) { .hero-grid, .intro-grid, .page-shell { grid-template-columns: 1fr; } .toc { position: static; } .hero, .hero-grid { min-height: auto; } }
+    @media (max-width: 720px) { .shell, .page-shell { width: min(calc(100% - 1.2rem), var(--content-width)); } .hero, .intro, .chapter, .closing { padding: 1.15rem; border-radius: 1.25rem; } .hero h1 { font-size: clamp(2.3rem, 14vw, 3.5rem); } .chapter-header { display: block; } .chapter-no { margin-bottom: 0.4rem; } .chapter-body { margin-left: 0; width: 100%; } .duo { grid-template-columns: 1fr; } pre { font-size: 0.86rem; } }
+  </style>
+</head>
+<body>
+  <div class="shell hero-wrap">
+    <header class="hero reveal" id="top">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Python OOP Handbook</div>
+          <h1>Python 面向对象编程教学手册</h1>
+          <p class="lead">写给“有 C++ 基础、刚接触 Python”的学习者。我们不把面向对象讲成抽象口号，而是一步一步把类、对象、属性、方法、继承、多态和实际建模串成一套可以上手的思路。</p>
+          <div class="hero-meta"><span>教材型主线</span><span>中英文衬线排版</span><span>语法递进 + 游戏化应用</span></div>
+          <p class="hero-note">阅读建议：先按章节顺序读完主线，再回看每章的误区与总结，最后完整消化综合案例。这样你会更容易把 Python 的对象模型与自己已有的 C++ 经验接起来。</p>
+        </div>
+        <aside class="hero-board">
+          <div class="eyebrow">Learning Board</div>
+          <div class="board-panel">
+            <h2>这份手册解决什么问题？</h2>
+            <p>很多人学 Python OOP 时，会把语法点背下来了，却没形成“这个对象为什么这么设计”的感觉。本手册的目标，就是让语法、设计意图与实际建模同时落地。</p>
+          </div>
+          <div class="mini-block"><strong>语法主线</strong><span>从 <code class="inline">class</code> 到特殊方法，按难度递进。</span></div>
+          <div class="mini-block"><strong>C++ 迁移提示</strong><span>只在关键点提醒差异，帮助你迁移，不打断主线。</span></div>
+          <div class="mini-block"><strong>综合应用</strong><span>最后用角色、技能、背包、怪物把知识串起来。</span></div>
+          <div class="hero-quote">“对象不是为了显得高级，而是为了让复杂系统更容易被理解和扩展。”</div>
+        </aside>
+      </div>
+    </header>
+  </div>
+
+  <div class="page-shell">
+    <nav class="toc reveal" aria-label="目录">
+      <h2>目录</h2>
+      <p>这份手册采用教材型顺序。建议完整阅读，不要只挑继承和多态跳着看。</p>
+      <ol>
+        <li><a href="#guide">学习导引</a></li>
+        <li><a href="#chapter-1">为什么要学面向对象</a></li>
+        <li><a href="#chapter-2">类与对象入门</a></li>
+        <li><a href="#chapter-3">属性与方法</a></li>
+        <li><a href="#chapter-4">构造函数与对象初始化</a></li>
+        <li><a href="#chapter-5">封装与访问控制</a></li>
+        <li><a href="#chapter-6">继承</a></li>
+        <li><a href="#chapter-7">多态与抽象</a></li>
+        <li><a href="#chapter-8">特殊方法与 Python 风格对象设计</a></li>
+        <li><a href="#chapter-9">实际应用：小游戏对象建模</a></li>
+        <li><a href="#closing">学完以后做什么</a></li>
+      </ol>
+      <div class="toc-foot">目录会根据你当前阅读位置自动高亮。代码块较长时可以横向滚动，不需要缩放页面。</div>
+    </nav>
+
+    <main class="page">
+      <section class="intro reveal" id="guide">
+        <div class="intro-grid">
+          <div>
+            <div class="eyebrow">Study Guide</div>
+            <h2>学习导引</h2>
+            <p class="lede">学 Python OOP 最容易遇到的问题，不是不会写类，而是把面向对象写成了“语法版面向过程”。因此这份手册的学习顺序不是“看一眼概念就往后翻”，而是反复问自己：这个对象负责什么？它暴露什么接口？它和别的对象如何协作？</p>
+            <div class="checklist">
+              <div class="check-item"><span>1</span><div><strong>先读语法。</strong> 每章先把语法规则和最小例子读懂，不要急着扩展。</div></div>
+              <div class="check-item"><span>2</span><div><strong>再看误区。</strong> Python 中很多写法“能跑”不代表“适合长期维护”。</div></div>
+              <div class="check-item"><span>3</span><div><strong>最后看应用。</strong> 游戏建模只是载体，真正要学的是如何拆职责和组织对象。</div></div>
+            </div>
+          </div>
+          <aside class="path-box">
+            <strong>适合谁</strong>
+            <p>你已经理解变量、函数、循环，也写过 C++ 里的类与对象；但面对 Python 的 <code class="inline">self</code>、<code class="inline">__init__</code>、双下划线方法、抽象基类时，还没有建立一套稳定的直觉。</p>
+            <strong>读完之后应达到什么状态</strong>
+            <p>你应该能够独立设计一个小型对象系统，并说明每个类为什么存在、公开哪些方法、哪里应该继承、哪里更适合组合。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-1">
+        <div class="chapter-header"><div class="chapter-no">Chapter 01</div><div class="chapter-title"><h2>为什么要学面向对象</h2><p>先搞清楚 OOP 在解决什么问题，而不是只记住几个术语。</p></div></div>
+        <div class="chapter-body">
+          <p>当程序还很小时，我们常常用函数把流程一路写下去：读取数据、计算结果、输出信息。这种写法在任务单一、步骤稳定时非常高效。但一旦程序开始涉及多个实体、多个状态与多个行为，单纯靠函数堆叠就会让代码越来越像一条失控的流程线。</p>
+          <p>面向对象的核心思想，是把程序中的重要实体抽象成对象。每个对象有自己的状态，也有自己的行为。这样一来，你思考问题的单位就不再只是“函数下一步做什么”，而是“谁负责这件事”。</p>
+          <div class="duo"><div class="panel"><h4>面向过程</h4><p>关注步骤：先做 A，再做 B，再做 C。适合线性任务，但数据容易散落在全局变量和长参数列表中。</p></div><div class="panel"><h4>面向对象</h4><p>关注职责：角色有什么属性，能做什么，和谁协作。适合复杂系统建模，也更利于扩展。</p></div></div>
+          <h3>一个最朴素的例子</h3>
+          <p>假设你在写一个小游戏。程序里会出现角色、技能、怪物、背包。如果全部写成函数，你会在很多地方传递血量、攻击力、技能冷却时间、背包内容等参数。随着逻辑变多，这些数据会越来越难管理。</p>
+          <div class="warning"><strong>常见误区</strong><p>不是所有程序都必须重度面向对象。面向对象不是“越多类越专业”，而是当系统里确实存在稳定的实体和职责边界时，它能让结构更清楚。</p></div>
+          <div class="summary"><strong>本章小结</strong><p>学习 OOP 的第一步，不是记住封装、继承、多态，而是理解：当程序开始描述多个实体和它们的协作时，用对象组织代码会比单纯堆函数更自然。</p></div>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-2">
+        <div class="chapter-header"><div class="chapter-no">Chapter 02</div><div class="chapter-title"><h2>类与对象入门</h2><p>类是蓝图，对象是按照蓝图创建出来的具体实例。</p></div></div>
+        <div class="chapter-body">
+          <p>在 Python 中，<code class="inline">class</code> 用来定义类。类本身描述了对象应该有什么属性、可以执行什么方法；而对象则是这个类的一个具体实例。</p>
+          <pre><code>class Hero:
+    pass
+
+knight = Hero()
+mage = Hero()
+
+print(type(knight))
+print(knight is mage)</code></pre>
+          <p>这里定义了一个最简单的 <code class="inline">Hero</code> 类，然后创建了两个对象。它们都来自同一个类，但彼此不同，是两份独立的实例。</p>
+          <div class="formula"><strong>一句话记忆</strong><p><code class="inline">class Hero:</code> 是在定义对象的结构；<code class="inline">Hero()</code> 是在真正创建一个对象。</p></div>
+          <pre><code>class Hero:
+    def say_hello(self):
+        print("我是一个游戏角色")
+
+hero = Hero()
+hero.say_hello()</code></pre>
+          <div class="summary"><strong>本章小结</strong><p>类负责描述，对象负责承载具体状态。以后我们添加的属性和方法，都会围绕“如何让某类对象更完整”来展开。</p></div>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-3">
+        <div class="chapter-header"><div class="chapter-no">Chapter 03</div><div class="chapter-title"><h2>属性与方法</h2><p>对象内部保存什么信息，以及对象能够执行什么行为。</p></div></div>
+        <div class="chapter-body">
+          <p>属性描述对象的状态，方法描述对象的行为。对于一个游戏角色来说，姓名、职业、生命值都可以是属性；攻击、移动、使用技能都可以是方法。</p>
+          <pre><code>class Hero:
+    camp = "联盟"
+
+    def __init__(self, name, hp):
+        self.name = name
+        self.hp = hp
+
+    def attack(self):
+        print(f"{self.name} 发动了攻击")</code></pre>
+          <p><code class="inline">self.name</code> 和 <code class="inline">self.hp</code> 是实例属性；<code class="inline">camp</code> 是类属性。</p>
+          <div class="tip"><strong>C++ 迁移提示</strong><p>如果你有 C++ 背景，可以把 <code class="inline">self</code> 理解成显式写出来的 <code class="inline">this</code>。区别在于：Python 要求你在方法定义中把它写出来，而不是像 C++ 那样隐式存在。</p></div>
+          <pre><code>class Skill:
+    category = "主动技能"
+
+    def __init__(self, name, damage):
+        self.name = name
+        self.damage = damage
+
+    def cast(self):
+        print(f"释放 {self.name}，造成 {self.damage} 点伤害")</code></pre>
+          <div class="warning"><strong>常见误区</strong><p>不要把本应随着实例变化的值写成类属性，否则对象会不合理地共享同一份数据。</p></div>
+          <div class="summary"><strong>本章小结</strong><p>属性是状态，方法是行为；<code class="inline">self</code> 让方法知道自己正在服务哪个对象。</p></div>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-4">
+        <div class="chapter-header"><div class="chapter-no">Chapter 04</div><div class="chapter-title"><h2>构造函数与对象初始化</h2><p>让对象在创建瞬间就进入一个合理、可用的状态。</p></div></div>
+        <div class="chapter-body">
+          <p>Python 中最常见的初始化方法是 <code class="inline">__init__</code>。它会在对象创建后自动执行，负责把对象需要的初始属性准备好。</p>
+          <pre><code>class Monster:
+    def __init__(self, name, hp, attack):
+        self.name = name
+        self.hp = hp
+        self.attack = attack
+
+slime = Monster("史莱姆", 80, 12)</code></pre>
+          <pre><code>class Equipment:
+    def __init__(self, name, rarity="普通", level=1):
+        self.name = name
+        self.rarity = rarity
+        self.level = level</code></pre>
+          <div class="tip"><strong>C++ 迁移提示</strong><p><code class="inline">__init__</code> 常被拿来和 C++ 构造函数对比。它们的作用类似，但 Python 的对象已经先被创建，再调用 <code class="inline">__init__</code> 做初始化。</p></div>
+          <div class="warning"><strong>常见误区</strong><p>不要在对象创建后到处补属性，例如先创建对象、再手动补 <code class="inline">name</code> 和 <code class="inline">hp</code>。这种做法会让对象在一段时间内处于不完整状态。</p></div>
+          <div class="summary"><strong>本章小结</strong><p><code class="inline">__init__</code> 的使命，是确保对象一创建出来就具备可工作的基本状态。</p></div>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-5">
+        <div class="chapter-header"><div class="chapter-no">Chapter 05</div><div class="chapter-title"><h2>封装与访问控制</h2><p>Python 强调约定式封装，而不是像 C++ 那样依赖强制关键字。</p></div></div>
+        <div class="chapter-body">
+          <p>封装的目标是让对象把自己的内部细节藏起来，只暴露必要接口。这样外部代码只需要知道“怎么用”，不需要知道“内部怎么实现”。</p>
+          <ul>
+            <li><code class="inline">name</code>：公开属性，外部可以直接访问。</li>
+            <li><code class="inline">_name</code>：约定为内部使用，外部最好不要随意碰。</li>
+            <li><code class="inline">__name</code>：触发名称改写，减少外部误用。</li>
+          </ul>
+          <pre><code>class PlayerAccount:
+    def __init__(self, username, password):
+        self.username = username
+        self._login_state = False
+        self.__password = password
+
+    def check_password(self, value):
+        return value == self.__password</code></pre>
+          <div class="tip"><strong>C++ 迁移提示</strong><p>C++ 里有明确的 <code class="inline">public</code>、<code class="inline">private</code>、<code class="inline">protected</code>。Python 更强调“约定”和“自觉”。</p></div>
+          <div class="summary"><strong>本章小结</strong><p>封装不是为了神秘，而是为了控制耦合。Python 更依赖命名约定和接口设计能力。</p></div>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-6">
+        <div class="chapter-header"><div class="chapter-no">Chapter 06</div><div class="chapter-title"><h2>继承</h2><p>让子类在复用父类能力的同时，扩展或改写自己的行为。</p></div></div>
+        <div class="chapter-body">
+          <pre><code>class Hero:
+    def __init__(self, name, hp):
+        self.name = name
+        self.hp = hp
+
+    def show_status(self):
+        print(f"{self.name} 当前生命值：{self.hp}")
+
+class Warrior(Hero):
+    def heavy_strike(self):
+        print(f"{self.name} 使用重击")</code></pre>
+          <p>继承适合表达“是一个”的关系。例如，战士和法师都可以看作角色的一种，所以它们可以继承同一个父类。</p>
+          <pre><code>class Boss(Hero):
+    def __init__(self, name, hp, rage):
+        super().__init__(name, hp)
+        self.rage = rage</code></pre>
+          <div class="warning"><strong>常见误区</strong><p>不要看到代码相似就急着继承。继承表示稳定层次关系；如果只是“拥有某个对象”，组合通常更稳妥。</p></div>
+          <div class="summary"><strong>本章小结</strong><p>继承的价值在于复用与扩展，但前提是真实存在清晰的层次关系。</p></div>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-7">
+        <div class="chapter-header"><div class="chapter-no">Chapter 07</div><div class="chapter-title"><h2>多态与抽象</h2><p>同一套调用方式，面对不同对象时，可以表现出不同的行为。</p></div></div>
+        <div class="chapter-body">
+          <pre><code>class Warrior:
+    def attack(self):
+        print("战士近战挥砍")
+
+class Mage:
+    def attack(self):
+        print("法师释放火球")
+
+def battle_start(hero):
+    hero.attack()</code></pre>
+          <p>这里 <code class="inline">battle_start</code> 不关心传进来的是谁，只关心这个对象能不能执行 <code class="inline">attack()</code>。这就是多态的力量。</p>
+          <pre><code>from abc import ABC, abstractmethod
+
+class Unit(ABC):
+    @abstractmethod
+    def attack(self):
+        pass</code></pre>
+          <div class="tip"><strong>C++ 迁移提示</strong><p>你可以把抽象基类类比为 C++ 中包含纯虚函数的基类。不同的是，Python 更轻量，也更鼓励按项目复杂度决定是否真的需要这种约束。</p></div>
+          <div class="summary"><strong>本章小结</strong><p>多态让调用方更通用，抽象让接口边界更清楚。它们的共同目标，是让程序在增加新类型时尽量少改旧代码。</p></div>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-8">
+        <div class="chapter-header"><div class="chapter-no">Chapter 08</div><div class="chapter-title"><h2>特殊方法与 Python 风格对象设计</h2><p>让你定义的对象更像 Python 内置对象一样自然地工作。</p></div></div>
+        <div class="chapter-body">
+          <pre><code>class Inventory:
+    def __init__(self, items):
+        self.items = items
+
+    def __len__(self):
+        return len(self.items)
+
+    def __str__(self):
+        return f"背包中有 {len(self.items)} 件物品"</code></pre>
+          <ul>
+            <li><code class="inline">__str__</code>：定义用户友好的字符串表示。</li>
+            <li><code class="inline">__repr__</code>：定义更偏向调试的字符串表示。</li>
+            <li><code class="inline">__len__</code>：让对象支持 <code class="inline">len(obj)</code>。</li>
+            <li><code class="inline">__add__</code> 等：让对象支持运算符。</li>
+          </ul>
+          <div class="warning"><strong>常见误区</strong><p>不要为了炫技而重载大量特殊方法。只有当对象本身真的具备对应语义时，才应该实现这些方法。</p></div>
+          <div class="summary"><strong>本章小结</strong><p>特殊方法让对象更贴近 Python 语言生态，是从“能写类”走向“会设计 Python 对象”的关键一步。</p></div>
+        </div>
+      </section>
+
+      <section class="chapter reveal" id="chapter-9">
+        <div class="chapter-header"><div class="chapter-no">Chapter 09</div><div class="chapter-title"><h2>实际应用：小游戏对象建模</h2><p>把前面所有知识点组织成一个可以讲得清楚的小系统。</p></div></div>
+        <div class="chapter-body">
+          <pre><code>from abc import ABC, abstractmethod
+
+class CombatUnit(ABC):
+    def __init__(self, name, hp):
+        self.name = name
+        self.hp = hp
+
+    @abstractmethod
+    def attack(self):
+        pass
+
+class Skill:
+    def __init__(self, name, damage):
+        self.name = name
+        self.damage = damage
+
+    def cast(self, target):
+        target.hp -= self.damage
+        print(f"{self.name} 命中 {target.name}，造成 {self.damage} 点伤害")
+
+class Inventory:
+    def __init__(self):
+        self.items = []
+
+    def add_item(self, item):
+        self.items.append(item)
+
+class Hero(CombatUnit):
+    def __init__(self, name, hp):
+        super().__init__(name, hp)
+        self.inventory = Inventory()
+        self.skills = []
+
+    def attack(self):
+        print(f"{self.name} 发起普通攻击")
+
+class Monster(CombatUnit):
+    def attack(self):
+        print(f"{self.name} 猛烈扑击")</code></pre>
+          <ul>
+            <li><strong>抽象：</strong> <code class="inline">CombatUnit</code> 定义了战斗单位的共同接口。</li>
+            <li><strong>继承：</strong> <code class="inline">Hero</code> 和 <code class="inline">Monster</code> 继承共同基类。</li>
+            <li><strong>组合：</strong> 英雄并不是“继承背包”，而是“拥有背包”，因此使用组合。</li>
+            <li><strong>职责分离：</strong> 技能负责伤害逻辑，背包负责物品管理，角色负责组织它们。</li>
+          </ul>
+          <div class="tip"><strong>为什么这里不是所有东西都靠继承</strong><p>很多初学者学到继承后，会试图“凡是有关联就继承”。这是不对的。英雄和背包不是“是一个”的关系，而是“拥有一个”的关系，所以组合更自然。</p></div>
+          <div class="summary"><strong>本章小结</strong><p>当类之间的边界清楚时，程序会自然地变得可扩展。你之后无论加新技能、新怪物还是新装备，改动范围都更可控。</p></div>
+        </div>
+      </section>
+
+      <section class="closing reveal" id="closing">
+        <div class="eyebrow">Next Step</div>
+        <h2>学完这份手册后，下一步做什么</h2>
+        <p class="lede">如果你已经能够读懂本手册的所有示例，并能自己改写综合案例，那么你已经跨过了“只会照着语法写类”的阶段。接下来更重要的是，用真实练习巩固对象设计感。</p>
+        <div class="checklist">
+          <div class="check-item"><span>1</span><div><strong>把综合案例扩展一轮。</strong> 例如加入治疗技能、装备系统或多种怪物类型，观察哪些类需要改，哪些类不需要改。</div></div>
+          <div class="check-item"><span>2</span><div><strong>练习组合优先于继承。</strong> 主动思考“这个关系真的是 is-a 吗，还是 has-a？”</div></div>
+          <div class="check-item"><span>3</span><div><strong>学习属性装饰器与数据类。</strong> 它们会让你写出更自然的 Python 风格对象。</div></div>
+          <div class="check-item"><span>4</span><div><strong>尝试做一个完整小项目。</strong> 比如文本冒险、简化版战斗模拟器或装备管理器，把 OOP 用在真实代码组织中。</div></div>
+        </div>
+        <div class="footer-note">记住：真正让你成长的，不是“知道 OOP 是什么”，而是能判断什么时候该建类、什么时候不该建类，什么时候该继承、什么时候该组合。</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const revealNodes = document.querySelectorAll(".reveal");
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealNodes.forEach((node) => revealObserver.observe(node));
+
+    const tocLinks = document.querySelectorAll(".toc a");
+    const observedSections = Array.from(tocLinks).map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+    const tocObserver = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      tocLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${visible.target.id}`);
+      });
+    }, { rootMargin: "-30% 0px -55% 0px", threshold: [0.15, 0.35, 0.6] });
+    observedSections.forEach((section) => tocObserver.observe(section));
+  </script>
+</body>
+</html>
