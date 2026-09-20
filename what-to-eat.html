@@ -17,6 +17,17 @@
    这份已按页面用到的字做过子集化：5.6MB -> 136KB。
    往清单里加了新店、出现新字时，重跑 scripts/subset-cn-font.py 即可。 */
 @font-face{
+  /* 正文宋体。iOS Safari 连 Songti SC 都不保证能通过 CSS 调到，
+     所以正文字体同样得自己嵌。思源宋体 Medium 最接近华文中宋的重量，
+     且是 OFL 开源字体，可以随页面公开分发。 */
+  font-family:'NotoSerifSC';
+  src:url('fonts/notoserifsc-med-subset.woff2') format('woff2');
+  font-weight:400 700;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
   font-family:'MaShanZheng';
   src:url('fonts/mashanzheng-subset.woff2') format('woff2');
   font-weight:400;
@@ -41,7 +52,8 @@
   --sh-card:0 20px 44px rgba(62,36,18,.18), 0 4px 12px rgba(62,36,18,.10);
   --sh-soft:0 10px 28px rgba(62,36,18,.07);
   --grain:.42;
-  --serif:"Times New Roman","Songti SC","SimSun","Noto Serif SC","Source Han Serif SC",serif;
+  /* 英文与数字走 Times New Roman，中文落到嵌入的思源宋体 */
+  --serif:"Times New Roman","NotoSerifSC","Songti SC","SimSun",serif;
   /* 字体自带笔锋，没有粗体字重，用到它的地方一律 font-weight:400 */
   --hand:"MaShanZheng","Songti SC","SimSun",serif;
 }
@@ -132,7 +144,7 @@ body::before{
 }
 .dateline{
   text-align:right;
-  font-size:12px;
+  font-size:12.5px;
   line-height:1.5;
   color:var(--ink-soft);
   letter-spacing:.04em;
@@ -186,75 +198,137 @@ body::before{
   height:min(58svh,400px);
   min-height:312px;
   margin-top:20px;
-  perspective:1100px;
-  perspective-origin:50% 42%;
   display:grid;
   place-items:center;
   touch-action:manipulation;
 }
-.deck{
-  position:relative;
-  width:min(62vw,224px);
-  aspect-ratio:37/53;
-  transform-style:preserve-3d;
-}
-.slip{
+/* 竹签筒：签条在后(z1)，筒身在前(z2)，所以签只露出上半截 */
+.tube{
   position:absolute;
-  inset:0;
-  border-radius:6px;
-  transform-style:preserve-3d;
-  -webkit-transform-style:preserve-3d;
-  /* 这里既不能加 backface-visibility:hidden，也不能加 will-change：
-     两者都会把 .slip 变成合成层 / 扁平化它的 3D 空间，
-     结果就是翻面后正面出不来，看到的是镜像的背面。 */
+  left:50%;
+  top:50%;
+  width:min(46vw,164px);
+  height:min(50svh,268px);
+  margin-left:calc(min(46vw,164px) / -2);
+  margin-top:calc(min(50svh,268px) / -2);
+  transform-origin:50% 90%;   /* 以筒底为轴摇晃 */
+  z-index:1;
 }
-.slip .face{
+.sticks{position:absolute;inset:0;z-index:1}
+.stick{
   position:absolute;
-  inset:0;
-  border-radius:6px;
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-  overflow:hidden;
+  width:8.5%;
+  height:70%;
+  /* 顶端收圆：竹签是削出来的，不是火柴棍 */
+  border-radius:40% 40% 1px 1px / 7% 7% 1px 1px;
+  background:
+    repeating-linear-gradient(90deg, rgba(118,88,48,.14) 0 1px, transparent 1px 4px),
+    linear-gradient(94deg,#f3e6ca 0%,#e4d1ab 44%,#c7ab7e 100%);
+  box-shadow:0 1px 3px rgba(40,24,8,.24);
+}
+.stick::before{          /* 顶端一点包浆，比红漆更像用旧的竹签 */
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:9%;
+  border-radius:40% 40% 0 0 / 60% 60% 0 0;
+  background:linear-gradient(180deg,rgba(150,112,62,.5),rgba(150,112,62,0));
+}
+.stick::after{           /* 签文：几道极淡的墨迹，只留印象 */
+  content:"";
+  position:absolute;
+  left:30%;right:30%;top:16%;
+  height:26%;
+  border-radius:1px;
+  background:repeating-linear-gradient(180deg,
+    rgba(62,42,20,.26) 0 2px, transparent 2px 7px);
 }
 
-/* 签牌背面：朱砂回纹 */
-.face.back{
+.barrel{
+  position:absolute;
+  left:5%;right:5%;
+  bottom:0;
+  height:47%;
+  z-index:2;
+  border-radius:9px 9px 13px 13px;
   background:
-    repeating-linear-gradient(45deg, rgba(0,0,0,.06) 0 2px, transparent 2px 9px),
-    linear-gradient(162deg, var(--cinnabar) 0%, var(--cinnabar-deep) 100%);
-  border:1px solid rgba(0,0,0,.18);
-  box-shadow:var(--sh-card);
-  display:grid;
-  place-items:center;
+    /* 两道竹节 */
+    linear-gradient(180deg, transparent 0 30%, rgba(255,246,222,.18) 30% 31.6%,
+      rgba(0,0,0,.3) 31.6% 34%, transparent 34%),
+    linear-gradient(180deg, transparent 0 69%, rgba(255,246,222,.15) 69% 70.4%,
+      rgba(0,0,0,.26) 70.4% 72.4%, transparent 72.4%),
+    /* 竹纤维竖纹 */
+    repeating-linear-gradient(90deg, rgba(0,0,0,.075) 0 1.5px, transparent 1.5px 6px),
+    /* 圆柱体明暗 */
+    linear-gradient(94deg,
+      rgba(0,0,0,.34) 0%, rgba(0,0,0,0) 14%,
+      rgba(255,246,226,.2) 36%, rgba(0,0,0,0) 64%,
+      rgba(0,0,0,.36) 100%),
+    linear-gradient(180deg,#a08153 0%,#886c43 56%,#68512f 100%);
+  box-shadow:0 18px 36px rgba(48,28,10,.34), inset 0 -7px 14px rgba(0,0,0,.3);
 }
-.face.back::before{
+.barrel::after{          /* 筒口内壁，压住签条根部 */
   content:"";
   position:absolute;
-  inset:9px;
-  border:1px solid rgba(253,241,230,.34);
-  border-radius:3px;
+  left:3%;right:3%;top:-8px;
+  height:16px;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 28%,#2a1a0c 0%,#432c16 68%,#5d3f23 100%);
+  box-shadow:inset 0 3px 7px rgba(0,0,0,.62), 0 1px 0 rgba(255,244,222,.16);
 }
-.face.back::after{
+
+/* 被抽中、飞出筒口的那根签 */
+.flyer{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:min(3.8vw,14px);
+  height:min(32svh,172px);
+  margin-left:calc(min(3.8vw,14px) / -2);
+  margin-top:calc(min(32svh,172px) / -2);
+  z-index:4;
+  opacity:0;
+  pointer-events:none;
+  border-radius:40% 40% 2px 2px / 6% 6% 2px 2px;
+  background:
+    repeating-linear-gradient(90deg, rgba(118,88,48,.14) 0 1px, transparent 1px 4px),
+    linear-gradient(94deg,#f6ead0,#e2cda5 46%,#c9ad80);
+  box-shadow:0 12px 26px rgba(48,28,10,.34);
+}
+.flyer::before{          /* 签文 */
   content:"";
   position:absolute;
-  inset:14px;
-  border:1px solid rgba(253,241,230,.16);
-  border-radius:2px;
+  left:28%;right:28%;top:13%;
+  height:32%;
+  background:repeating-linear-gradient(180deg,
+    rgba(62,42,20,.32) 0 2px, transparent 2px 8px);
 }
-.back-glyph{
-  position:relative;
-  font-family:var(--hand);
-  font-size:clamp(36px,11vw,46px);
-  color:rgba(253,241,230,.9);
-  letter-spacing:.2em;
-  writing-mode:vertical-rl;
-  text-shadow:0 2px 6px rgba(0,0,0,.28);
-  line-height:1.1;
+.flyer::after{           /* 签尾一点朱砂，飞出时有个亮点跟着走 */
+  content:"";
+  position:absolute;
+  left:22%;right:22%;bottom:6%;
+  height:5%;
+  border-radius:1px;
+  background:var(--cinnabar);
+  opacity:.75;
 }
 
 /* 签牌正面：纸 */
-.face.front{
-  transform:rotateY(180deg);
+.card{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:min(62vw,224px);
+  aspect-ratio:37/53;
+  margin-left:calc(min(62vw,224px) / -2);
+  z-index:5;
+  transform-origin:50% 50%;
+  opacity:0;
+  /* 从中缝向两侧展开，内容不会被拉变形 */
+  clip-path:inset(0 46% 0 46% round 6px);
+  border-radius:6px;
+  transform:translateY(-50%) scale(.96);
+  transition:none;
   background:var(--card);
   background:linear-gradient(168deg, var(--card) 0%, color-mix(in srgb, var(--card) 88%, var(--paper-2)) 100%);
   border:1px solid var(--line);
@@ -267,7 +341,7 @@ body::before{
   padding:20px 13px 16px;
   text-align:center;
 }
-.face.front::before{
+.card::before{
   content:"";
   position:absolute;
   inset:8px;
@@ -617,11 +691,22 @@ body::before{
   <nav class="groups" id="groups" aria-label="分组筛选"></nav>
 
   <section class="stage" id="stage">
-    <div class="deck" id="deck"></div>
-    <div class="hint" id="hint">抽一张，别再纠结了</div>
+    <div class="tube" id="tube">
+      <div class="sticks" id="sticks"></div>
+      <div class="barrel"></div>
+    </div>
+    <div class="flyer" id="flyer"></div>
+    <div class="card" id="card">
+      <div class="f-emoji" id="fEmoji">🍽️</div>
+      <div class="f-name" id="fName">—</div>
+      <div class="f-meta" id="fMeta"></div>
+      <div class="f-tip" id="fTip"></div>
+      <div class="seal" id="seal">宜食</div>
+    </div>
+    <div class="hint" id="hint">摇一摇，别再纠结了</div>
   </section>
 
-  <button class="draw" id="drawBtn" type="button">抽 一 签</button>
+  <button class="draw" id="drawBtn" type="button">摇 一 签</button>
 
   <details class="panel" id="menuPanel">
     <summary>
@@ -781,7 +866,6 @@ var drawToken = 0;   /* 自增即作废所有在途动画 */
 
 /* ========== DOM ========== */
 var $ = function(id){ return document.getElementById(id); };
-var deck     = $('deck');
 var stage    = $('stage');
 var hint     = $('hint');
 var drawBtn  = $('drawBtn');
@@ -846,37 +930,57 @@ addPick.addEventListener('click', function(ev){
   paintGroups();
 });
 
-/* ========== 牌堆 ========== */
-var STACK = 5;
+/* ========== 签筒 ========== */
+var STICKS = 11;
+var tube   = $('tube');
+var sticks = $('sticks');
+var flyer  = $('flyer');
+var card   = $('card');
 
-function deckHTML(){
+/* 签条在筒里高低错落，看起来才像随手插的 */
+function buildSticks(){
   var html = '';
-  for(var i = STACK - 1; i >= 1; i--){
-    html += '<div class="slip" data-idx="' + i + '" style="transform:translate3d(' +
-      (i * 2.5) + 'px,' + (i * -3) + 'px,' + (i * -14) + 'px) rotate(' + (i * 1.5) +
-      'deg);opacity:' + (1 - i * 0.12).toFixed(2) + '">' +
-      '<div class="face back"><div class="back-glyph">籤</div></div></div>';
+  var span = (100 - 8.5 - 10) / (STICKS - 1);   /* 两侧各留 5% 边距 */
+  for(var i = 0; i < STICKS; i++){
+    var left = 5 + i * span;
+    var lift = Math.abs(Math.sin(i * 1.7)) * 12;   /* 高低错落，像随手插的 */
+    var tilt = ((i - (STICKS - 1) / 2) * 1.1).toFixed(1);
+    html += '<i class="stick" data-tilt="rotate(' + tilt + 'deg)"' +
+      ' style="left:' + left.toFixed(1) + '%;bottom:' + (10 + lift).toFixed(1) + '%' +
+      ';transform:rotate(' + tilt + 'deg);z-index:' + (i % 2 ? 1 : 2) + '"></i>';
   }
-  html +=
-    '<div class="slip" id="hero" data-idx="0" style="transform:translate3d(0,0,0)">' +
-      '<div class="face back"><div class="back-glyph">籤</div></div>' +
-      '<div class="face front">' +
-        '<div class="f-emoji" id="fEmoji">🍽️</div>' +
-        '<div class="f-name" id="fName">—</div>' +
-        '<div class="f-meta" id="fMeta"></div>' +
-        '<div class="f-tip" id="fTip"></div>' +
-        '<div class="seal" id="seal">宜食</div>' +
-      '</div>' +
-    '</div>';
-  deck.innerHTML = html;
+  sticks.innerHTML = html;
+}
+
+function stickList(){
+  return Array.prototype.slice.call(sticks.querySelectorAll('.stick'));
+}
+
+function resetStage(){
+  cancelAnims([tube, flyer, card].concat(stickList()));
+  tube.style.opacity = '1';
+  tube.style.transform = '';
+  flyer.style.opacity = '0';
+  flyer.style.transform = '';
+  card.style.opacity = '0';
+  card.style.clipPath = 'inset(0 46% 0 46% round 6px)';
+  card.style.transform = 'translateY(-50%) scale(.96)';
+  stickList().forEach(function(el){ el.style.transform = el.dataset.tilt; });
+  $('seal').classList.remove('stamped');
+}
+
+function cancelAnims(els){
+  els.forEach(function(el){
+    if(!el) return;
+    el.getAnimations().forEach(function(a){ a.cancel(); });
+  });
 }
 
 function resetDeck(){
-  deckHTML();
-  deck.style.transform = '';
+  resetStage();
   hint.style.opacity = '1';
-  hint.textContent = pool().length ? '抽一张，别再纠结了' : '这一组还空着，先去清单里加几样';
-  drawBtn.textContent = '抽 一 签';
+  hint.textContent = pool().length ? '摇一摇，别再纠结了' : '这一组还空着，先去清单里加几样';
+  drawBtn.textContent = '摇 一 签';
 }
 
 function pool(){
@@ -900,58 +1004,85 @@ function anim(el, frames, opts){
   return a.finished.catch(function(){ /* 动画被打断时不抛出 */ });
 }
 
-async function shuffleDance(token){
+/* 1. 摇筒：筒身左右甩动，签条在筒里上下磕碰 */
+async function shakeTube(token){
   var alive = function(){ return token === drawToken; };
-  var slips = Array.prototype.slice.call(deck.querySelectorAll('.slip'));
+  var list = stickList();
 
-  /* 1. 扇开 */
-  var fan = slips.map(function(el, i){
-    var idx = Number(el.getAttribute('data-idx'));
-    var dir = idx % 2 === 0 ? 1 : -1;
-    var spread = (idx + 1) * 13 * dir;
-    return anim(el, [
-      { transform: getComputedStyle(el).transform },
-      { transform: 'translate3d(' + spread + 'px,' + (-idx * 7) + 'px,' + (idx * -10) + 'px) rotate(' + (spread * 0.34) + 'deg)' }
-    ], { duration: 300, easing: 'cubic-bezier(.3,1.3,.5,1)', fill: 'forwards' });
+  var tubeShake = anim(tube, [
+    { transform:'rotate(0deg)' },
+    { transform:'rotate(-12deg)' },
+    { transform:'rotate(10deg)' },
+    { transform:'rotate(-9deg)' },
+    { transform:'rotate(8deg)' },
+    { transform:'rotate(-5deg)' },
+    { transform:'rotate(3deg)' },
+    { transform:'rotate(0deg)' }
+  ], { duration:980, easing:'ease-in-out', fill:'forwards' });
+
+  /* 每根签相位错开，才有一整筒签互相磕碰的杂乱感 */
+  list.forEach(function(el, i){
+    var base = el.dataset.tilt;
+    var h1 = -7 - (i * 37 % 11);
+    var h2 = -4 - (i * 53 % 9);
+    anim(el, [
+      { transform: base + ' translateY(0)' },
+      { transform: base + ' translateY(' + h1 + 'px)' },
+      { transform: base + ' translateY(3px)' },
+      { transform: base + ' translateY(' + h2 + 'px)' },
+      { transform: base + ' translateY(2px)' },
+      { transform: base + ' translateY(' + (h1 * 0.6).toFixed(1) + 'px)' },
+      { transform: base + ' translateY(0)' }
+    ], { duration:980, delay:i * 16, easing:'ease-in-out', fill:'forwards' });
   });
-  await Promise.all(fan);
+
+  await tubeShake;
   if(!alive()) return;
 
-  /* 2. 交错洗两轮 */
-  for(var round = 0; round < 2; round++){
-    var wave = slips.map(function(el, i){
-      var idx = Number(el.getAttribute('data-idx'));
-      var dir = (idx + round) % 2 === 0 ? -1 : 1;
-      return anim(el, [
-        { transform: 'translate3d(' + (dir * 46) + 'px,' + (dir * -12) + 'px,' + (idx * -10) + 'px) rotate(' + (dir * 9) + 'deg)' },
-        { transform: 'translate3d(' + (-dir * 30) + 'px,0,' + (idx * -10) + 'px) rotate(' + (-dir * 6) + 'deg)' }
-      ], { duration: 190, easing: 'ease-in-out', fill: 'forwards' });
-    });
-    await Promise.all(wave);
-    if(!alive()) return;
-  }
+  /* 2. 一根签从筒里慢慢冒头 */
+  var chosen = list[Math.floor(list.length / 2)];
+  await anim(chosen, [
+    { transform: chosen.dataset.tilt + ' translateY(0)' },
+    { transform: chosen.dataset.tilt + ' translateY(-28px)' }
+  ], { duration:360, easing:'cubic-bezier(.3,.9,.4,1)', fill:'forwards' });
+  if(!alive()) return;
 
-  /* 3. 收拢成一叠 */
-  var gather = slips.map(function(el){
-    var idx = Number(el.getAttribute('data-idx'));
-    return anim(el, [
-      { transform: 'translate3d(' + (idx * 2.5) + 'px,' + (idx * -3) + 'px,' + (idx * -14) + 'px) rotate(' + (idx * 1.5) + 'deg)' }
-    ], { duration: 240, easing: 'cubic-bezier(.25,1.4,.45,1)', fill: 'forwards' });
+  /* 其余签沉回筒中 */
+  list.forEach(function(el){
+    if(el === chosen) return;
+    anim(el, [{ transform: el.dataset.tilt + ' translateY(5px)' }],
+      { duration:260, easing:'ease-out', fill:'forwards' });
   });
-  await Promise.all(gather);
 }
 
-async function revealHero(token){
-  var hero = $('hero');
+/* 3. 签飞出筒口，筒身让位 */
+async function flyOut(token){
+  flyer.style.opacity = '1';
 
-  /* 抽出并翻面 */
-  await anim(hero, [
-    { transform: 'translate3d(0,0,0) rotateY(0deg) scale(1)' },
-    { transform: 'translate3d(0,-26px,60px) rotateY(0deg) scale(1.06)', offset: .3 },
-    { transform: 'translate3d(0,-14px,60px) rotateY(90deg) scale(1.08)', offset: .62 },
-    { transform: 'translate3d(0,-6px,30px) rotateY(180deg) scale(1.05)', offset: .86 },
-    { transform: 'translate3d(0,0,0) rotateY(180deg) scale(1)' }
-  ], { duration: 760, easing: 'cubic-bezier(.32,.86,.34,1)', fill: 'forwards' });
+  anim(tube, [
+    { opacity:1, transform:'translateY(0) scale(1)' },
+    { opacity:0, transform:'translateY(22px) scale(.93)' }
+  ], { duration:420, delay:170, easing:'ease-in', fill:'forwards' });
+
+  await anim(flyer, [
+    { transform:'translateY(58px) rotate(-4deg)', opacity:0 },
+    { transform:'translateY(6px) rotate(-2deg)',  opacity:1, offset:.28 },
+    { transform:'translateY(-54px) rotate(3deg)', opacity:1, offset:.68 },
+    { transform:'translateY(0) rotate(0deg)',     opacity:1 }
+  ], { duration:720, easing:'cubic-bezier(.24,.86,.32,1)', fill:'forwards' });
+}
+
+/* 4. 签展开成签文 */
+async function unfurl(token){
+  anim(flyer, [{ opacity:1 }, { opacity:0 }],
+    { duration:240, easing:'ease-out', fill:'forwards' });
+
+  card.style.opacity = '1';
+  await anim(card, [
+    { clipPath:'inset(0 46% 0 46% round 6px)', transform:'translateY(-50%) scale(.96)' },
+    { clipPath:'inset(0 -2% 0 -2% round 6px)', transform:'translateY(-50%) scale(1.03)', offset:.72 },
+    { clipPath:'inset(0 0 0 0 round 6px)',     transform:'translateY(-50%) scale(1)' }
+  ], { duration:580, easing:'cubic-bezier(.22,.92,.3,1)', fill:'forwards' });
 
   if(token !== drawToken) return;
 
@@ -990,11 +1121,12 @@ function withTimeout(promise, ms){
 }
 
 function settleHero(){
-  Array.prototype.forEach.call(deck.querySelectorAll('.slip'), function(el){
-    el.getAnimations().forEach(function(a){ a.cancel(); });
-  });
-  var hero = $('hero');
-  if(hero) hero.style.transform = 'rotateY(180deg)';
+  cancelAnims([tube, flyer, card].concat(stickList()));
+  tube.style.opacity = '0';
+  flyer.style.opacity = '0';
+  card.style.opacity = '1';
+  card.style.clipPath = 'inset(0 0 0 0 round 6px)';
+  card.style.transform = 'translateY(-50%) scale(1)';
   $('seal').classList.add('stamped');
 }
 
@@ -1017,8 +1149,7 @@ async function draw(){
   }
   lastPicked = picked.n;
 
-  /* 先重建牌堆（会清空上一轮的正面内容），再写入这一轮的结果 */
-  deckHTML();
+  resetStage();   /* 筒和签回到原位，准备这一轮 */
 
   $('fEmoji').textContent = picked.e;
   $('fName').textContent  = picked.n;
@@ -1031,12 +1162,12 @@ async function draw(){
   try{
     if(!reduce){
       await withTimeout((async function(){
-        await shuffleDance(token);
+        await shakeTube(token);
         if(token !== drawToken) return;
-        await sleep(60);
+        await flyOut(token);
         if(token !== drawToken) return;
-        await revealHero(token);
-      })(), 2700);
+        await unfurl(token);
+      })(), 3600);
     }
   }catch(err){
     /* 动画出问题不该影响抽签结果 */
@@ -1049,7 +1180,7 @@ async function draw(){
     save(K_HIST, history);
     paintHistory();
 
-    drawBtn.textContent = '再 抽 一 次';
+    drawBtn.textContent = '再 摇 一 次';
     drawBtn.disabled = false;
     spinning = false;
   }
@@ -1149,6 +1280,7 @@ $('clearHistBtn').addEventListener('click', function(){
 
 /* ========== 启动 ========== */
 paintDate();
+buildSticks();
 paintGroups();
 paintShelves();
 paintHistory();

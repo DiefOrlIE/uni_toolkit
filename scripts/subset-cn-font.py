@@ -57,17 +57,33 @@ def main():
     ap.add_argument("-o", "--output", required=True, help="输出 .woff2")
     ap.add_argument("--extra", default="", help="额外保留的字符")
     ap.add_argument("--base64", action="store_true", help="同时打印 base64")
+    ap.add_argument("--instance", default="",
+                    help="可变字体先固定到某个实例，如 wght=500")
     args = ap.parse_args()
 
     chars = collect_chars(args.pages, args.extra)
 
+    # 可变字体（VF）要先抽出一个静态实例，否则子集里会带上整条字重轴
+    font = args.font
+    tmp = None
+    if args.instance:
+        tmp = args.output + ".instance.ttf"
+        subprocess.run([
+            sys.executable, "-m", "fontTools.varLib.instancer", args.font,
+            args.instance, "-o", tmp,
+        ], check=True)
+        font = tmp
+
     subprocess.run([
-        sys.executable, "-m", "fontTools.subset", args.font,
+        sys.executable, "-m", "fontTools.subset", font,
         "--text=" + chars,
         "--flavor=woff2",
         "--layout-features=vert,vrt2,ccmp,locl",
         "--output-file=" + args.output,
     ], check=True)
+
+    if tmp and os.path.exists(tmp):
+        os.remove(tmp)
 
     src = os.path.getsize(args.font)
     dst = os.path.getsize(args.output)
