@@ -12,6 +12,18 @@
 <meta name="apple-mobile-web-app-title" content="今天吃什么">
 <title>今天吃什么</title>
 <style>
+/* 毛笔楷书（马善政体，OFL 开源）。iOS Safari 只向 CSS 暴露极少数系统字体，
+   魏碑、手札体这类内置字体 font-family 调不到，所以特色字体必须自己嵌。
+   这份已按页面用到的字做过子集化：5.6MB -> 136KB。
+   往清单里加了新店、出现新字时，重跑 scripts/subset-cn-font.py 即可。 */
+@font-face{
+  font-family:'MaShanZheng';
+  src:url('fonts/mashanzheng-subset.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
 :root{
   --paper:#f4ece0;
   --paper-2:#ecdfcd;
@@ -30,8 +42,8 @@
   --sh-soft:0 10px 28px rgba(62,36,18,.07);
   --grain:.42;
   --serif:"Times New Roman","Songti SC","SimSun","Noto Serif SC","Source Han Serif SC",serif;
-  /* 有笔锋的手写/碑体，iOS 用魏碑与手札体，Windows 落到华文新魏与行楷 */
-  --hand:"Weibei SC","STXinwei","华文新魏","Hannotate SC","STXingkai","华文行楷","HanziPen SC","Yuppy SC",cursive,"Songti SC","SimSun",serif;
+  /* 字体自带笔锋，没有粗体字重，用到它的地方一律 font-weight:400 */
+  --hand:"MaShanZheng","Songti SC","SimSun",serif;
 }
 @media (prefers-color-scheme:dark){
   :root{
@@ -107,7 +119,7 @@ body::before{
 .brand h1{
   font-family:var(--hand);
   font-size:clamp(32px,9.6vw,44px);
-  font-weight:700;
+  font-weight:400;
   letter-spacing:.04em;
   line-height:1;
 }
@@ -126,7 +138,7 @@ body::before{
   letter-spacing:.04em;
   white-space:nowrap;
 }
-.dateline b{display:block;font-family:var(--hand);font-size:19px;color:var(--ink);font-weight:700;letter-spacing:.06em}
+.dateline b{display:block;font-family:var(--hand);font-size:20px;color:var(--ink);font-weight:400;letter-spacing:.06em}
 
 /* ================= 分组 ================= */
 .groups{
@@ -267,7 +279,7 @@ body::before{
 .f-name{
   font-family:var(--hand);
   font-size:clamp(22px,6.4vw,27px);
-  font-weight:700;
+  font-weight:400;
   line-height:1.24;
   letter-spacing:.02em;
   word-break:break-word;
@@ -306,8 +318,8 @@ body::before{
   display:grid;
   place-items:center;
   font-family:var(--hand);
-  font-size:16px;
-  font-weight:700;
+  font-size:17px;
+  font-weight:400;
   letter-spacing:.04em;
   line-height:1.05;
   opacity:0;
@@ -361,8 +373,8 @@ body::before{
   background:linear-gradient(168deg,var(--cinnabar),var(--cinnabar-deep));
   color:var(--on-cinnabar);
   font-family:var(--hand);
-  font-size:25px;
-  font-weight:700;
+  font-size:26px;
+  font-weight:400;
   letter-spacing:.3em;
   text-indent:.34em;
   cursor:pointer;
