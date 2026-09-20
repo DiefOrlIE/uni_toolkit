@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="今天吃什么 —— 按食堂 / 外卖 / 下馆子分组的随机抽签签筒。">
+<meta name="theme-color" content="#f4ece0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="今天吃什么">
+<title>今天吃什么</title>
+<style>
+:root{
+  --paper:#f4ece0;
+  --paper-2:#ecdfcd;
+  --card:#fbf6ee;
+  --ink:#1f1a15;
+  --ink-soft:#6f6154;
+  --ink-faint:#9d8f80;
+  --line:rgba(31,26,21,.13);
+  --line-soft:rgba(31,26,21,.06);
+  --cinnabar:#b03a2b;
+  --cinnabar-deep:#8a2a1d;
+  --on-cinnabar:#fdf1e6;
+  --jade:#5d7b72;
+  --gold:#a8813f;
+  --sh-card:0 20px 44px rgba(62,36,18,.18), 0 4px 12px rgba(62,36,18,.10);
+  --sh-soft:0 10px 28px rgba(62,36,18,.07);
+  --grain:.42;
+  --serif:"Times New Roman","Songti SC","SimSun","Noto Serif SC","Source Han Serif SC",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#171310;
+    --paper-2:#211b15;
+    --card:#2b241d;
+    --ink:#f0e5d6;
+    --ink-soft:#a99889;
+    --ink-faint:#7d6f62;
+    --line:rgba(240,229,214,.15);
+    --line-soft:rgba(240,229,214,.07);
+    --cinnabar:#d1503c;
+    --cinnabar-deep:#a83828;
+    --on-cinnabar:#fff4ec;
+    --jade:#7c9a90;
+    --gold:#c39a55;
+    --sh-card:0 20px 44px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.35);
+    --sh-soft:0 10px 28px rgba(0,0,0,.3);
+    --grain:.22;
+  }
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+html{-webkit-text-size-adjust:100%}
+
+body{
+  min-height:100svh;
+  font-family:var(--serif);
+  color:var(--ink);
+  background:
+    radial-gradient(120% 60% at 50% -10%, rgba(176,58,43,.10), transparent 60%),
+    radial-gradient(90% 50% at 10% 100%, rgba(93,123,114,.12), transparent 62%),
+    linear-gradient(175deg, var(--paper) 0%, var(--paper-2) 100%);
+  background-attachment:fixed;
+  overflow-x:hidden;
+  overscroll-behavior-y:none;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* 宣纸颗粒 */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-50%;
+  pointer-events:none;
+  z-index:0;
+  opacity:var(--grain);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+@media (prefers-color-scheme:dark){ body::before{mix-blend-mode:screen} }
+
+.wrap{
+  position:relative;
+  z-index:1;
+  width:min(100% - 30px, 520px);
+  margin:0 auto;
+  padding-top:calc(env(safe-area-inset-top) + 22px);
+  padding-bottom:calc(env(safe-area-inset-bottom) + 40px);
+}
+
+/* ================= 页眉 ================= */
+.masthead{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:14px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{
+  font-size:clamp(28px,8.6vw,38px);
+  font-weight:700;
+  letter-spacing:.06em;
+  line-height:1;
+}
+.brand .en{
+  font-size:11px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  font-style:italic;
+}
+.dateline{
+  text-align:right;
+  font-size:12px;
+  line-height:1.5;
+  color:var(--ink-soft);
+  letter-spacing:.04em;
+  white-space:nowrap;
+}
+.dateline b{display:block;font-size:15px;color:var(--ink);font-weight:700;letter-spacing:.08em}
+
+/* ================= 分组 ================= */
+.groups{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin-top:16px;
+}
+.gbtn{
+  appearance:none;
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--ink-soft);
+  font-family:var(--serif);
+  font-size:14px;
+  letter-spacing:.06em;
+  min-height:42px;
+  border-radius:3px;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:color .22s ease, border-color .22s ease, background .22s ease, transform .12s ease;
+  position:relative;
+  overflow:hidden;
+}
+.gbtn .n{
+  display:block;
+  font-size:10px;
+  letter-spacing:.1em;
+  color:var(--ink-faint);
+  margin-top:1px;
+  font-style:italic;
+}
+.gbtn:active{transform:scale(.96)}
+.gbtn[aria-pressed="true"]{
+  color:var(--on-cinnabar);
+  border-color:var(--cinnabar-deep);
+  background:linear-gradient(170deg,var(--cinnabar),var(--cinnabar-deep));
+  box-shadow:0 6px 16px rgba(138,42,29,.24);
+}
+.gbtn[aria-pressed="true"] .n{color:rgba(253,241,230,.72)}
+
+/* ================= 签台 ================= */
+.stage{
+  position:relative;
+  height:min(56svh,380px);
+  min-height:290px;
+  margin-top:20px;
+  perspective:1100px;
+  perspective-origin:50% 42%;
+  display:grid;
+  place-items:center;
+  touch-action:manipulation;
+}
+.deck{
+  position:relative;
+  width:min(58vw,208px);
+  aspect-ratio:37/56;
+  transform-style:preserve-3d;
+}
+.slip{
+  position:absolute;
+  inset:0;
+  border-radius:6px;
+  transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
+  /* 这里既不能加 backface-visibility:hidden，也不能加 will-change：
+     两者都会把 .slip 变成合成层 / 扁平化它的 3D 空间，
+     结果就是翻面后正面出不来，看到的是镜像的背面。 */
+}
+.slip .face{
+  position:absolute;
+  inset:0;
+  border-radius:6px;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  overflow:hidden;
+}
+
+/* 签牌背面：朱砂回纹 */
+.face.back{
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.06) 0 2px, transparent 2px 9px),
+    linear-gradient(162deg, var(--cinnabar) 0%, var(--cinnabar-deep) 100%);
+  border:1px solid rgba(0,0,0,.18);
+  box-shadow:var(--sh-card);
+  display:grid;
+  place-items:center;
+}
+.face.back::before{
+  content:"";
+  position:absolute;
+  inset:9px;
+  border:1px solid rgba(253,241,230,.34);
+  border-radius:3px;
+}
+.face.back::after{
+  content:"";
+  position:absolute;
+  inset:14px;
+  border:1px solid rgba(253,241,230,.16);
+  border-radius:2px;
+}
+.back-glyph{
+  position:relative;
+  font-size:clamp(30px,10vw,40px);
+  color:rgba(253,241,230,.9);
+  letter-spacing:.2em;
+  writing-mode:vertical-rl;
+  text-shadow:0 2px 6px rgba(0,0,0,.28);
+  line-height:1.1;
+}
+
+/* 签牌正面：纸 */
+.face.front{
+  transform:rotateY(180deg);
+  background:var(--card);
+  background:linear-gradient(168deg, var(--card) 0%, color-mix(in srgb, var(--card) 88%, var(--paper-2)) 100%);
+  border:1px solid var(--line);
+  box-shadow:var(--sh-card);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:16px 12px;
+  text-align:center;
+}
+.face.front::before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid var(--line-soft);
+  border-radius:3px;
+  pointer-events:none;
+}
+.f-emoji{font-size:clamp(38px,12vw,50px);line-height:1;filter:saturate(.94)}
+.f-name{
+  font-size:clamp(19px,5.6vw,24px);
+  font-weight:700;
+  line-height:1.3;
+  letter-spacing:.03em;
+  word-break:break-word;
+}
+.f-group{
+  font-size:11px;
+  letter-spacing:.2em;
+  color:var(--ink-faint);
+  border-top:1px solid var(--line-soft);
+  padding-top:7px;
+  min-width:78px;
+}
+
+/* 朱砂印 */
+.seal{
+  position:absolute;
+  right:9px;
+  bottom:9px;
+  width:40px;
+  height:40px;
+  border:2.5px solid var(--cinnabar);
+  border-radius:3px;
+  color:var(--cinnabar);
+  display:grid;
+  place-items:center;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:.04em;
+  line-height:1.05;
+  opacity:0;
+  transform:rotate(-9deg);
+  pointer-events:none;
+  writing-mode:vertical-rl;
+  padding:2px;
+}
+.seal.stamped{animation:stamp .5s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes stamp{
+  0%{opacity:0;transform:rotate(-9deg) scale(2.5);filter:blur(3px)}
+  55%{opacity:.95;transform:rotate(-9deg) scale(.92);filter:blur(0)}
+  100%{opacity:.88;transform:rotate(-9deg) scale(1);filter:blur(0)}
+}
+
+/* 未抽签时的提示 */
+.hint{
+  position:absolute;
+  bottom:4px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:12.5px;
+  letter-spacing:.18em;
+  color:var(--ink-faint);
+  white-space:nowrap;
+  transition:opacity .3s ease;
+}
+
+/* 碎纸屑 */
+.bit{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:6px;
+  height:6px;
+  border-radius:1px;
+  pointer-events:none;
+  will-change:transform,opacity;
+}
+
+/* ================= 主按钮 ================= */
+.draw{
+  appearance:none;
+  display:block;
+  width:100%;
+  margin-top:18px;
+  min-height:58px;
+  border:none;
+  border-radius:4px;
+  background:linear-gradient(168deg,var(--cinnabar),var(--cinnabar-deep));
+  color:var(--on-cinnabar);
+  font-family:var(--serif);
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:.34em;
+  text-indent:.34em;
+  cursor:pointer;
+  touch-action:manipulation;
+  box-shadow:0 12px 26px rgba(138,42,29,.28);
+  transition:transform .14s ease, box-shadow .2s ease, filter .2s ease;
+  position:relative;
+  overflow:hidden;
+}
+.draw::after{
+  content:"";
+  position:absolute;
+  inset:5px;
+  border:1px solid rgba(253,241,230,.26);
+  border-radius:2px;
+  pointer-events:none;
+}
+.draw:active{transform:translateY(2px) scale(.99);box-shadow:0 6px 14px rgba(138,42,29,.26)}
+.draw:disabled{filter:saturate(.55) brightness(.94);cursor:default}
+
+/* ================= 折叠面板 ================= */
+.panel{
+  margin-top:14px;
+  border-top:1px solid var(--line);
+}
+.panel > summary{
+  list-style:none;
+  cursor:pointer;
+  touch-action:manipulation;
+  padding:15px 2px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  font-size:15.5px;
+  letter-spacing:.14em;
+  color:var(--ink);
+}
+.panel > summary::-webkit-details-marker{display:none}
+.panel > summary .meta{
+  font-size:12px;
+  letter-spacing:.06em;
+  color:var(--ink-faint);
+  font-style:italic;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.panel > summary .caret{
+  display:inline-block;
+  transition:transform .26s ease;
+  color:var(--ink-faint);
+  font-size:11px;
+}
+.panel[open] > summary .caret{transform:rotate(90deg)}
+.panel-body{padding:2px 0 20px;animation:unfold .3s ease}
+@keyframes unfold{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+/* 清单 */
+.shelf + .shelf{margin-top:16px}
+.shelf h3{
+  font-size:12px;
+  letter-spacing:.2em;
+  color:var(--ink-faint);
+  font-weight:400;
+  margin-bottom:9px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.shelf h3::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 9px 8px 11px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:var(--card);
+  background:color-mix(in srgb, var(--card) 62%, transparent);
+  font-size:14.5px;
+  line-height:1;
+  letter-spacing:.02em;
+  animation:chipIn .26s ease;
+}
+@keyframes chipIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+.chip .x{
+  appearance:none;
+  border:none;
+  background:transparent;
+  color:var(--ink-faint);
+  font-family:var(--serif);
+  font-size:16px;
+  line-height:1;
+  padding:2px 3px;
+  margin-left:1px;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:color .18s ease;
+}
+.chip .x:active{color:var(--cinnabar)}
+.empty{font-size:13.5px;color:var(--ink-faint);font-style:italic;padding:3px 0}
+
+/* 添加行 */
+.addbox{margin-top:20px;padding-top:16px;border-top:1px dashed var(--line)}
+.addbox-title{
+  font-size:12px;
+  letter-spacing:.2em;
+  color:var(--ink-faint);
+  font-weight:400;
+  margin-bottom:9px;
+}
+.addbox .row{display:flex;gap:7px;margin-top:9px}
+.addbox input{
+  flex:1;
+  min-width:0;
+  font-family:var(--serif);
+  font-size:16px; /* iOS 聚焦不放大 */
+  color:var(--ink);
+  background:var(--card);
+  background:color-mix(in srgb, var(--card) 62%, transparent);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:0 12px;
+  min-height:46px;
+  outline:none;
+  transition:border-color .2s ease;
+}
+.addbox input:focus{border-color:var(--cinnabar)}
+.addbox input::placeholder{color:var(--ink-faint);font-style:italic}
+.btn{
+  appearance:none;
+  font-family:var(--serif);
+  font-size:15px;
+  letter-spacing:.1em;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:transparent;
+  color:var(--ink);
+  min-height:46px;
+  padding:0 18px;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:transform .12s ease, background .2s ease;
+  white-space:nowrap;
+}
+.btn:active{transform:scale(.96)}
+.btn.solid{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.ghost{color:var(--ink-faint);font-size:13px;padding:0 12px;min-height:38px}
+.pick{display:flex;gap:7px}
+.pick .gbtn{flex:1}
+
+/* 历史 */
+.hist{list-style:none;display:flex;flex-direction:column}
+.hist li{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 2px;
+  border-bottom:1px solid var(--line-soft);
+  font-size:15px;
+  animation:chipIn .26s ease;
+}
+.hist li .e{font-size:19px;line-height:1;width:24px;text-align:center;flex:none}
+.hist li .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist li .g{font-size:11px;letter-spacing:.12em;color:var(--ink-faint);flex:none}
+.hist li .t{font-size:11.5px;color:var(--ink-faint);font-style:italic;flex:none;min-width:58px;text-align:right}
+
+.footer{
+  margin-top:26px;
+  padding-top:16px;
+  border-top:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:12px;
+  letter-spacing:.1em;
+  color:var(--ink-faint);
+}
+.footer a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line)}
+
+/* toast */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:calc(env(safe-area-inset-bottom) + 26px);
+  transform:translate(-50%,16px);
+  z-index:50;
+  padding:11px 20px;
+  border-radius:3px;
+  background:var(--ink);
+  color:var(--paper);
+  font-size:14px;
+  letter-spacing:.08em;
+  box-shadow:var(--sh-soft);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .26s ease, transform .26s ease;
+  max-width:calc(100vw - 48px);
+  text-align:center;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-height:680px){
+  .stage{height:min(46svh,300px);min-height:236px}
+  .brand h1{font-size:30px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="brand">
+      <h1>今天吃什么</h1>
+      <span class="en">Toss</span>
+    </div>
+    <div class="dateline">
+      <b id="mealLabel">午饭</b>
+      <span id="todayLabel">—</span>
+    </div>
+  </header>
+
+  <nav class="groups" id="groups" aria-label="分组筛选"></nav>
+
+  <section class="stage" id="stage">
+    <div class="deck" id="deck"></div>
+    <div class="hint" id="hint">抽一张，别再纠结了</div>
+  </section>
+
+  <button class="draw" id="drawBtn" type="button">抽 一 签</button>
+
+  <details class="panel" id="menuPanel">
+    <summary>
+      <span>我的清单</span>
+      <span class="meta"><span id="menuCount">0 项</span><span class="caret">›</span></span>
+    </summary>
+    <div class="panel-body">
+      <div id="shelves"></div>
+
+      <div class="addbox">
+        <h3 class="addbox-title">添 加</h3>
+        <div class="pick" id="addPick"></div>
+        <div class="row">
+          <input id="addInput" type="text" maxlength="14" placeholder="想吃的东西…" enterkeyhint="done" autocomplete="off" autocorrect="off" spellcheck="false">
+          <button class="btn solid" id="addBtn" type="button">加入</button>
+        </div>
+        <div style="margin-top:14px;display:flex;justify-content:flex-end">
+          <button class="btn ghost" id="resetBtn" type="button">恢复默认清单</button>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="panel" id="histPanel">
+    <summary>
+      <span>抽签记录</span>
+      <span class="meta"><span id="histCount">0 次</span><span class="caret">›</span></span>
+    </summary>
+    <div class="panel-body">
+      <ul class="hist" id="histList"></ul>
+      <div style="margin-top:14px;display:flex;justify-content:flex-end">
+        <button class="btn ghost" id="clearHistBtn" type="button">清空记录</button>
+      </div>
+    </div>
+  </details>
+
+  <div class="footer">
+    <span>命 运 自 有 安 排</span>
+    <a href="index.html">← 工具箱</a>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ========== 数据 ========== */
+var GROUPS = [
+  { id:'ALL', name:'全部', en:'All'     },
+  { id:'CAN', name:'食堂', en:'Canteen' },
+  { id:'DLV', name:'外卖', en:'Delivery'},
+  { id:'OUT', name:'下馆子', en:'Dine'  }
+];
+var GNAME = { CAN:'食堂', DLV:'外卖', OUT:'下馆子' };
+
+var DEFAULTS = [
+  { n:'盖浇饭',    e:'🍛', g:'CAN' },
+  { n:'拉面窗口',  e:'🍜', g:'CAN' },
+  { n:'麻辣香锅',  e:'🌶️', g:'CAN' },
+  { n:'砂锅炖菜',  e:'🍲', g:'CAN' },
+  { n:'小锅米线',  e:'🍲', g:'CAN' },
+  { n:'饺子馄饨',  e:'🥟', g:'CAN' },
+  { n:'炒菜窗口',  e:'🥘', g:'CAN' },
+  { n:'卤肉饭',    e:'🍚', g:'CAN' },
+  { n:'关东煮',    e:'🍢', g:'CAN' },
+
+  { n:'黄焖鸡米饭',e:'🍗', g:'DLV' },
+  { n:'麻辣烫',    e:'🥘', g:'DLV' },
+  { n:'炸鸡汉堡',  e:'🍔', g:'DLV' },
+  { n:'螺蛳粉',    e:'🍜', g:'DLV' },
+  { n:'猪脚饭',    e:'🍖', g:'DLV' },
+  { n:'寿司便当',  e:'🍱', g:'DLV' },
+  { n:'披萨',      e:'🍕', g:'DLV' },
+  { n:'沙拉轻食',  e:'🥗', g:'DLV' },
+  { n:'煲仔饭',    e:'🍚', g:'DLV' },
+
+  { n:'火锅',      e:'🍲', g:'OUT' },
+  { n:'烤肉',      e:'🥩', g:'OUT' },
+  { n:'日料',      e:'🍣', g:'OUT' },
+  { n:'川菜',      e:'🌶️', g:'OUT' },
+  { n:'粤式茶点',  e:'🥟', g:'OUT' },
+  { n:'烧烤夜宵',  e:'🍡', g:'OUT' },
+  { n:'西餐牛排',  e:'🥩', g:'OUT' },
+  { n:'韩式料理',  e:'🍲', g:'OUT' },
+  { n:'东南亚菜',  e:'🍛', g:'OUT' }
+];
+
+/* 名字 → emoji 猜测 */
+var EMOJI_RULES = [
+  [/面|拉面|米线|粉|意面/, '🍜'],
+  [/饭|盖浇|煲仔|炒饭|卤肉/, '🍚'],
+  [/鸡|炸鸡/, '🍗'],
+  [/汉堡|快餐/, '🍔'],
+  [/披萨|比萨/, '🍕'],
+  [/火锅|锅|炖|汤/, '🍲'],
+  [/烤|烧烤|串/, '🍢'],
+  [/肉|牛排|猪|排骨/, '🥩'],
+  [/饺|包|馄饨|点心|茶点/, '🥟'],
+  [/寿司|日料|刺身/, '🍣'],
+  [/沙拉|轻食|素/, '🥗'],
+  [/辣|川|麻辣/, '🌶️'],
+  [/粥|早餐/, '🥣'],
+  [/咖喱|东南亚|泰/, '🍛'],
+  [/奶茶|咖啡|喝/, '🥤'],
+  [/蛋糕|甜|冰/, '🍰']
+];
+function guessEmoji(name){
+  for(var i=0;i<EMOJI_RULES.length;i++){
+    if(EMOJI_RULES[i][0].test(name)) return EMOJI_RULES[i][1];
+  }
+  return '🍽️';
+}
+
+/* ========== 存储 ========== */
+var K_ITEMS = 'wte.items.v1';
+var K_HIST  = 'wte.history.v1';
+var HIST_MAX = 40;
+
+function load(key, fallback){
+  try{
+    var raw = localStorage.getItem(key);
+    if(!raw) return fallback;
+    var v = JSON.parse(raw);
+    return Array.isArray(v) ? v : fallback;
+  }catch(err){ return fallback; }
+}
+function save(key, value){
+  try{ localStorage.setItem(key, JSON.stringify(value)); }
+  catch(err){ /* 隐私模式下写入会失败，忽略即可 */ }
+}
+
+var items   = load(K_ITEMS, null) || DEFAULTS.map(function(d){ return {n:d.n,e:d.e,g:d.g}; });
+var history = load(K_HIST, []);
+var filter  = 'ALL';
+var addGroup = 'CAN';
+var spinning = false;
+var lastPicked = null;
+var drawToken = 0;   /* 自增即作废所有在途动画 */
+
+/* ========== DOM ========== */
+var $ = function(id){ return document.getElementById(id); };
+var deck     = $('deck');
+var stage    = $('stage');
+var hint     = $('hint');
+var drawBtn  = $('drawBtn');
+var groupsEl = $('groups');
+var shelves  = $('shelves');
+var addPick  = $('addPick');
+var addInput = $('addInput');
+var histList = $('histList');
+var toastEl  = $('toast');
+
+var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+
+var toastTimer;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('on'); }, 1900);
+}
+
+/* ========== 页眉日期 ========== */
+function paintDate(){
+  var now = new Date();
+  var h = now.getHours();
+  var meal = h < 10 ? '早饭' : (h < 15 ? '午饭' : (h < 21 ? '晚饭' : '夜宵'));
+  $('mealLabel').textContent = meal;
+  var wd = ['日','一','二','三','四','五','六'][now.getDay()];
+  $('todayLabel').textContent = (now.getMonth()+1) + '月' + now.getDate() + '日 · 周' + wd;
+}
+
+/* ========== 分组按钮 ========== */
+function paintGroups(){
+  groupsEl.innerHTML = GROUPS.map(function(g){
+    return '<button class="gbtn" type="button" data-g="' + g.id + '" aria-pressed="' +
+      (filter === g.id) + '">' + g.name + '<span class="n">' + g.en + '</span></button>';
+  }).join('');
+
+  addPick.innerHTML = GROUPS.filter(function(g){ return g.id !== 'ALL'; }).map(function(g){
+    return '<button class="gbtn" type="button" data-ag="' + g.id + '" aria-pressed="' +
+      (addGroup === g.id) + '">' + g.name + '</button>';
+  }).join('');
+}
+
+groupsEl.addEventListener('click', function(ev){
+  var btn = ev.target.closest('[data-g]');
+  if(!btn || spinning) return;
+  filter = btn.getAttribute('data-g');
+  paintGroups();
+  resetDeck();
+});
+
+addPick.addEventListener('click', function(ev){
+  var btn = ev.target.closest('[data-ag]');
+  if(!btn) return;
+  addGroup = btn.getAttribute('data-ag');
+  paintGroups();
+});
+
+/* ========== 牌堆 ========== */
+var STACK = 5;
+
+function deckHTML(){
+  var html = '';
+  for(var i = STACK - 1; i >= 1; i--){
+    html += '<div class="slip" data-idx="' + i + '" style="transform:translate3d(' +
+      (i * 2.5) + 'px,' + (i * -3) + 'px,' + (i * -14) + 'px) rotate(' + (i * 1.5) +
+      'deg);opacity:' + (1 - i * 0.12).toFixed(2) + '">' +
+      '<div class="face back"><div class="back-glyph">籤</div></div></div>';
+  }
+  html +=
+    '<div class="slip" id="hero" data-idx="0" style="transform:translate3d(0,0,0)">' +
+      '<div class="face back"><div class="back-glyph">籤</div></div>' +
+      '<div class="face front">' +
+        '<div class="f-emoji" id="fEmoji">🍽️</div>' +
+        '<div class="f-name" id="fName">—</div>' +
+        '<div class="f-group" id="fGroup">—</div>' +
+        '<div class="seal" id="seal">宜食</div>' +
+      '</div>' +
+    '</div>';
+  deck.innerHTML = html;
+}
+
+function resetDeck(){
+  deckHTML();
+  deck.style.transform = '';
+  hint.style.opacity = '1';
+  hint.textContent = pool().length ? '抽一张，别再纠结了' : '这一组还空着，先去清单里加几样';
+  drawBtn.textContent = '抽 一 签';
+}
+
+function pool(){
+  return items.filter(function(it){ return filter === 'ALL' || it.g === filter; });
+}
+
+/* ========== 抽签编排 ========== */
+function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+function anim(el, frames, opts){
+  var a = el.animate(frames, opts);
+  return a.finished.catch(function(){ /* 动画被打断时不抛出 */ });
+}
+
+async function shuffleDance(token){
+  var alive = function(){ return token === drawToken; };
+  var slips = Array.prototype.slice.call(deck.querySelectorAll('.slip'));
+
+  /* 1. 扇开 */
+  var fan = slips.map(function(el, i){
+    var idx = Number(el.getAttribute('data-idx'));
+    var dir = idx % 2 === 0 ? 1 : -1;
+    var spread = (idx + 1) * 13 * dir;
+    return anim(el, [
+      { transform: getComputedStyle(el).transform },
+      { transform: 'translate3d(' + spread + 'px,' + (-idx * 7) + 'px,' + (idx * -10) + 'px) rotate(' + (spread * 0.34) + 'deg)' }
+    ], { duration: 300, easing: 'cubic-bezier(.3,1.3,.5,1)', fill: 'forwards' });
+  });
+  await Promise.all(fan);
+  if(!alive()) return;
+
+  /* 2. 交错洗两轮 */
+  for(var round = 0; round < 2; round++){
+    var wave = slips.map(function(el, i){
+      var idx = Number(el.getAttribute('data-idx'));
+      var dir = (idx + round) % 2 === 0 ? -1 : 1;
+      return anim(el, [
+        { transform: 'translate3d(' + (dir * 46) + 'px,' + (dir * -12) + 'px,' + (idx * -10) + 'px) rotate(' + (dir * 9) + 'deg)' },
+        { transform: 'translate3d(' + (-dir * 30) + 'px,0,' + (idx * -10) + 'px) rotate(' + (-dir * 6) + 'deg)' }
+      ], { duration: 190, easing: 'ease-in-out', fill: 'forwards' });
+    });
+    await Promise.all(wave);
+    if(!alive()) return;
+  }
+
+  /* 3. 收拢成一叠 */
+  var gather = slips.map(function(el){
+    var idx = Number(el.getAttribute('data-idx'));
+    return anim(el, [
+      { transform: 'translate3d(' + (idx * 2.5) + 'px,' + (idx * -3) + 'px,' + (idx * -14) + 'px) rotate(' + (idx * 1.5) + 'deg)' }
+    ], { duration: 240, easing: 'cubic-bezier(.25,1.4,.45,1)', fill: 'forwards' });
+  });
+  await Promise.all(gather);
+}
+
+async function revealHero(token){
+  var hero = $('hero');
+
+  /* 抽出并翻面 */
+  await anim(hero, [
+    { transform: 'translate3d(0,0,0) rotateY(0deg) scale(1)' },
+    { transform: 'translate3d(0,-26px,60px) rotateY(0deg) scale(1.06)', offset: .3 },
+    { transform: 'translate3d(0,-14px,60px) rotateY(90deg) scale(1.08)', offset: .62 },
+    { transform: 'translate3d(0,-6px,30px) rotateY(180deg) scale(1.05)', offset: .86 },
+    { transform: 'translate3d(0,0,0) rotateY(180deg) scale(1)' }
+  ], { duration: 760, easing: 'cubic-bezier(.32,.86,.34,1)', fill: 'forwards' });
+
+  if(token !== drawToken) return;
+
+  $('seal').classList.add('stamped');
+  burst();
+}
+
+function burst(){
+  if(reduce) return;
+  var colors = ['#b03a2b', '#a8813f', '#5d7b72', '#8a2a1d'];
+  for(var i = 0; i < 14; i++){
+    (function(i){
+      var b = document.createElement('i');
+      b.className = 'bit';
+      b.style.background = colors[i % colors.length];
+      stage.appendChild(b);
+      var ang = (Math.PI * 2 * i) / 14 + Math.random() * 0.5;
+      var dist = 90 + Math.random() * 110;
+      b.animate([
+        { transform: 'translate(-50%,-50%) scale(.4) rotate(0deg)', opacity: 1 },
+        { transform: 'translate(calc(-50% + ' + Math.cos(ang) * dist + 'px), calc(-50% + ' +
+            Math.sin(ang) * dist + 'px)) scale(1) rotate(' + (Math.random() * 540 - 270) + 'deg)', opacity: 0 }
+      ], { duration: 700 + Math.random() * 420, easing: 'cubic-bezier(.15,.8,.4,1)' })
+      .finished.then(function(){ b.remove(); }).catch(function(){ b.remove(); });
+    })(i);
+  }
+}
+
+/* 动画可能被浏览器节流（切后台、窗口失焦）而永不 resolve，
+   所以每段都套超时，最终一律强制收敛到"已翻面"终态。 */
+function withTimeout(promise, ms){
+  return Promise.race([
+    promise,
+    new Promise(function(resolve){ setTimeout(resolve, ms); })
+  ]);
+}
+
+function settleHero(){
+  Array.prototype.forEach.call(deck.querySelectorAll('.slip'), function(el){
+    el.getAnimations().forEach(function(a){ a.cancel(); });
+  });
+  var hero = $('hero');
+  if(hero) hero.style.transform = 'rotateY(180deg)';
+  $('seal').classList.add('stamped');
+}
+
+async function draw(){
+  if(spinning) return;
+  var list = pool();
+  if(!list.length){
+    toast('这一组还空着，先去清单里加几样');
+    return;
+  }
+
+  spinning = true;
+  drawBtn.disabled = true;
+  hint.style.opacity = '0';
+
+  /* 先定结果，动画只负责表演 */
+  var picked = list[Math.floor(Math.random() * list.length)];
+  if(list.length > 1 && lastPicked === picked.n){
+    picked = list[(list.indexOf(picked) + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length];
+  }
+  lastPicked = picked.n;
+
+  /* 先重建牌堆（会清空上一轮的正面内容），再写入这一轮的结果 */
+  deckHTML();
+
+  $('fEmoji').textContent = picked.e;
+  $('fName').textContent  = picked.n;
+  $('fGroup').textContent = GNAME[picked.g] || '';
+  $('seal').classList.remove('stamped');
+
+  var token = ++drawToken;
+
+  try{
+    if(!reduce){
+      await withTimeout((async function(){
+        await shuffleDance(token);
+        if(token !== drawToken) return;
+        await sleep(60);
+        if(token !== drawToken) return;
+        await revealHero(token);
+      })(), 2700);
+    }
+  }catch(err){
+    /* 动画出问题不该影响抽签结果 */
+  }finally{
+    drawToken++;        /* 作废在途动画，之后它们不会再改 transform */
+    settleHero();
+
+    history.unshift({ n: picked.n, e: picked.e, g: picked.g, t: Date.now() });
+    if(history.length > HIST_MAX) history.length = HIST_MAX;
+    save(K_HIST, history);
+    paintHistory();
+
+    drawBtn.textContent = '再 抽 一 次';
+    drawBtn.disabled = false;
+    spinning = false;
+  }
+}
+
+drawBtn.addEventListener('click', draw);
+stage.addEventListener('click', function(){ if(!spinning) draw(); });
+
+/* ========== 清单 ========== */
+function paintShelves(){
+  var html = ['CAN','DLV','OUT'].map(function(g){
+    var list = items.filter(function(it){ return it.g === g; });
+    var body = list.length
+      ? '<div class="chips">' + list.map(function(it){
+          var realIdx = items.indexOf(it);
+          return '<span class="chip">' + esc(it.e) + ' ' + esc(it.n) +
+            '<button class="x" type="button" data-del="' + realIdx +
+            '" aria-label="删除 ' + esc(it.n) + '">&times;</button></span>';
+        }).join('') + '</div>'
+      : '<div class="empty">空着呢</div>';
+    return '<div class="shelf"><h3>' + GNAME[g] + ' · ' + list.length + '</h3>' + body + '</div>';
+  }).join('');
+  shelves.innerHTML = html;
+  $('menuCount').textContent = items.length + ' 项';
+}
+
+shelves.addEventListener('click', function(ev){
+  var btn = ev.target.closest('[data-del]');
+  if(!btn) return;
+  var idx = Number(btn.getAttribute('data-del'));
+  var removed = items[idx];
+  if(!removed) return;
+  items.splice(idx, 1);
+  save(K_ITEMS, items);
+  paintShelves();
+  resetDeck();
+  toast('「' + removed.n + '」已移出清单');
+});
+
+function addItem(){
+  var name = addInput.value.trim();
+  if(!name){ addInput.focus(); return; }
+  var dup = items.some(function(it){ return it.n === name && it.g === addGroup; });
+  if(dup){ toast('这一组里已经有它了'); return; }
+  items.push({ n: name, e: guessEmoji(name), g: addGroup });
+  save(K_ITEMS, items);
+  addInput.value = '';
+  paintShelves();
+  resetDeck();
+  toast('已加入' + GNAME[addGroup]);
+}
+
+$('addBtn').addEventListener('click', addItem);
+addInput.addEventListener('keydown', function(ev){
+  if(ev.key === 'Enter'){ ev.preventDefault(); addItem(); addInput.blur(); }
+});
+
+$('resetBtn').addEventListener('click', function(){
+  items = DEFAULTS.map(function(d){ return { n:d.n, e:d.e, g:d.g }; });
+  save(K_ITEMS, items);
+  paintShelves();
+  resetDeck();
+  toast('清单已恢复默认');
+});
+
+/* ========== 历史 ========== */
+function timeLabel(ts){
+  var d = new Date(ts);
+  var today = new Date();
+  var sameDay = d.toDateString() === today.toDateString();
+  var pad = function(n){ return n < 10 ? '0' + n : String(n); };
+  if(sameDay) return '今天 ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  return (d.getMonth()+1) + '/' + d.getDate() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function paintHistory(){
+  $('histCount').textContent = history.length + ' 次';
+  if(!history.length){
+    histList.innerHTML = '<li style="border:none"><span class="empty">还没抽过</span></li>';
+    return;
+  }
+  histList.innerHTML = history.slice(0, 15).map(function(h){
+    return '<li><span class="e">' + esc(h.e) + '</span>' +
+      '<span class="n">' + esc(h.n) + '</span>' +
+      '<span class="g">' + (GNAME[h.g] || '') + '</span>' +
+      '<span class="t">' + timeLabel(h.t) + '</span></li>';
+  }).join('');
+}
+
+$('clearHistBtn').addEventListener('click', function(){
+  history = [];
+  save(K_HIST, history);
+  paintHistory();
+  toast('记录已清空');
+});
+
+/* ========== 启动 ========== */
+paintDate();
+paintGroups();
+paintShelves();
+paintHistory();
+resetDeck();
+
+/* 入场：页眉与签台依次浮现 */
+if(!reduce){
+  [['.masthead',0],['.groups',70],['.stage',140],['.draw',210]].forEach(function(pair){
+    var el = document.querySelector(pair[0]);
+    if(!el) return;
+    el.animate([
+      { opacity:0, transform:'translateY(14px)' },
+      { opacity:1, transform:'none' }
+    ], { duration:520, delay:pair[1], easing:'cubic-bezier(.22,.9,.3,1)', fill:'backwards' });
+  });
+}
+
+/* iOS Safari：双指缩放留着，但屏蔽双击缩放带来的误触延迟 */
+var lastTouch = 0;
+document.addEventListener('touchend', function(ev){
+  var now = Date.now();
+  if(now - lastTouch < 320) ev.preventDefault();
+  lastTouch = now;
+}, { passive:false });
+
+})();
+</script>
+</body>
+</html>

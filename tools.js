@@ -61,5 +61,14 @@ window.toolEntries = [
     meta: "论文导读用",
     icon: "icons/tool-reader.svg",
     iconAlt: "LUFFY 论文导读图标"
+  },
+  {
+    href: "what-to-eat.html",
+    title: "今天吃什么",
+    railTag: "随机工具",
+    description: "按食堂 / 外卖 / 下馆子分组的抽签签筒，清单可以自己改，抽过什么也会记下来。",
+    meta: "吃饭决策用",
+    icon: "icons/tool-toss.svg",
+    iconAlt: "今天吃什么图标"
   }
 ];
