@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="今天吃什么 —— 按食堂 / 外卖 / 下馆子分组的随机抽签签筒。">
+<meta name="description" content="今天吃什么 —— 按食堂 / 外卖 / 和园分组的随机抽签签筒。">
 <meta name="theme-color" content="#f4ece0" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
@@ -30,6 +30,8 @@
   --sh-soft:0 10px 28px rgba(62,36,18,.07);
   --grain:.42;
   --serif:"Times New Roman","Songti SC","SimSun","Noto Serif SC","Source Han Serif SC",serif;
+  /* 有笔锋的手写/碑体，iOS 用魏碑与手札体，Windows 落到华文新魏与行楷 */
+  --hand:"Weibei SC","STXinwei","华文新魏","Hannotate SC","STXingkai","华文行楷","HanziPen SC","Yuppy SC",cursive,"Songti SC","SimSun",serif;
 }
 @media (prefers-color-scheme:dark){
   :root{
@@ -103,9 +105,10 @@ body::before{
 }
 .brand{display:flex;align-items:baseline;gap:10px}
 .brand h1{
-  font-size:clamp(28px,8.6vw,38px);
+  font-family:var(--hand);
+  font-size:clamp(32px,9.6vw,44px);
   font-weight:700;
-  letter-spacing:.06em;
+  letter-spacing:.04em;
   line-height:1;
 }
 .brand .en{
@@ -123,7 +126,7 @@ body::before{
   letter-spacing:.04em;
   white-space:nowrap;
 }
-.dateline b{display:block;font-size:15px;color:var(--ink);font-weight:700;letter-spacing:.08em}
+.dateline b{display:block;font-family:var(--hand);font-size:19px;color:var(--ink);font-weight:700;letter-spacing:.06em}
 
 /* ================= 分组 ================= */
 .groups{
@@ -137,8 +140,8 @@ body::before{
   border:1px solid var(--line);
   background:transparent;
   color:var(--ink-soft);
-  font-family:var(--serif);
-  font-size:14px;
+  font-family:var(--hand);
+  font-size:17px;
   letter-spacing:.06em;
   min-height:42px;
   border-radius:3px;
@@ -168,8 +171,8 @@ body::before{
 /* ================= 签台 ================= */
 .stage{
   position:relative;
-  height:min(56svh,380px);
-  min-height:290px;
+  height:min(58svh,400px);
+  min-height:312px;
   margin-top:20px;
   perspective:1100px;
   perspective-origin:50% 42%;
@@ -179,8 +182,8 @@ body::before{
 }
 .deck{
   position:relative;
-  width:min(58vw,208px);
-  aspect-ratio:37/56;
+  width:min(62vw,224px);
+  aspect-ratio:37/53;
   transform-style:preserve-3d;
 }
 .slip{
@@ -228,7 +231,8 @@ body::before{
 }
 .back-glyph{
   position:relative;
-  font-size:clamp(30px,10vw,40px);
+  font-family:var(--hand);
+  font-size:clamp(36px,11vw,46px);
   color:rgba(253,241,230,.9);
   letter-spacing:.2em;
   writing-mode:vertical-rl;
@@ -247,8 +251,8 @@ body::before{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:10px;
-  padding:16px 12px;
+  gap:7px;
+  padding:20px 13px 16px;
   text-align:center;
 }
 .face.front::before{
@@ -259,28 +263,41 @@ body::before{
   border-radius:3px;
   pointer-events:none;
 }
-.f-emoji{font-size:clamp(38px,12vw,50px);line-height:1;filter:saturate(.94)}
+.f-emoji{font-size:clamp(32px,9.6vw,42px);line-height:1;filter:saturate(.94)}
 .f-name{
-  font-size:clamp(19px,5.6vw,24px);
+  font-family:var(--hand);
+  font-size:clamp(22px,6.4vw,27px);
   font-weight:700;
-  line-height:1.3;
-  letter-spacing:.03em;
+  line-height:1.24;
+  letter-spacing:.02em;
   word-break:break-word;
 }
-.f-group{
-  font-size:11px;
-  letter-spacing:.2em;
+/* 地点 · 人均 */
+.f-meta{
+  font-size:11.5px;
+  letter-spacing:.1em;
   color:var(--ink-faint);
   border-top:1px solid var(--line-soft);
   padding-top:7px;
-  min-width:78px;
+  min-width:86px;
 }
+.f-meta .yen{font-family:"Times New Roman",serif;letter-spacing:0}
+/* 推荐菜 */
+.f-tip{
+  font-size:12px;
+  line-height:1.45;
+  color:var(--cinnabar);
+  max-width:100%;
+  word-break:break-word;
+}
+.f-tip:empty{display:none}
+.f-meta:empty{display:none}
 
 /* 朱砂印 */
 .seal{
   position:absolute;
-  right:9px;
-  bottom:9px;
+  right:10px;
+  top:10px;
   width:40px;
   height:40px;
   border:2.5px solid var(--cinnabar);
@@ -288,7 +305,8 @@ body::before{
   color:var(--cinnabar);
   display:grid;
   place-items:center;
-  font-size:15px;
+  font-family:var(--hand);
+  font-size:16px;
   font-weight:700;
   letter-spacing:.04em;
   line-height:1.05;
@@ -308,10 +326,11 @@ body::before{
 /* 未抽签时的提示 */
 .hint{
   position:absolute;
-  bottom:4px;
+  bottom:0;
   left:50%;
   transform:translateX(-50%);
-  font-size:12.5px;
+  font-family:var(--hand);
+  font-size:15px;
   letter-spacing:.18em;
   color:var(--ink-faint);
   white-space:nowrap;
@@ -341,10 +360,10 @@ body::before{
   border-radius:4px;
   background:linear-gradient(168deg,var(--cinnabar),var(--cinnabar-deep));
   color:var(--on-cinnabar);
-  font-family:var(--serif);
-  font-size:20px;
+  font-family:var(--hand);
+  font-size:25px;
   font-weight:700;
-  letter-spacing:.34em;
+  letter-spacing:.3em;
   text-indent:.34em;
   cursor:pointer;
   touch-action:manipulation;
@@ -378,8 +397,9 @@ body::before{
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  font-size:15.5px;
-  letter-spacing:.14em;
+  font-family:var(--hand);
+  font-size:19px;
+  letter-spacing:.1em;
   color:var(--ink);
 }
 .panel > summary::-webkit-details-marker{display:none}
@@ -420,6 +440,7 @@ body::before{
   display:inline-flex;
   align-items:center;
   gap:6px;
+  font-family:var(--hand);
   padding:8px 9px 8px 11px;
   border:1px solid var(--line);
   border-radius:3px;
@@ -431,6 +452,13 @@ body::before{
   animation:chipIn .26s ease;
 }
 @keyframes chipIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+.chip .at{
+  font-family:var(--serif);
+  font-size:10.5px;
+  letter-spacing:.08em;
+  color:var(--ink-faint);
+  padding-left:1px;
+}
 .chip .x{
   appearance:none;
   border:none;
@@ -477,8 +505,8 @@ body::before{
 .addbox input::placeholder{color:var(--ink-faint);font-style:italic}
 .btn{
   appearance:none;
-  font-family:var(--serif);
-  font-size:15px;
+  font-family:var(--hand);
+  font-size:17px;
   letter-spacing:.1em;
   border:1px solid var(--line);
   border-radius:3px;
@@ -509,7 +537,7 @@ body::before{
   animation:chipIn .26s ease;
 }
 .hist li .e{font-size:19px;line-height:1;width:24px;text-align:center;flex:none}
-.hist li .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist li .n{flex:1;min-width:0;font-family:var(--hand);font-size:16.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hist li .g{font-size:11px;letter-spacing:.12em;color:var(--ink-faint);flex:none}
 .hist li .t{font-size:11.5px;color:var(--ink-faint);font-style:italic;flex:none;min-width:58px;text-align:right}
 
@@ -521,7 +549,8 @@ body::before{
   align-items:center;
   justify-content:space-between;
   gap:12px;
-  font-size:12px;
+  font-family:var(--hand);
+  font-size:15px;
   letter-spacing:.1em;
   color:var(--ink-faint);
 }
@@ -634,40 +663,49 @@ var GROUPS = [
   { id:'ALL', name:'全部', en:'All'     },
   { id:'CAN', name:'食堂', en:'Canteen' },
   { id:'DLV', name:'外卖', en:'Delivery'},
-  { id:'OUT', name:'下馆子', en:'Dine'  }
+  { id:'OUT', name:'和园', en:'Heyuan'  }
 ];
-var GNAME = { CAN:'食堂', DLV:'外卖', OUT:'下馆子' };
+var GNAME = { CAN:'食堂', DLV:'外卖', OUT:'和园' };
 
 var DEFAULTS = [
-  { n:'盖浇饭',    e:'🍛', g:'CAN' },
-  { n:'拉面窗口',  e:'🍜', g:'CAN' },
-  { n:'麻辣香锅',  e:'🌶️', g:'CAN' },
-  { n:'砂锅炖菜',  e:'🍲', g:'CAN' },
-  { n:'小锅米线',  e:'🍲', g:'CAN' },
-  { n:'饺子馄饨',  e:'🥟', g:'CAN' },
-  { n:'炒菜窗口',  e:'🥘', g:'CAN' },
-  { n:'卤肉饭',    e:'🍚', g:'CAN' },
-  { n:'关东煮',    e:'🍢', g:'CAN' },
+  /* ===== 食堂 ===== */
+  { n:'轻食',        e:'🥗', g:'CAN', at:'九食堂' },
+  { n:'鸡鸣汤包',    e:'🥟', g:'CAN', at:'九食堂' },
+  { n:'烧腊',        e:'🍖', g:'CAN', at:'九食堂' },
+  { n:'汉堡王',      e:'🍔', g:'CAN', at:'九食堂' },
+  { n:'到了再挑',    e:'🍽️', g:'CAN', at:'十二食堂' },
+  { n:'把子肉饭',    e:'🍖', g:'CAN', at:'四食堂' },
+  { n:'麻辣烫',      e:'🥘', g:'CAN', at:'五食堂' },
 
-  { n:'黄焖鸡米饭',e:'🍗', g:'DLV' },
-  { n:'麻辣烫',    e:'🥘', g:'DLV' },
-  { n:'炸鸡汉堡',  e:'🍔', g:'DLV' },
-  { n:'螺蛳粉',    e:'🍜', g:'DLV' },
-  { n:'猪脚饭',    e:'🍖', g:'DLV' },
-  { n:'寿司便当',  e:'🍱', g:'DLV' },
-  { n:'披萨',      e:'🍕', g:'DLV' },
-  { n:'沙拉轻食',  e:'🥗', g:'DLV' },
-  { n:'煲仔饭',    e:'🍚', g:'DLV' },
+  /* ===== 外卖：凡是能点外卖的都在这儿，店在哪不重要 ===== */
+  { n:'鸡手王炭烤羊腿', e:'🍖', g:'DLV', at:'和园',     p:60, s:'烤鸡手、烤羊肉串' },
+  { n:'汉堡学园',       e:'🍔', g:'DLV', at:'南大西门', p:29, s:'滑蛋芝士牛肉堡' },
+  { n:'超模厨房',       e:'🥗', g:'DLV',               p:26 },
+  { n:'香港肥锅米线',   e:'🍜', g:'DLV', at:'和园',     p:25, s:'招牌炸酱米线、炸蛋' },
+  { n:'宝岛便当',       e:'🍱', g:'DLV', at:'学海路',   p:25 },
+  { n:'喜羊羊手抓饭',   e:'🍛', g:'DLV',               p:22 },
+  { n:'七碗湘辣椒炒肉', e:'🌶️', g:'DLV', at:'和园',     p:21, s:'辣椒炒肉盖码饭' },
+  { n:'芝士控炸鸡',     e:'🍗', g:'DLV',               p:20, s:'招牌芝士酱' },
+  { n:'刘文祥麻辣烫',   e:'🥘', g:'DLV',               p:20 },
+  { n:'老南京叫花鸡',   e:'🐔', g:'DLV',               p:20, s:'一扯爆汁' },
+  { n:'H2美式汉堡',     e:'🍔', g:'DLV', at:'高科荣境', p:20, s:'汁水奶香都足' },
+  { n:'饭小伴拌饭',     e:'🍱', g:'DLV',               p:19 },
+  { n:'慕玛披萨',       e:'🍕', g:'DLV',               p:18 },
+  { n:'膳当家黄焖鸡',   e:'🍗', g:'DLV', at:'和园',     p:16 },
 
-  { n:'火锅',      e:'🍲', g:'OUT' },
-  { n:'烤肉',      e:'🥩', g:'OUT' },
-  { n:'日料',      e:'🍣', g:'OUT' },
-  { n:'川菜',      e:'🌶️', g:'OUT' },
-  { n:'粤式茶点',  e:'🥟', g:'OUT' },
-  { n:'烧烤夜宵',  e:'🍡', g:'OUT' },
-  { n:'西餐牛排',  e:'🥩', g:'OUT' },
-  { n:'韩式料理',  e:'🍲', g:'OUT' },
-  { n:'东南亚菜',  e:'🍛', g:'OUT' }
+  /* ===== 和园：走过去堂食 ===== */
+  { n:'鸟匠烧鸟',       e:'🍢', g:'OUT', at:'和园', p:78, s:'松板肉、鸡肉串' },
+  { n:'东北农家菜',     e:'🥘', g:'OUT', at:'和园', p:47, s:'地三鲜、肘子（需预定）' },
+  { n:'小熊罐罐云南菜', e:'🍲', g:'OUT', at:'和园', p:45, s:'红三剁、薄荷牛肉' },
+  { n:'刚刚好小火锅',   e:'🍲', g:'OUT', at:'和园', p:45 },
+  { n:'来福药膳鸡',     e:'🐔', g:'OUT', at:'和园', p:42 },
+  { n:'甜也馄饨',       e:'🥟', g:'OUT', at:'和园', p:20 },
+  { n:'食其家',         e:'🍛', g:'OUT', at:'和园' },
+  { n:'宝宝巴士',       e:'🍚', g:'OUT', at:'和园' },
+  { n:'bona食堂',       e:'🍱', g:'OUT', at:'和园' },
+  { n:'袁记云饺',       e:'🥟', g:'OUT', at:'和园' },
+  { n:'今牛',           e:'🥩', g:'OUT', at:'和园' },
+  { n:'百得味盖饭',     e:'🍛', g:'OUT', at:'和园' }
 ];
 
 /* 名字 → emoji 猜测 */
@@ -696,8 +734,15 @@ function guessEmoji(name){
   return '🍽️';
 }
 
+/* 默认清单里带 at / p / s 这些可选字段，整份深拷贝一次即可 */
+function cloneDefaults(){
+  return DEFAULTS.map(function(d){
+    return { n:d.n, e:d.e, g:d.g, at:d.at, p:d.p, s:d.s };
+  });
+}
+
 /* ========== 存储 ========== */
-var K_ITEMS = 'wte.items.v1';
+var K_ITEMS = 'wte.items.v2';   /* 换过清单结构，升版让旧缓存失效 */
 var K_HIST  = 'wte.history.v1';
 var HIST_MAX = 40;
 
@@ -714,7 +759,7 @@ function save(key, value){
   catch(err){ /* 隐私模式下写入会失败，忽略即可 */ }
 }
 
-var items   = load(K_ITEMS, null) || DEFAULTS.map(function(d){ return {n:d.n,e:d.e,g:d.g}; });
+var items   = load(K_ITEMS, null) || cloneDefaults();
 var history = load(K_HIST, []);
 var filter  = 'ALL';
 var addGroup = 'CAN';
@@ -806,7 +851,8 @@ function deckHTML(){
       '<div class="face front">' +
         '<div class="f-emoji" id="fEmoji">🍽️</div>' +
         '<div class="f-name" id="fName">—</div>' +
-        '<div class="f-group" id="fGroup">—</div>' +
+        '<div class="f-meta" id="fMeta"></div>' +
+        '<div class="f-tip" id="fTip"></div>' +
         '<div class="seal" id="seal">宜食</div>' +
       '</div>' +
     '</div>';
@@ -823,6 +869,15 @@ function resetDeck(){
 
 function pool(){
   return items.filter(function(it){ return filter === 'ALL' || it.g === filter; });
+}
+
+/* 卡片第二行：地点 · 人均。两者都缺就整行不显示 */
+function metaLine(item){
+  var where = item.at || GNAME[item.g] || '';
+  var parts = [];
+  if(where) parts.push(esc(where));
+  if(item.p) parts.push('人均 <span class="yen">' + Number(item.p) + '</span>');
+  return parts.join(' · ');
 }
 
 /* ========== 抽签编排 ========== */
@@ -955,7 +1010,8 @@ async function draw(){
 
   $('fEmoji').textContent = picked.e;
   $('fName').textContent  = picked.n;
-  $('fGroup').textContent = GNAME[picked.g] || '';
+  $('fMeta').innerHTML    = metaLine(picked);
+  $('fTip').textContent   = picked.s ? ('推荐 ' + picked.s) : '';
   $('seal').classList.remove('stamped');
 
   var token = ++drawToken;
@@ -997,7 +1053,8 @@ function paintShelves(){
     var body = list.length
       ? '<div class="chips">' + list.map(function(it){
           var realIdx = items.indexOf(it);
-          return '<span class="chip">' + esc(it.e) + ' ' + esc(it.n) +
+          var where = it.at ? '<span class="at">' + esc(it.at) + '</span>' : '';
+          return '<span class="chip">' + esc(it.e) + ' ' + esc(it.n) + where +
             '<button class="x" type="button" data-del="' + realIdx +
             '" aria-label="删除 ' + esc(it.n) + '">&times;</button></span>';
         }).join('') + '</div>'
@@ -1040,7 +1097,7 @@ addInput.addEventListener('keydown', function(ev){
 });
 
 $('resetBtn').addEventListener('click', function(){
-  items = DEFAULTS.map(function(d){ return { n:d.n, e:d.e, g:d.g }; });
+  items = cloneDefaults();
   save(K_ITEMS, items);
   paintShelves();
   resetDeck();
@@ -1087,14 +1144,20 @@ resetDeck();
 
 /* 入场：页眉与签台依次浮现 */
 if(!reduce){
+  var intro = [];
   [['.masthead',0],['.groups',70],['.stage',140],['.draw',210]].forEach(function(pair){
     var el = document.querySelector(pair[0]);
     if(!el) return;
-    el.animate([
+    intro.push(el.animate([
       { opacity:0, transform:'translateY(14px)' },
       { opacity:1, transform:'none' }
-    ], { duration:520, delay:pair[1], easing:'cubic-bezier(.22,.9,.3,1)', fill:'backwards' });
+    ], { duration:520, delay:pair[1], easing:'cubic-bezier(.22,.9,.3,1)', fill:'backwards' }));
   });
+  /* 页面加载时若被节流（窗口在后台），入场动画会停在 opacity:0 让整页空白。
+     兜底取消，元素立刻回到自然可见状态。 */
+  setTimeout(function(){
+    intro.forEach(function(a){ try{ a.cancel(); }catch(err){} });
+  }, 1400);
 }
 
 /* iOS Safari：双指缩放留着，但屏蔽双击缩放带来的误触延迟 */

@@ -66,7 +66,7 @@ window.toolEntries = [
     href: "what-to-eat.html",
     title: "今天吃什么",
     railTag: "随机工具",
-    description: "按食堂 / 外卖 / 下馆子分组的抽签签筒，清单可以自己改，抽过什么也会记下来。",
+    description: "按食堂 / 外卖 / 和园分组的抽签签筒，抽中会给出人均和推荐菜，清单也能自己改。",
     meta: "吃饭决策用",
     icon: "icons/tool-toss.svg",
     iconAlt: "今天吃什么图标"
