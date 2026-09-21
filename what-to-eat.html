@@ -219,6 +219,9 @@ body::before{
   position:absolute;
   width:8.5%;
   height:70%;
+  /* 支点在底端：签是插在筒里的，摆动时顶端画弧甩出去，
+     这样签之间才会交叉、挤压、换位，而不是一排平行线各跳各的 */
+  transform-origin:50% 94%;
   /* 顶端收圆：竹签是削出来的，不是火柴棍 */
   border-radius:40% 40% 1px 1px / 7% 7% 1px 1px;
   background:
@@ -914,6 +917,7 @@ var addGroup = 'CAN';
 var spinning = false;
 var lastPicked = null;
 var drawToken = 0;   /* 自增即作废所有在途动画 */
+var zTimers = [];    /* 摇签过程中重排层次的定时器 */
 
 /* ========== DOM ========== */
 var $ = function(id){ return document.getElementById(id); };
@@ -995,6 +999,8 @@ addPick.addEventListener('click', function(ev){
 
 /* ========== 签筒 ========== */
 var STICKS = 11;
+/* 打散用的固定序列，比 Math.random 好在每次刷新姿态一致 */
+var RND = [0.42, -0.78, 0.31, -0.19, 0.86, -0.51, 0.64, -0.92, 0.12, -0.37, 0.71];
 var tube   = $('tube');
 var sticks = $('sticks');
 var flyer  = $('flyer');
@@ -1032,14 +1038,19 @@ function clearGhosts(){
 /* 签条在筒里高低错落，看起来才像随手插的 */
 function buildSticks(){
   var html = '';
-  var span = (100 - 8.5 - 10) / (STICKS - 1);   /* 两侧各留 5% 边距 */
+  /* 两侧留够边距：签根必须都落在筒壁(5%~95%)之内，
+     否则倾斜时会有签的下半截露在筒外，看着像插歪了 */
+  var span = (100 - 8.5 - 20) / (STICKS - 1);
   for(var i = 0; i < STICKS; i++){
-    var left = 5 + i * span;
-    var lift = Math.abs(Math.sin(i * 1.7)) * 12;   /* 高低错落，像随手插的 */
-    var tilt = ((i - (STICKS - 1) / 2) * 1.1).toFixed(1);
+    /* 固定的伪随机：每次刷新姿态一致，但排布够乱，不像栅栏 */
+    var r1 = RND[i % RND.length];
+    var r2 = RND[(i * 5 + 3) % RND.length];
+    var left = 10 + i * span + r1 * 1.8;
+    var lift = 4 + Math.abs(r2) * 16;              /* 露出筒口的高度 */
+    var tilt = (r1 * 9).toFixed(1);                /* 乱插的倾角 */
     html += '<i class="stick" data-tilt="rotate(' + tilt + 'deg)"' +
-      ' style="left:' + left.toFixed(1) + '%;bottom:' + (10 + lift).toFixed(1) + '%' +
-      ';transform:rotate(' + tilt + 'deg);z-index:' + (i % 2 ? 1 : 2) + '"></i>';
+      ' style="left:' + left.toFixed(1) + '%;bottom:' + (9 + lift).toFixed(1) + '%' +
+      ';transform:rotate(' + tilt + 'deg);z-index:' + (i % 3 + 1) + '"></i>';
   }
   sticks.innerHTML = html;
 }
@@ -1049,6 +1060,8 @@ function stickList(){
 }
 
 function resetStage(){
+  zTimers.forEach(clearTimeout);
+  zTimers = [];
   clearGhosts();
   cancelAnims([tube, flyer, card, glow, flash, sheen].concat(stickList()));
   glow.style.opacity = '0';
@@ -1062,7 +1075,10 @@ function resetStage(){
   card.style.opacity = '0';
   card.style.clipPath = 'inset(0 46% 0 46% round 6px)';
   card.style.transform = 'translateY(-50%) scale(.96)';
-  stickList().forEach(function(el){ el.style.transform = el.dataset.tilt; });
+  stickList().forEach(function(el, i){
+    el.style.transform = el.dataset.tilt;
+    el.style.zIndex = (i % 3) + 1;
+  });
   $('seal').classList.remove('stamped');
 }
 
@@ -1122,22 +1138,41 @@ async function shakeTube(token){
   ghostTrail(tube, shakeFrames, shakeOpts, 2, .3);
   var tubeShake = anim(tube, shakeFrames, shakeOpts);
 
-  /* 每根签相位错开，才有一整筒签互相磕碰的杂乱感 */
+  /* 签跟着筒甩：顶端因惯性往筒的反方向倒，每根摆幅和相位都不同，
+     于是它们互相交叉、挤到一侧、再散开 —— 这才像一筒签而不是一排节拍器 */
   list.forEach(function(el, i){
     var base = el.dataset.tilt;
-    var h1 = -14 - (i * 37 % 19);
-    var h2 = -9 - (i * 53 % 15);
-    var r1 = (i % 2 ? 6 : -5);
+    var r = RND[i % RND.length];
+    /* 摆幅受筒壁约束，甩不了多远；主要靠相位差让它们互相交叉 */
+    var swing = 8 + Math.abs(r) * 6;
+    /* 惯性方向是一致的（筒往左甩，签就往右倒），
+       只有少数被邻居别住的签会反着来一点 */
+    var sign = r > -0.45 ? 1 : -0.55;
+    var hop = function(k){ return (-2.5 - Math.abs(r) * 7 * k).toFixed(1); };
+
     anim(el, [
-      { transform: base + ' translateY(0) rotate(0deg)' },
-      { transform: base + ' translateY(' + h1 + 'px) rotate(' + r1 + 'deg)' },
-      { transform: base + ' translateY(5px) rotate(' + (-r1 * 0.4).toFixed(1) + 'deg)' },
-      { transform: base + ' translateY(' + h2 + 'px) rotate(' + (-r1) + 'deg)' },
-      { transform: base + ' translateY(4px) rotate(' + (r1 * 0.3).toFixed(1) + 'deg)' },
-      { transform: base + ' translateY(' + (h1 * 0.55).toFixed(1) + 'px) rotate(' + (r1 * 0.5).toFixed(1) + 'deg)' },
-      { transform: base + ' translateY(0) rotate(0deg)' }
-    ], { duration:1150, delay:i * 14, easing:'cubic-bezier(.36,.06,.3,.96)', fill:'forwards' });
+      { transform: base + ' rotate(0deg) translateY(0)' },
+      { transform: base + ' rotate(' + (swing * sign).toFixed(1) + 'deg) translateY(' + hop(1) + 'px)' },
+      { transform: base + ' rotate(' + (-swing * 0.85 * sign).toFixed(1) + 'deg) translateY(' + hop(.4) + 'px)' },
+      { transform: base + ' rotate(' + (swing * 0.9 * sign).toFixed(1) + 'deg) translateY(' + hop(.8) + 'px)' },
+      { transform: base + ' rotate(' + (-swing * 0.6 * sign).toFixed(1) + 'deg) translateY(' + hop(.3) + 'px)' },
+      { transform: base + ' rotate(' + (swing * 0.3 * sign).toFixed(1) + 'deg) translateY(' + hop(.15) + 'px)' },
+      { transform: base + ' rotate(0deg) translateY(0)' }
+    ], {
+      duration: 1150,
+      /* 相位差是关键：一起摆就又变成平行线了 */
+      delay: (i % 5) * 58 + Math.abs(r) * 62,
+      easing: 'cubic-bezier(.36,.06,.3,.96)',
+      fill: 'forwards'
+    });
   });
+
+  /* 摇的过程中把前后层次重排两次，签才会真的穿插而不是始终一个叠一个 */
+  var shuffleZ = [
+    setTimeout(function(){ list.forEach(function(el, i){ el.style.zIndex = (i * 7 % 3) + 1; }); }, 330),
+    setTimeout(function(){ list.forEach(function(el, i){ el.style.zIndex = (i * 5 % 3) + 1; }); }, 720)
+  ];
+  zTimers = zTimers.concat(shuffleZ);
 
   await tubeShake;
   if(!alive()) return;
@@ -1269,6 +1304,8 @@ function withTimeout(promise, ms){
 }
 
 function settleHero(){
+  zTimers.forEach(clearTimeout);
+  zTimers = [];
   clearGhosts();
   cancelAnims([tube, flyer, card, glow, flash, sheen].concat(stickList()));
   tube.style.opacity = '0';
