@@ -1009,13 +1009,21 @@ var RIM_R     = 74;       /* 筒口内半径 */
 var RIM_FRAC  = 0.48;
 var MIN_GAP   = 15;       /* 两根签顶端的最小间距 */
 
+var ROOT_R    = 56;       /* 签根能滑到的最大半径（筒内壁） */
+var ROOT_GAP  = 14;       /* 签根之间的最小间距 */
+var G         = 2100;     /* 重力，px/s^2 */
+var G_SLIDE   = 760;      /* 筒一歪，签根沿筒底往低处滑的力度 */
+var C_ROOT    = 2.6;      /* 签根在筒底的摩擦 */
+var E_FLOOR   = 0.26;     /* 落回筒底的回弹 */
+var BOT_INERT = 0.9;      /* 签根受到的惯性增益 */
+
 var K_RESTORE = 62;       /* 回复刚度 */
 var C_DAMP    = 2.7;      /* 阻尼：调小签晃得更久、更松快 */
 var K_REPEL   = 150;      /* 碰撞排斥强度 */
 var E_WALL    = 0.42;     /* 撞筒壁的恢复系数 */
 /* 驱动频率高于签的自振频率，所以响应幅度是 A/|w0^2 - w^2| 而不是 A/K，
    这一项要照着那个公式调，不然差一个量级 */
-var INERTIA   = 0.42;
+var INERTIA   = 0.30;
 var DT        = 1 / 60;
 
 var bodies = [];          /* 每根签的刚体状态 */
@@ -1049,8 +1057,10 @@ function buildSticks(){
     var r3 = RND[(i * 7 + 4) % RND.length];
 
     bodies.push({
-      bx: bx, bz: bz,
-      tx: r * 9, tz: r2 * 7,          /* 顶端初始偏移：乱插的 */
+      bx: bx, bz: bz,                 /* 签根位置：现在是会动的 */
+      bvx: 0, bvz: 0,
+      vy: 0,                          /* 离筒底的高度：被甩起来会离底 */
+      tx: r * 9, tz: r2 * 7,          /* 顶端偏移：乱插的 */
       vx: 0, vz: 0,
       lift: 0, vlift: 0,              /* 沿签身被顶出来的量 */
       rise: 4 + Math.abs(r3) * 16,
@@ -1058,7 +1068,12 @@ function buildSticks(){
          没有这个差异，同样的惯性力会让它们整齐划一地摆。 */
       k: K_RESTORE * (0.55 + Math.abs(r) * 1.1),
       c: C_DAMP * (0.6 + Math.abs(r2) * 1.0),
-      m: 0.85 + r3 * 0.3
+      m: 0.85 + r3 * 0.3,
+      /* 垂直方向也得给差异：同样的抛掷力作用在同样的签上，
+         11 根签会整齐划一地起落，一眼假 */
+      vm: 0.72 + Math.abs(r2) * 0.62,
+      e:  E_FLOOR * (0.6 + Math.abs(r3) * 1.1),
+      y:  Math.abs(r) * 2.5
     });
 
     html += '<i class="stick" data-i="' + i + '"></i>';
@@ -1087,7 +1102,7 @@ function render(){
 
     var scale = 0.86 + d * 0.26;                      /* 近大远小 */
     var x = (b.bx + b.tx * 0.12) * (0.9 + d * 0.18);  /* 远处横向压缩 */
-    var y = -(b.rise + b.lift) - (1 - d) * 14;        /* 远的签位置更高 */
+    var y = -(b.rise + b.lift + b.y) - (1 - d) * 14;  /* 含被抛起的高度 */
     var angZ = Math.atan2(b.tx, STICK_LEN) * 180 / Math.PI;
 
     els[i].style.transform =
@@ -1101,15 +1116,17 @@ function render(){
 
 /* 筒的摇动曲线：人手摇是不匀的，快一下慢一下 */
 function tubeMotion(t){
-  var env = Math.min(1, t / 0.14) * Math.max(0, Math.min(1, (shakeDur - t) / 0.42));
+  var env = Math.min(1, t / 0.14) * Math.max(0, Math.min(1, (shakeDur - t) / 0.45));
   var beat = Math.sin(t * 15.2) * 0.72 + Math.sin(t * 23.7 + 1.1) * 0.28;
   return {
-    x: beat * 30 * env,
-    rot: Math.sin(t * 15.2 + 0.38) * 15 * env
+    x: beat * 42 * env,
+    y: Math.sin(t * 19.4 + 0.7) * 8.5 * env,   /* 上下颠，签才会被抛起来 */
+    rot: Math.sin(t * 15.2 + 0.38) * 20 * env
   };
 }
 
-/* 一步物理：先算筒给的伪力，再解签之间的碰撞 */
+/* 一步物理。每根签解 5 个自由度：
+   签根在筒底滑移、整根签被抛离筒底、顶端绕签根摆。 */
 function stepPhysics(dt){
   var prev = tubeMotion(Math.max(0, shakeT - dt));
   var cur  = tubeMotion(shakeT);
@@ -1117,23 +1134,39 @@ function stepPhysics(dt){
 
   /* 二阶差分拿加速度 */
   var accX   = (next.x - 2 * cur.x + prev.x) / (dt * dt);
+  var accY   = (next.y - 2 * cur.y + prev.y) / (dt * dt);
   var accRot = (next.rot - 2 * cur.rot + prev.rot) / (dt * dt) * Math.PI / 180;
+
+  /* 筒歪了，签根就会沿筒底往低的一侧滑 */
+  var slide = Math.sin(cur.rot * Math.PI / 180) * G_SLIDE;
 
   var i, j;
   for(i = 0; i < bodies.length; i++){
     var b = bodies[i];
 
-    /* 1. 回复：撑回筒的轴向 */
+    /* ===== 1. 签根：在筒底滑移 ===== */
+    var abx = slide - (accX + accRot * 40) * BOT_INERT - C_ROOT * b.bvx;
+    var abz = -C_ROOT * b.bvz;
+
+    /* ===== 2. 顶端：回复 + 惯性 ===== */
     var ax = -b.k * b.tx - b.c * b.vx;
     var az = -b.k * b.tz - b.c * b.vz;
-
-    /* 2. 惯性伪力：顶端离转轴越远，甩得越狠 */
     ax += -(accX + accRot * STICK_LEN) * INERTIA * b.m;
 
-    /* 3. 碰撞：顶端挨太近就互相推开 */
+    /* ===== 3. 签之间：签根互相挤，顶端互相推 ===== */
     for(j = 0; j < bodies.length; j++){
       if(j === i) continue;
       var o = bodies[j];
+
+      var rdx = b.bx - o.bx, rdz = b.bz - o.bz;
+      var rd2 = rdx * rdx + rdz * rdz;
+      if(rd2 < ROOT_GAP * ROOT_GAP && rd2 > 0.01){
+        var rd = Math.sqrt(rd2);
+        var rpush = (ROOT_GAP - rd) * 210 / rd;
+        abx += rdx * rpush;
+        abz += rdz * rpush;
+      }
+
       var dx = (b.bx + b.tx) - (o.bx + o.tx);
       var dz = (b.bz + b.tz) - (o.bz + o.tz);
       var d2 = dx * dx + dz * dz;
@@ -1145,17 +1178,40 @@ function stepPhysics(dt){
       }
     }
 
-    b.vx += ax * dt;
-    b.vz += az * dt;
-    b.tx += b.vx * dt;
-    b.tz += b.vz * dt;
+    /* ===== 4. 积分 ===== */
+    b.bvx += abx * dt;  b.bvz += abz * dt;
+    b.bx  += b.bvx * dt; b.bz += b.bvz * dt;
 
-    /* 4. 筒口硬约束：签身蹭到筒口内壁才会被挡回来 */
+    b.vx += ax * dt;    b.vz += az * dt;
+    b.tx += b.vx * dt;  b.tz += b.vz * dt;
+
+    /* ===== 5. 垂直：筒往下甩时签会离开筒底，落回来再弹一下 ===== */
+    b.vy += (-G - accY * b.vm) * dt;
+    b.y  += b.vy * dt;
+    if(b.y <= 0){
+      b.y = 0;
+      if(b.vy < 0) b.vy = -b.vy * b.e;
+    }
+
+    /* ===== 6. 签根撞筒内壁 ===== */
+    var rr = Math.sqrt(b.bx * b.bx + b.bz * b.bz);
+    if(rr > ROOT_R){
+      var rnx = b.bx / rr, rnz = b.bz / rr;
+      b.bx = rnx * ROOT_R;
+      b.bz = rnz * ROOT_R;
+      var rvn = b.bvx * rnx + b.bvz * rnz;
+      if(rvn > 0){
+        b.bvx -= (1 + E_WALL) * rvn * rnx;
+        b.bvz -= (1 + E_WALL) * rvn * rnz;
+      }
+    }
+
+    /* ===== 7. 签身蹭到筒口内壁 ===== */
     var px = b.bx + b.tx * RIM_FRAC, pz = b.bz + b.tz * RIM_FRAC;
     var pr = Math.sqrt(px * px + pz * pz);
     if(pr > RIM_R){
       var nx = px / pr, nz = pz / pr;
-      var over = (pr - RIM_R) / RIM_FRAC;   /* 换算回顶端的位移 */
+      var over = (pr - RIM_R) / RIM_FRAC;
       b.tx -= nx * over;
       b.tz -= nz * over;
       var vn = b.vx * nx + b.vz * nz;
@@ -1165,7 +1221,7 @@ function stepPhysics(dt){
       }
     }
 
-    /* 5. 摇到后半程，中签那根一点点被挤出筒口 */
+    /* ===== 8. 摇到后半程，中签那根一点点被挤出筒口 ===== */
     if(i === chosenIdx && shakeDur > 0){
       var prog = Math.max(0, (shakeT / shakeDur - 0.45) / 0.55);
       var target = prog * prog * 34;
@@ -1175,8 +1231,9 @@ function stepPhysics(dt){
     }
   }
 
-  /* 筒本身按曲线走 */
-  tube.style.transform = 'translateX(' + cur.x.toFixed(2) + 'px) rotate(' + cur.rot.toFixed(2) + 'deg)';
+  tube.style.transform =
+    'translate(' + cur.x.toFixed(2) + 'px,' + (-cur.y).toFixed(2) + 'px)' +
+    ' rotate(' + cur.rot.toFixed(2) + 'deg)';
 }
 
 /* 调参用的手动驱动接口。
@@ -1202,10 +1259,12 @@ window.__phys = {
       chosen: chosenIdx,
       bodies: bodies.map(function(b){
         return {
+          root: [+b.bx.toFixed(1), +b.bz.toFixed(1)],
           tip: [+(b.bx + b.tx).toFixed(1), +(b.bz + b.tz).toFixed(1)],
           off: +Math.sqrt(b.tx * b.tx + b.tz * b.tz).toFixed(1),
+          y: +b.y.toFixed(1),
           lift: +b.lift.toFixed(1),
-          ok: isFinite(b.tx) && isFinite(b.tz)
+          ok: isFinite(b.tx) && isFinite(b.tz) && isFinite(b.bx) && isFinite(b.y)
         };
       })
     };
@@ -1275,7 +1334,7 @@ function anim(el, frames, opts){
 
 /* 1+2. 摇筒：跑物理仿真，摇完中签那根已经被顶出筒口 */
 function shakeTube(token){
-  shakeDur = 1.35;
+  shakeDur = 1.65;
   shakeT = 0;
   chosenIdx = Math.floor(Math.random() * bodies.length);
 
