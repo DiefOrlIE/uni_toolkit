@@ -277,6 +277,53 @@ body::before{
   box-shadow:inset 0 3px 7px rgba(0,0,0,.62), 0 1px 0 rgba(255,244,222,.16);
 }
 
+/* 残影：摇筒和飞签都靠它做拖尾。
+   注意别叫 .ghost —— 面板里的次要按钮已经用了 .btn.ghost，
+   撞名会让那些按钮被 pointer-events:none 干掉。 */
+.trail{
+  pointer-events:none !important;
+  filter:blur(1.5px);
+}
+
+/* 飞签的光晕，跟着签一起走 */
+.glow{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:min(30vw,120px);
+  height:min(30vw,120px);
+  margin-left:calc(min(30vw,120px) / -2);
+  margin-top:calc(min(30vw,120px) / -2);
+  z-index:3;
+  opacity:0;
+  pointer-events:none;
+  border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(255,214,150,.85) 0%, rgba(214,128,64,.42) 38%, transparent 70%);
+}
+
+/* 揭晓瞬间的满屏发亮 */
+.flash{
+  position:absolute;
+  inset:-24%;
+  z-index:6;
+  opacity:0;
+  pointer-events:none;
+  background:radial-gradient(circle at 50% 46%,
+    rgba(255,240,208,.92) 0%, rgba(255,198,132,.3) 34%, transparent 68%);
+}
+
+/* 卡片展开时扫过的光带 */
+.sheen{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  opacity:0;
+  background:linear-gradient(104deg,
+    transparent 28%, rgba(255,255,255,.82) 47%, rgba(255,255,255,.3) 55%, transparent 70%);
+}
+
 /* 被抽中、飞出筒口的那根签 */
 .flyer{
   position:absolute;
@@ -695,8 +742,11 @@ body::before{
       <div class="sticks" id="sticks"></div>
       <div class="barrel"></div>
     </div>
+    <div class="glow" id="glow"></div>
     <div class="flyer" id="flyer"></div>
+    <div class="flash" id="flash"></div>
     <div class="card" id="card">
+      <div class="sheen" id="sheen"></div>
       <div class="f-emoji" id="fEmoji">🍽️</div>
       <div class="f-name" id="fName">—</div>
       <div class="f-meta" id="fMeta"></div>
@@ -802,7 +852,8 @@ var DEFAULTS = [
   { n:'bona食堂',       e:'🍱', g:'OUT', at:'和园' },
   { n:'袁记云饺',       e:'🥟', g:'OUT', at:'和园' },
   { n:'今牛',           e:'🥩', g:'OUT', at:'和园' },
-  { n:'百得味盖饭',     e:'🍛', g:'OUT', at:'和园' }
+  { n:'百得味盖饭',     e:'🍛', g:'OUT', at:'和园' },
+  { n:'麦当劳',         e:'🍟', g:'OUT', at:'和园' }
 ];
 
 /* 名字 → emoji 猜测 */
@@ -858,7 +909,7 @@ function save(key, value){
 
 var items   = load(K_ITEMS, null) || cloneDefaults();
 var history = load(K_HIST, []);
-var filter  = 'ALL';
+var picks   = [];   /* 选中的分组；空数组 = 全部 */
 var addGroup = 'CAN';
 var spinning = false;
 var lastPicked = null;
@@ -905,8 +956,9 @@ function paintDate(){
 /* ========== 分组按钮 ========== */
 function paintGroups(){
   groupsEl.innerHTML = GROUPS.map(function(g){
+    var on = g.id === 'ALL' ? picks.length === 0 : picks.indexOf(g.id) !== -1;
     return '<button class="gbtn" type="button" data-g="' + g.id + '" aria-pressed="' +
-      (filter === g.id) + '">' + g.name + '<span class="n">' + g.en + '</span></button>';
+      on + '">' + g.name + '<span class="n">' + g.en + '</span></button>';
   }).join('');
 
   addPick.innerHTML = GROUPS.filter(function(g){ return g.id !== 'ALL'; }).map(function(g){
@@ -918,7 +970,18 @@ function paintGroups(){
 groupsEl.addEventListener('click', function(ev){
   var btn = ev.target.closest('[data-g]');
   if(!btn || spinning) return;
-  filter = btn.getAttribute('data-g');
+  var id = btn.getAttribute('data-g');
+
+  if(id === 'ALL'){
+    picks = [];
+  }else{
+    var at = picks.indexOf(id);
+    if(at === -1) picks.push(id);
+    else picks.splice(at, 1);
+    /* 三个都选中，等于没筛，回到「全部」更直观 */
+    if(picks.length === GROUPS.length - 1) picks = [];
+  }
+
   paintGroups();
   resetDeck();
 });
@@ -936,6 +999,35 @@ var tube   = $('tube');
 var sticks = $('sticks');
 var flyer  = $('flyer');
 var card   = $('card');
+var glow   = $('glow');
+var flash  = $('flash');
+var sheen  = $('sheen');
+
+/* 残影：复制几份同样跑一遍动画，延迟递增、越旧越淡。
+   浏览器没有真正的运动模糊，这是最省的替代做法。 */
+function ghostTrail(el, frames, opts, count, baseAlpha){
+  for(var i = 1; i <= count; i++){
+    (function(i){
+      var g = el.cloneNode(true);
+      g.classList.add('trail');
+      g.id = '';
+      g.style.opacity = String(Math.max(0, baseAlpha - i * (baseAlpha / (count + 1))));
+      el.parentNode.insertBefore(g, el);
+      var delay = (opts.delay || 0) + i * 55;
+      g.animate(frames, {
+        duration: opts.duration,
+        delay: delay,
+        easing: opts.easing,
+        fill: 'forwards'
+      });
+      setTimeout(function(){ g.remove(); }, opts.duration + delay + 260);
+    })(i);
+  }
+}
+
+function clearGhosts(){
+  Array.prototype.forEach.call(stage.querySelectorAll('.trail'), function(g){ g.remove(); });
+}
 
 /* 签条在筒里高低错落，看起来才像随手插的 */
 function buildSticks(){
@@ -957,7 +1049,12 @@ function stickList(){
 }
 
 function resetStage(){
-  cancelAnims([tube, flyer, card].concat(stickList()));
+  clearGhosts();
+  cancelAnims([tube, flyer, card, glow, flash, sheen].concat(stickList()));
+  glow.style.opacity = '0';
+  glow.style.transform = '';
+  flash.style.opacity = '0';
+  sheen.style.opacity = '0';
   tube.style.opacity = '1';
   tube.style.transform = '';
   flyer.style.opacity = '0';
@@ -984,7 +1081,8 @@ function resetDeck(){
 }
 
 function pool(){
-  return items.filter(function(it){ return filter === 'ALL' || it.g === filter; });
+  if(!picks.length) return items.slice();
+  return items.filter(function(it){ return picks.indexOf(it.g) !== -1; });
 }
 
 /* 卡片第二行：地点 · 人均。两者都缺就整行不显示 */
@@ -1004,86 +1102,136 @@ function anim(el, frames, opts){
   return a.finished.catch(function(){ /* 动画被打断时不抛出 */ });
 }
 
-/* 1. 摇筒：筒身左右甩动，签条在筒里上下磕碰 */
+/* 1. 摇筒：幅度拉满，带上下颠，筒身拖残影 */
 async function shakeTube(token){
   var alive = function(){ return token === drawToken; };
   var list = stickList();
 
-  var tubeShake = anim(tube, [
-    { transform:'rotate(0deg)' },
-    { transform:'rotate(-12deg)' },
-    { transform:'rotate(10deg)' },
-    { transform:'rotate(-9deg)' },
-    { transform:'rotate(8deg)' },
-    { transform:'rotate(-5deg)' },
-    { transform:'rotate(3deg)' },
-    { transform:'rotate(0deg)' }
-  ], { duration:980, easing:'ease-in-out', fill:'forwards' });
+  var shakeFrames = [
+    { transform:'translateY(0) rotate(0deg)' },
+    { transform:'translateY(-9px) rotate(-19deg)' },
+    { transform:'translateY(4px) rotate(16deg)' },
+    { transform:'translateY(-11px) rotate(-17deg)' },
+    { transform:'translateY(5px) rotate(14deg)' },
+    { transform:'translateY(-7px) rotate(-11deg)' },
+    { transform:'translateY(3px) rotate(7deg)' },
+    { transform:'translateY(0) rotate(0deg)' }
+  ];
+  var shakeOpts = { duration:1150, easing:'cubic-bezier(.36,.06,.3,.96)', fill:'forwards' };
+
+  ghostTrail(tube, shakeFrames, shakeOpts, 2, .3);
+  var tubeShake = anim(tube, shakeFrames, shakeOpts);
 
   /* 每根签相位错开，才有一整筒签互相磕碰的杂乱感 */
   list.forEach(function(el, i){
     var base = el.dataset.tilt;
-    var h1 = -7 - (i * 37 % 11);
-    var h2 = -4 - (i * 53 % 9);
+    var h1 = -14 - (i * 37 % 19);
+    var h2 = -9 - (i * 53 % 15);
+    var r1 = (i % 2 ? 6 : -5);
     anim(el, [
-      { transform: base + ' translateY(0)' },
-      { transform: base + ' translateY(' + h1 + 'px)' },
-      { transform: base + ' translateY(3px)' },
-      { transform: base + ' translateY(' + h2 + 'px)' },
-      { transform: base + ' translateY(2px)' },
-      { transform: base + ' translateY(' + (h1 * 0.6).toFixed(1) + 'px)' },
-      { transform: base + ' translateY(0)' }
-    ], { duration:980, delay:i * 16, easing:'ease-in-out', fill:'forwards' });
+      { transform: base + ' translateY(0) rotate(0deg)' },
+      { transform: base + ' translateY(' + h1 + 'px) rotate(' + r1 + 'deg)' },
+      { transform: base + ' translateY(5px) rotate(' + (-r1 * 0.4).toFixed(1) + 'deg)' },
+      { transform: base + ' translateY(' + h2 + 'px) rotate(' + (-r1) + 'deg)' },
+      { transform: base + ' translateY(4px) rotate(' + (r1 * 0.3).toFixed(1) + 'deg)' },
+      { transform: base + ' translateY(' + (h1 * 0.55).toFixed(1) + 'px) rotate(' + (r1 * 0.5).toFixed(1) + 'deg)' },
+      { transform: base + ' translateY(0) rotate(0deg)' }
+    ], { duration:1150, delay:i * 14, easing:'cubic-bezier(.36,.06,.3,.96)', fill:'forwards' });
   });
 
   await tubeShake;
   if(!alive()) return;
 
-  /* 2. 一根签从筒里慢慢冒头 */
+  /* 2. 中签那根先抖两下，再被"挑"出来 */
   var chosen = list[Math.floor(list.length / 2)];
+  var tilt = chosen.dataset.tilt;
+
   await anim(chosen, [
-    { transform: chosen.dataset.tilt + ' translateY(0)' },
-    { transform: chosen.dataset.tilt + ' translateY(-28px)' }
-  ], { duration:360, easing:'cubic-bezier(.3,.9,.4,1)', fill:'forwards' });
+    { transform: tilt + ' translateY(0)' },
+    { transform: tilt + ' translateY(-5px) translateX(3px)' },
+    { transform: tilt + ' translateY(-2px) translateX(-3px)' },
+    { transform: tilt + ' translateY(-7px) translateX(2px)' },
+    { transform: tilt + ' translateY(-3px)' }
+  ], { duration:260, easing:'ease-in-out', fill:'forwards' });
   if(!alive()) return;
 
-  /* 其余签沉回筒中 */
+  /* 其余签沉回筒中，把主角让出来 */
   list.forEach(function(el){
     if(el === chosen) return;
-    anim(el, [{ transform: el.dataset.tilt + ' translateY(5px)' }],
-      { duration:260, easing:'ease-out', fill:'forwards' });
+    anim(el, [{ transform: el.dataset.tilt + ' translateY(7px)' }],
+      { duration:300, easing:'ease-out', fill:'forwards' });
   });
+
+  glow.style.opacity = '0';
+  anim(glow, [{ opacity:0, transform:'scale(.5)' }, { opacity:.55, transform:'scale(.9)' }],
+    { duration:420, easing:'ease-out', fill:'forwards' });
+
+  await anim(chosen, [
+    { transform: tilt + ' translateY(-3px)' },
+    { transform: tilt + ' translateY(-38px)' }
+  ], { duration:420, easing:'cubic-bezier(.3,.9,.4,1)', fill:'forwards' });
 }
 
-/* 3. 签飞出筒口，筒身让位 */
+/* 3. 签冲出筒口，空中翻滚，拖一条残影和光晕 */
 async function flyOut(token){
   flyer.style.opacity = '1';
 
   anim(tube, [
     { opacity:1, transform:'translateY(0) scale(1)' },
-    { opacity:0, transform:'translateY(22px) scale(.93)' }
-  ], { duration:420, delay:170, easing:'ease-in', fill:'forwards' });
+    { opacity:0, transform:'translateY(30px) scale(.9)' }
+  ], { duration:430, delay:150, easing:'ease-in', fill:'forwards' });
 
-  await anim(flyer, [
-    { transform:'translateY(58px) rotate(-4deg)', opacity:0 },
-    { transform:'translateY(6px) rotate(-2deg)',  opacity:1, offset:.28 },
-    { transform:'translateY(-54px) rotate(3deg)', opacity:1, offset:.68 },
-    { transform:'translateY(0) rotate(0deg)',     opacity:1 }
-  ], { duration:720, easing:'cubic-bezier(.24,.86,.32,1)', fill:'forwards' });
+  var frames = [
+    { transform:'translateY(64px) rotate(-6deg) scale(.96)', opacity:0 },
+    { transform:'translateY(-14px) rotate(6deg) scale(1.06)', opacity:1, offset:.26 },
+    { transform:'translateY(-96px) rotate(184deg) scale(1.1)', opacity:1, offset:.6 },
+    { transform:'translateY(-18px) rotate(352deg) scale(1.02)', opacity:1, offset:.86 },
+    { transform:'translateY(0) rotate(360deg) scale(1)', opacity:1 }
+  ];
+  var opts = { duration:880, easing:'cubic-bezier(.22,.78,.3,1)', fill:'forwards' };
+
+  ghostTrail(flyer, frames, opts, 3, .42);
+
+  anim(glow, [
+    { opacity:.55, transform:'scale(.9)' },
+    { opacity:.8,  transform:'scale(1.25) translateY(-70px)', offset:.6 },
+    { opacity:.5,  transform:'scale(1) translateY(0)' }
+  ], { duration:880, easing:'cubic-bezier(.22,.78,.3,1)', fill:'forwards' });
+
+  await anim(flyer, frames, opts);
 }
 
-/* 4. 签展开成签文 */
+/* 4. 签展开成签文：光带扫过 + 满屏一亮 */
 async function unfurl(token){
   anim(flyer, [{ opacity:1 }, { opacity:0 }],
-    { duration:240, easing:'ease-out', fill:'forwards' });
+    { duration:200, easing:'ease-out', fill:'forwards' });
+  anim(glow, [{ opacity:.5 }, { opacity:0, transform:'scale(1.6)' }],
+    { duration:520, easing:'ease-out', fill:'forwards' });
+
+  /* 展开那一下满屏发亮 */
+  anim(flash, [
+    { opacity:0, transform:'scale(.55)' },
+    { opacity:.9, transform:'scale(1.06)', offset:.22 },
+    { opacity:0, transform:'scale(1.45)' }
+  ], { duration:640, easing:'cubic-bezier(.2,.8,.3,1)', fill:'forwards' });
 
   card.style.opacity = '1';
-  await anim(card, [
-    { clipPath:'inset(0 46% 0 46% round 6px)', transform:'translateY(-50%) scale(.96)' },
-    { clipPath:'inset(0 -2% 0 -2% round 6px)', transform:'translateY(-50%) scale(1.03)', offset:.72 },
-    { clipPath:'inset(0 0 0 0 round 6px)',     transform:'translateY(-50%) scale(1)' }
-  ], { duration:580, easing:'cubic-bezier(.22,.92,.3,1)', fill:'forwards' });
+  var unfurled = anim(card, [
+    { clipPath:'inset(0 47% 0 47% round 6px)', transform:'translateY(-50%) scale(.94)' },
+    { clipPath:'inset(0 -3% 0 -3% round 6px)', transform:'translateY(-50%) scale(1.05)', offset:.66 },
+    { clipPath:'inset(0 1.5% 0 1.5% round 6px)', transform:'translateY(-50%) scale(.985)', offset:.85 },
+    { clipPath:'inset(0 0 0 0 round 6px)',      transform:'translateY(-50%) scale(1)' }
+  ], { duration:660, easing:'cubic-bezier(.24,.9,.32,1)', fill:'forwards' });
 
+  /* 光带紧跟着扫过卡面 */
+  sheen.style.opacity = '1';
+  anim(sheen, [
+    { transform:'translateX(-130%)', opacity:0 },
+    { transform:'translateX(-40%)',  opacity:1, offset:.35 },
+    { transform:'translateX(130%)',  opacity:0 }
+  ], { duration:720, delay:210, easing:'cubic-bezier(.3,.7,.3,1)', fill:'forwards' });
+
+  await unfurled;
   if(token !== drawToken) return;
 
   $('seal').classList.add('stamped');
@@ -1093,14 +1241,14 @@ async function unfurl(token){
 function burst(){
   if(reduce) return;
   var colors = ['#b03a2b', '#a8813f', '#5d7b72', '#8a2a1d'];
-  for(var i = 0; i < 14; i++){
+  for(var i = 0; i < 20; i++){
     (function(i){
       var b = document.createElement('i');
       b.className = 'bit';
       b.style.background = colors[i % colors.length];
       stage.appendChild(b);
-      var ang = (Math.PI * 2 * i) / 14 + Math.random() * 0.5;
-      var dist = 90 + Math.random() * 110;
+      var ang = (Math.PI * 2 * i) / 20 + Math.random() * 0.5;
+      var dist = 110 + Math.random() * 140;
       b.animate([
         { transform: 'translate(-50%,-50%) scale(.4) rotate(0deg)', opacity: 1 },
         { transform: 'translate(calc(-50% + ' + Math.cos(ang) * dist + 'px), calc(-50% + ' +
@@ -1121,9 +1269,13 @@ function withTimeout(promise, ms){
 }
 
 function settleHero(){
-  cancelAnims([tube, flyer, card].concat(stickList()));
+  clearGhosts();
+  cancelAnims([tube, flyer, card, glow, flash, sheen].concat(stickList()));
   tube.style.opacity = '0';
   flyer.style.opacity = '0';
+  glow.style.opacity = '0';
+  flash.style.opacity = '0';
+  sheen.style.opacity = '0';
   card.style.opacity = '1';
   card.style.clipPath = 'inset(0 0 0 0 round 6px)';
   card.style.transform = 'translateY(-50%) scale(1)';
@@ -1167,7 +1319,7 @@ async function draw(){
         await flyOut(token);
         if(token !== drawToken) return;
         await unfurl(token);
-      })(), 3600);
+      })(), 4600);
     }
   }catch(err){
     /* 动画出问题不该影响抽签结果 */
