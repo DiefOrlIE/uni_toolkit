@@ -1003,16 +1003,19 @@ var sheen  = $('sheen');
 
 var STICK_LEN = 186;      /* 签长，px */
 var BARREL_R  = 46;       /* 签根能落的半径 */
-var RIM_R     = 74;       /* 筒口内半径，顶端撞到这里会被弹回 */
+var RIM_R     = 74;       /* 筒口内半径 */
+/* 筒口高度落在签身的哪个位置：签根在 bottom 14%、筒口在 47%、签长 70%，
+   所以约束点大约在签身 48% 处 —— 约束顶端是错的，那一截在筒口外面 */
+var RIM_FRAC  = 0.48;
 var MIN_GAP   = 15;       /* 两根签顶端的最小间距 */
 
 var K_RESTORE = 62;       /* 回复刚度 */
-var C_DAMP    = 3.4;      /* 阻尼 */
+var C_DAMP    = 2.7;      /* 阻尼：调小签晃得更久、更松快 */
 var K_REPEL   = 150;      /* 碰撞排斥强度 */
 var E_WALL    = 0.42;     /* 撞筒壁的恢复系数 */
 /* 驱动频率高于签的自振频率，所以响应幅度是 A/|w0^2 - w^2| 而不是 A/K，
    这一项要照着那个公式调，不然差一个量级 */
-var INERTIA   = 0.28;
+var INERTIA   = 0.42;
 var DT        = 1 / 60;
 
 var bodies = [];          /* 每根签的刚体状态 */
@@ -1053,7 +1056,7 @@ function buildSticks(){
       rise: 4 + Math.abs(r3) * 16,
       /* 每根签卡得松紧不同、插入深浅不同，自振频率就不同。
          没有这个差异，同样的惯性力会让它们整齐划一地摆。 */
-      k: K_RESTORE * (0.75 + Math.abs(r) * 0.8),
+      k: K_RESTORE * (0.55 + Math.abs(r) * 1.1),
       c: C_DAMP * (0.6 + Math.abs(r2) * 1.0),
       m: 0.85 + r3 * 0.3
     });
@@ -1147,12 +1150,12 @@ function stepPhysics(dt){
     b.tx += b.vx * dt;
     b.tz += b.vz * dt;
 
-    /* 4. 筒口硬约束：撞上内壁就弹回来 */
-    var px = b.bx + b.tx, pz = b.bz + b.tz;
+    /* 4. 筒口硬约束：签身蹭到筒口内壁才会被挡回来 */
+    var px = b.bx + b.tx * RIM_FRAC, pz = b.bz + b.tz * RIM_FRAC;
     var pr = Math.sqrt(px * px + pz * pz);
     if(pr > RIM_R){
       var nx = px / pr, nz = pz / pr;
-      var over = pr - RIM_R;
+      var over = (pr - RIM_R) / RIM_FRAC;   /* 换算回顶端的位移 */
       b.tx -= nx * over;
       b.tz -= nz * over;
       var vn = b.vx * nx + b.vz * nz;
